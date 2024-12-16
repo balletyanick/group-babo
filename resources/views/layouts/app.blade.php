@@ -272,6 +272,17 @@
         border-color: #cf0013;
     }
 
+    .header-left .dashboard_bar {
+        font-size: 28px;
+        font-weight: 600;
+        color: #04284c;
+    }
+
+    .header-right .header-profile > a.nav-link .header-info strong {
+        font-weight: 600;
+        color: #04284c;
+    }
+
     .swal2-actions {
         flex-wrap: nowrap !important;
     }

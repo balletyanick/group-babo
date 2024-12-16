@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "Liste des clients")
+@section('title', "Liste des employés")
 
 @section('content')
 
@@ -12,19 +12,24 @@
               <li class="breadcrumb-item active"><a href="javascript:void(0)"> Liste des clients </a></li>
           </ol>
       </div>
-      <!-- row -->
+      <!-- row --> 
 
       <div class="row">
-          @if(Auth::user()->permission('AJOUT CLIENT'))
+          @if(Auth::user()->permission('AJOUT EMPLOYE'))
               <div class="col-lg-12 pb-4 px-4">
-                  <a class="btn btn-primary" style="font-size:15px" href="{{route('customer.add',['ajouter'])}}">Ajouter un client <i class="flaticon-381-add-3 mx-1"></i></a>
+                    <a class="btn btn-primary mr-3" style="font-size:15px" href="{{route('employe.add',['ajouter'])}}">Employés Cocody 1
+                    </a>
+                    <a class="btn btn-primary mr-3" style="font-size:15px" href="{{route('employe.add',['ajouter'])}}">Employés Yopougon  
+                    </a>
+                    <a class="btn btn-primary" style="font-size:15px" href="{{route('employe.add',['ajouter'])}}"> Employés Cocody 2 
+                    </a>
               </div>
           @endif
           <div class="col-lg-12">
               <div class="card">
                   <div class="card-body">
                       <div class="table-responsive">
-                          <table id="customer" class="table table-bordered table-responsive-sm">
+                          <table id="employe" class="table table-bordered table-responsive-sm">
                               <thead>
                                   <tr>
                                       <th> Nom & Prénoms </th>
@@ -38,64 +43,46 @@
                                       <th> N° pièce </th>
                                       <th> Création pièce </th>
                                       <th> Expriration pièce </th>
-                                      <th> Genre (AD) </th>
-                                      <th> Nom & prénoms (AD) </th>
-                                      <th> Téléphone (AD) </th>
-                                      <th> Pièce d'Identité (AD) </th>
-                                      <th> Identifiant pièce (AD) </th>
-                                      <th> Création pièce (AD) </th>
-                                      <th> Expiration pièce (AD) </th>
-                                      <th> Date de naissance (AD) </th>
-                                      <th> Lieu de naissance (AD) </th>
-                                      <th> Lieu de résidence (AD) </th>
-                                      <th> Enregistré par </th>
                                       <th> Actions </th>
                                   </tr>
                               </thead>
                               <tbody>
-                                  @foreach ($customers as $customer)
+                                  @foreach ($employes as $employe)
                                       <tr>
-                                          <td> {{$customer->first_name}} {{$customer->last_name}}</td>
-                                          <td> {{$customer->email}}</td>
+                                          <td> {{$employe->first_name}} {{$employe->last_name}}</td>
+                                          <td> {{$employe->email}}</td>
                                           <td>
                                             <span class="badge light badge-success">
-                                                {{$customer->phone}}
+                                                {{$employe->phone}}
                                             </span>
                                            </td>
-                                          <td> {{date('d/m/Y',strtotime($customer->date_of_birth))}}</td>
-                                          <td> {{date('d/m/Y',strtotime($customer->place_of_birth))}}</td>
-                                          <td> {{$customer->neighborhood}}</td>
-                                          <td> {{$customer->common}}</td>
-                                          <td> {{$customer->name_doc_client}}</td>
-                                          <td> {{$customer->numero_cni}}</td>
-                                          <td> {{date('d/m/Y',strtotime($customer->date_start_cni))}}</td>  
-                                          <td> {{date('d/m/Y',strtotime($customer->date_end_cni))}}</td>
-                                          <td> {{$customer->genre_death}}</td>
-                                          <td> {{$customer->first_name_death}} {{$customer->last_name_death}}</td>
+                                          <td> {{date('d/m/Y',strtotime($employe->date_of_birth))}}</td>
+                                          <td> {{date('d/m/Y',strtotime($employe->place_of_birth))}}</td>
+                                          <td> {{$employe->neighborhood}}</td>
+                                          <td> {{$employe->common}}</td>
+                                          <td> {{$employe->name_doc_client}}</td>
+                                          <td> {{$employe->numero_cni}}</td>
+                                          <td> {{date('d/m/Y',strtotime($employe->date_start_cni))}}</td>  
+                                          <td> {{date('d/m/Y',strtotime($employe->date_end_cni))}}</td>
+                                          <td> {{$employe->genre_death}}</td>
+                                          <td> {{$employe->first_name_death}} {{$employe->last_name_death}}</td>
                                           <td>
                                                 <span class="badge light badge-success">
-                                                    {{ $customer->phone_number_death }}
+                                                    {{ $employe->phone_number_death }}
                                                 </span>
                                            </td>
-                                          <td> {{$customer->name_doc}}</td>
-                                          <td> {{$customer->numero_piece_death}}</td>
-                                          <td> {{date('d/m/Y',strtotime($customer->date_start_doc_death))}}</td>
-                                          <td> {{date('d/m/Y',strtotime($customer->date_end_doc_death))}}</td>
-                                          <td> {{date('d/m/Y',strtotime($customer->date_of_birth_death))}}</td>
-                                          <td> {{$customer->place_of_birth_death}}</td>
-                                          <td> {{$customer->place_death}}</td>
-                                          <td> {{$customer->user->first_name}} {{$customer->user->last_name}}</td>
+                                        
                                           <td>
                                             @if(Auth::user()->permission('EDITION CLIENT') || Auth::user()->permission('SUPPRESSION CLIENT'))
                                                 <div class="d-flex">
                                                     @if(Auth::user()->permission('EDITION CLIENT'))
-                                                        <a href="{{route('customer.edit',[$customer->id])}}" class="btn btn-primary shadow btn-xs sharp me-1 mr-1">
+                                                        <a href="{{route('employe.edit',[$employe->id])}}" class="btn btn-primary shadow btn-xs sharp me-1 mr-1">
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     @endif 
 
                                                     @if(Auth::user()->permission('SUPPRESSION CLIENT'))
-                                                        <a href="javascript:void(0);" onclick="deleted('{{$customer->id}}','{{route('customer.delete')}}')" id="icone-delete" class="btn btn-danger shadow btn-xs sharp">
+                                                        <a href="javascript:void(0);" onclick="deleted('{{$employe->id}}','{{route('employe.delete')}}')" id="icone-delete" class="btn btn-danger shadow btn-xs sharp">
                                                             <i class="fa fa-trash"></i>
                                                         </a>
                                                     @endif
@@ -109,21 +96,21 @@
                       </div>
                       <div>
                           <ul class="pagination pagination-gutter justify-content-center mb-0">
-                              @if ($customers->onFirstPage())
+                              @if ($employes->onFirstPage())
                                   <li class="page-item page-indicator">
                                       <a class="page-link">
                                       <i class="la la-angle-left"></i></a>
                                   </li>
                               @else
                                   <li class="page-item">
-                                      <a class="page-link" href="{{ $customers->previousPageUrl() }}" rel="prev">
+                                      <a class="page-link" href="{{ $employes->previousPageUrl() }}" rel="prev">
                                           <i class="mdi mdi-chevron-left"></i>
                                       </a>
                                   </li>
                               @endif
 
-                              @foreach ($customers->getUrlRange(1, $customers->lastPage()) as $page => $url)
-                                      @if ($page == $customers->currentPage())
+                              @foreach ($employes->getUrlRange(1, $employes->lastPage()) as $page => $url)
+                                      @if ($page == $employes->currentPage())
                                           <li class="page-item active">
                                               <span class="page-link">{{ $page }}</span>
                                           </li>
@@ -134,9 +121,9 @@
                                       @endif
                               @endforeach
 
-                              @if ($customers->hasMorePages())
+                              @if ($employes->hasMorePages())
                                       <li class="page-item">
-                                          <a href="{{ $customers->nextPageUrl() }}" class="page-link" rel="next"><i class="mdi mdi-chevron-right"></i></a>
+                                          <a href="{{ $employes->nextPageUrl() }}" class="page-link" rel="next"><i class="mdi mdi-chevron-right"></i></a>
                                       </li>
                               @else
                                       <li class="page-item disabled">
@@ -158,7 +145,7 @@
 @section('script')
 <script>
   $(document).ready(function() {
-      new DataTable("#customer", {
+      new DataTable("#employe", {
           dom: "Bfrtip",
           paging: false,
           buttons: ["excel"],

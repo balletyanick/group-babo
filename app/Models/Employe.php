@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Customer extends Model
+class Employe extends Model
 {
     use HasFactory;
     public $incrementing = false; 
@@ -26,15 +26,8 @@ class Customer extends Model
         });
     }
 
-    public function contrats()
-    {
-        return $this->hasMany(Contrat::class); 
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
 }
- 

@@ -7,7 +7,7 @@
     use App\Models\Role;
     use App\Models\User;
     use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Facades\Storage; 
 
     class CustomerController extends Controller
     {
@@ -21,17 +21,11 @@
         public function add($id)
         {
             $customer = Customer::find($id);
+            
+            $customer = new Customer;
+            $title = 'Ajouter un client';
 
-            if(!is_null($customer)){
-                $title = "Modifier $customer->first_name $customer->last_name";
-
-                Auth::user()->access('EDITION CLIENT');
-            }else{
-                $customer = new Customer;
-                 $title = 'Ajouter un client';
-
-                Auth::user()->access('AJOUT CLIENT');
-            } 
+            Auth::user()->access('AJOUT CLIENT');
             
             return view('customer.save',compact('customer','title'));
         }
@@ -115,9 +109,9 @@
         public function edit($id)
         { 
             Auth::user()->access('EDITION CLIENT');
-            $title = 'Modifier les informations du client';
-    
             $customer = Customer::find($id);
+            $title = "Modifier un client";
+    
             return view('customer.edit', compact('title', 'customer'));
         }
     
@@ -125,24 +119,49 @@
         public function save_edit(Request $request)
         {   
     
-        Auth::user()->access('EDITION CLIENT');
-    
-        $validator = $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'numero_cni' => 'required|string',
-            'genre' => 'required|string',
-            'phone' => 'required|string',
-            'note' => 'nullable|string',
-        ]);
-    
-        $customer = Customer::findOrFail($request->id);
-    
-        $data = $request->only(['first_name','last_name','date_of_birth','numero_cni','genre','phone','note']);
+            Auth::user()->access('EDITION CLIENT');
         
-        $contrat->update($data);
-    
-        return response()->json(['message' => 'Informations modifiées avec succès', 'status' => 'success']);
-        }
+            $validator = $request->validate([
+                    'user_id' => 'required|string|exists:users,id',
+                    'first_name' => 'required|string',
+                    'last_name' => 'required|string',
+                    'genre' => 'required|string',
+                    'date_of_birth' => 'required|date',
+                    'place_of_birth' => 'required|string',
+                    'neighborhood' => 'required|string',
+                    'common' => 'required|string',
+                    'numero_cni' => 'required|string',
+                    'date_start_cni' => 'nullable|date',
+                    'date_end_cni' => 'nullable|date',
+                    'etat_matrimonial' => 'required|string',
+                    'work' => 'required|string',
+                    'name_doc_client' => 'required|string',
+                    'email' => 'required|email',
+                    'phone' => 'required|string',
+                    'note_second' => 'nullable|string',
+                    'note_first' => 'nullable|string',
+                    'first_name_death' => 'required|string',
+                    'last_name_death' => 'required|string',
+                    'numero_piece_death' => 'required|string',
+                    'name_doc' => 'required|string',
+                    'date_start_doc_death' => 'nullable|date',
+                    'date_end_doc_death' => 'nullable|date',
+                    'date_of_birth_death' => 'required|date',
+                    'place_of_birth_death' => 'required|string',
+                    'place_death' => 'required|string',
+                    'phone_number_death' => 'nullable|string',
+                    'genre_death' => 'required|string',
+            ]);
+        
+            $customer = Customer::findOrFail($request->id);
+        
+            $data = $request->only(['first_name','last_name','genre', 'date_of_birth', 'place_of_birth', 'neighborhood', 'common', 'numero_cni',
+            'date_start_cni', 'date_end_cni', 'etat_matrimonial', 'work', 'name_doc_client', 'email', 'phone', 'note_second',
+            'note_first', 'first_name_death', 'last_name_death', 'numero_piece_death', 'name_doc', 'date_start_doc_death', 'date_end_doc_death', 'date_of_birth_death',
+            'place_of_birth_death', 'place_death', 'phone_number_death', 'genre_death',]);
+            
+            $customer->update($data);
+        
+            return response()->json(['message' => 'Informations modifiées avec succès', 'status' => 'success']);
+            }
     }

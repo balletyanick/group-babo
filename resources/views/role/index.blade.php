@@ -17,7 +17,7 @@
 
         <div class="row">
             @if(Auth::user()->permission('AJOUT ROLE'))
-                <div class="col-lg-12 py-4 px-4">
+                <div class="col-lg-12 pb-4 px-4">
                     <a class="btn btn-primary" style="font-size:15px" href="{{route('role.add',['ajouter'])}}">Ajouter un rôle <i class="flaticon-381-add-3 mx-1"></i></a>
                 </div>
             @endif

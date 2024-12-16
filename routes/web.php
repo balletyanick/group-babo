@@ -11,7 +11,7 @@ use App\Http\Controllers\ContratController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AgenceController;
 use App\Http\Controllers\AgenceUserController;
-
+use App\Http\Controllers\EmployesController;
 
 
 /*
@@ -63,6 +63,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/client/{id}', [CustomerController::class, 'add'])->name('customer.add');
     Route::post('/save-customer', [CustomerController::class, 'save'])->name('customer.save');
     Route::get('/delete-customer', [CustomerController::class, 'delete'])->name('customer.delete');
+    Route::get('/edit-client/{id}', [CustomerController::class, 'edit'])->name('customer.edit');
+    Route::post('/save-edit-client', [CustomerController::class, 'save_edit'])->name('customer.save_edit');
+
+
+    #employe
+    Route::get('/liste-employes', [EmployesController::class, 'index'])->name('employe.index');
+    Route::get('/employe/{id}', [EmployesController::class, 'add'])->name('employe.add');
+    Route::post('/save-employe', [EmployesController::class, 'save'])->name('employe.save');
+    Route::get('/delete-employe', [EmployesController::class, 'delete'])->name('employe.delete');
+    Route::get('/edit-employe/{id}', [EmployesController::class, 'edit'])->name('employe.edit');
+    Route::post('/save-edit-employe', [EmployesController::class, 'save_edit'])->name('employe.save_edit');
     
 
     #produit
@@ -70,7 +81,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/product/{id}', [ProductController::class, 'add'])->name('product.add');
     Route::post('/save-product', [ProductController::class, 'save'])->name('product.save');
     Route::get('/delete-product', [ProductController::class, 'delete'])->name('product.delete');
-
 
     #contrat
     Route::get('/liste-contrat', [ContratController::class, 'index'])->name('contrat.index');

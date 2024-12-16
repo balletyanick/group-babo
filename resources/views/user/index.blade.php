@@ -16,7 +16,7 @@
 
             <div class="row">
                 @if(Auth::user()->permission('AJOUT UTILISATEUR'))
-                    <div class="col-lg-12 py-4 px-4">
+                    <div class="col-lg-12 pb-4 px-4">
                         <a class="btn btn-primary" style="font-size:15px" href="{{route('user.add',['ajouter'])}}">Ajouter un utilisateur <i class="flaticon-381-add-3 mx-1"></i></a>
                     </div>
                 @endif

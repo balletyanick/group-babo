@@ -1,39 +1,20 @@
 <div class="deznav">
     <div class="deznav-scroll">
       <ul class="metismenu" id="menu">
-
-        <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-          <i class="flaticon-381-networking"></i>
-          <span class="nav-text"> Tableau de bord </span>
-        </a>
-        <ul aria-expanded="false">
-          <li><a href="{{route("dashboard")}}" > Général </a></li>
-          <li><a href="#" > Par agence </a></li>
-        </ul>
+        
+        <li>
+            <h4 style="font-weight: bold" class="mb-2"> AGENT </h4>
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-networking"></i>
+              <span class="nav-text"> Tableau de bord </span>
+            </a>
+          <ul aria-expanded="false">
+            <li><a href="{{route("dashboard")}}" > Général </a></li>
+            <li><a href="#" > Par agence </a></li>
+          </ul>
         </li>
 
-        @if(Auth::user()->permission("LISTE PRODUIT") || Auth::user()->permission("AJOUT PRODUIT"))
-          <li>
-            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-              <i class="flaticon-381-box-2"></i>
-              <span class="nav-text"> Produits </span>
-            </a>
-
-            <ul aria-expanded="false">
-              @if(Auth::user()->permission("AJOUT PRODUIT"))
-                <li>
-                  <a href="{{route("product.add",['ajouter'])}}"> Ajouter un produit</a>
-                </li> 
-              @endif
-
-              @if(Auth::user()->permission("LISTE PRODUIT"))
-                <li>
-                  <a href="{{route("product.index")}}"> Liste des produits</a>
-                </li>
-              @endif
-            </ul>
-          </li>
-        @endif
+    
 
 
         @if(Auth::user()->permission("LISTE CLIENT") || Auth::user()->permission("AJOUT CLIENT"))
@@ -78,6 +59,53 @@
           <li><a href="#"> Dépenses </a></li>
         </ul>
         </li>
+
+        @if(Auth::user()->permission("LISTE EMPLOYE") || Auth::user()->permission("AJOUT EMPLOYE"))
+          <li class="mb-4">
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-user-1"></i>
+              <span class="nav-text"> Employes </span>
+            </a>
+
+            <ul aria-expanded="false">
+              @if(Auth::user()->permission("AJOUT EMPLOYE"))
+                <li>
+                  <a href="{{route("employe.add",['ajouter'])}}"> Ajouter un employe</a>
+                </li> 
+              @endif
+
+              @if(Auth::user()->permission("LISTE EMPLOYE"))
+                <li>
+                  <a href="{{route("employe.index")}}"> Liste complète</a>
+                </li>
+              @endif
+            </ul>
+          </li>
+        @endif
+
+        @if(Auth::user()->permission("LISTE PRODUIT") || Auth::user()->permission("AJOUT PRODUIT"))
+          <li class="mt-2">
+            <h4 style="font-weight: bold"> ADMINISTRATEUR </h4>
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-box-2"></i>
+              <span class="nav-text"> Produits </span>
+            </a>
+
+            <ul aria-expanded="false">
+              @if(Auth::user()->permission("AJOUT PRODUIT"))
+                <li>
+                  <a href="{{route("product.add",['ajouter'])}}"> Ajouter un produit</a>
+                </li> 
+              @endif
+
+              @if(Auth::user()->permission("LISTE PRODUIT"))
+                <li>
+                  <a href="{{route("product.index")}}"> Liste des produits</a>
+                </li>
+              @endif
+            </ul>
+          </li>
+        @endif
 
         @if(Auth::user()->permission("LISTE AGENCE") || Auth::user()->permission("AJOUT AGENCE"))
           <li>
@@ -158,6 +186,10 @@
           </ul>
         </li>
         @endif
+
       </ul>
+      <div class="copyright">
+        <p><strong> Babo Corporate </strong> © <script>document.write(new Date().getFullYear())</script> Tous droits réservés </p>
+      </div>
     </div>
 </div>
