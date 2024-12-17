@@ -274,7 +274,7 @@
                                           </div>
                                         </div>
 
-                                        <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
+                                        <div class="col-xl-12 col-xxl-12 col-md-12 mt-3">
                                           <button id="add_customer" class="btn btn-primary"> Enregistrer </button>
                                         </div>
                                       </div>

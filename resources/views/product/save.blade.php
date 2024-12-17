@@ -39,6 +39,8 @@
                                             <select class="default-select wide form-control" id="type" name="type">
                                                 <option value="Trycile"> Trycile </option>
                                                 <option value="Electrique"> Electrique </option>
+                                                <option value="Electrique"> Aloba </option>
+                                                <option value="Electrique"> KTM </option>
                                             </select>
                                         </div>
 

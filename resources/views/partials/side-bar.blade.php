@@ -70,7 +70,7 @@
             <ul aria-expanded="false">
               @if(Auth::user()->permission("AJOUT EMPLOYE"))
                 <li>
-                  <a href="{{route("employe.add",['ajouter'])}}"> Ajouter un employe</a>
+                  <a href="{{route("employe.add",['ajouter'])}}"> Ajouter </a>
                 </li> 
               @endif
 
@@ -79,9 +79,23 @@
                   <a href="{{route("employe.index")}}"> Liste complète</a>
                 </li>
               @endif
+
+              @if(Auth::user()->permission("LISTE EMPLOYE"))
+                <li>
+                  <a href="#"> Créer un contrat </a>
+                </li>
+              @endif
+
+              @if(Auth::user()->permission("LISTE EMPLOYE"))
+                <li>
+                  <a href="#"> Liste des contrats </a>
+                </li>
+              @endif
             </ul>
           </li>
         @endif
+
+
 
         @if(Auth::user()->permission("LISTE PRODUIT") || Auth::user()->permission("AJOUT PRODUIT"))
           <li class="mt-2">

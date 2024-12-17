@@ -30,4 +30,9 @@ class Employe extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function agence()
+    {
+        return $this->belongsTo(Agence::class, 'agence_id');
+    }
 }

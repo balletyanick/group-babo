@@ -163,5 +163,5 @@
             $customer->update($data);
         
             return response()->json(['message' => 'Informations modifiées avec succès', 'status' => 'success']);
-            }
+        }
     }

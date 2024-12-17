@@ -253,6 +253,10 @@
         border-color: #cf0013 !important;
     }
 
+    .footer .copyright a {
+        color: #04284C;
+    }
+
     .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
         color: #fff;
         background-color: #04284c !important;

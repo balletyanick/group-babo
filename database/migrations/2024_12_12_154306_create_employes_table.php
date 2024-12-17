@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('employes', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->char('user_id', 36);
+            $table->char('agence_id', 36);
+            $table->string('name_doc_client');
+            $table->string('numero_piece');
+            $table->string('mat_employe');
             $table->string('genre');
             $table->string('first_name');
             $table->string('last_name');
@@ -21,18 +25,17 @@ return new class extends Migration
             $table->string('email');
             $table->string('place_of_birth');
             $table->date('date_of_birth');
-            $table->string('localisation');
-            $table->string('fonction');
-            $table->integer('salaire');
-            $table->integer('month');
-            $table->date('date_of_start');
+            $table->string('common');
+            $table->string('neighborhood');
+            $table->date('date_start_doc')->nullable();
+            $table->date('date_end_doc')->nullable();
             $table->string('note')->nullable();
-            $table->string('rib')->nullable();
             $table->timestamps();
         });
 
         Schema::table('employes', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('agence_id')->references('id')->on('agences')->onDelete('cascade');
         });
     }
 

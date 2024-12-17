@@ -25,8 +25,12 @@
                                 <input type="hidden" name="id" value="{{$employe->id}}">
                                 <div class="row form-material">
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
-                                      <label class="form-label"> Note <small> (Facutatif) </small> </label>
-                                      <input type="text" class="form-control" name="note" value="{{$employe->note}}">
+                                        <label class="form-label"> Genre <span class="text-danger">*</span> </label>
+                                        <select name="genre" class="form-control default-select form-control-sm mb-3">
+                                            <option value="Monsieur"> Monsieur </option>
+                                            <option value="Madame"> Madame </option>
+                                            <option value="Mademoiselle"> Mademoiselle </option> 
+                                        </select>
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
@@ -50,6 +54,31 @@
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                      <label class="form-label"> Pièce d'identitité <span class="text-danger">*</span>  </label>
+                                      <select name="name_doc_client" class="form-control default-select form-control-sm mb-3">
+                                        <option value="Carte Nationale d'Identité"> Carte Nationale d'Identité </option>
+                                        <option value="Carte consulaire"> Carte consulaire </option>
+                                        <option value="Passeport"> Passeport </option>
+                                        <option value="Extrait de naissance"> Extrait de naissance  </option>
+                                      </select>
+                                    </div>
+
+                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                      <label class="form-label"> Identifiant Pièce d'identitité <span class="text-danger">*</span>  </label>
+                                      <input type="text" name="numero_piece"  class="form-control" required>
+                                    </div>
+
+                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                        <label class="form-label"> Date d'émission de la Pièce d'identitité </label>
+                                        <input type="date" name="date_start_doc"  class="form-control" required>
+                                    </div>
+
+                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                        <label class="form-label"> Date de d'expiration de la Pièce d'identitité  </label>
+                                        <input type="date" name="date_end_doc"  class="form-control" required>
+                                    </div>
+
+                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
                                       <label class="form-label"> Lieu de naissance <span class="text-danger">*</span>  </label>
                                       <input type="text" name="place_of_birth"  class="form-control" required>
                                     </div>
@@ -60,42 +89,30 @@
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                      <label class="form-label"> Lieu d'habitation <span class="text-danger">*</span>  </label>
-                                      <input type="text" name="localisation"  class="form-control" required>
+                                      <label class="form-label"> Commune <span class="text-danger">*</span>  </label>
+                                      <input type="text" name="common"  class="form-control" required>
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                      <label class="form-label"> Poste <span class="text-danger">*</span>  </label>
-                                      <input type="text" name="fonction"  class="form-control" required>
+                                        <label class="form-label"> Quartier <span class="text-danger">*</span>  </label>
+                                        <input type="text" name="neighborhood"  class="form-control" required>
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                      <label class="form-label"> Salaire <span class="text-danger">*</span>  </label>
-                                      <input type="number" name="salaire"  class="form-control" required>
+                                        <label name="agence_id "  class="form-label"> Agence <span class="text-danger">*</span> </label>
+                                        <select name="agence_id" class="form-control default-select form-control-sm mb-3">
+                                            @foreach($agence as $agences)
+                                                <option value="{{$agences->id}}" {{$agences->id==$employe->agence_id ? 'selected' : ''}}>{{$agences->libelle}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                      <label class="form-label"> Durée du contrat <span class="text-danger">*</span>  </label>
-                                      <input type="number" name="month"  class="form-control" required>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                      <label class="form-label"> Début du contrat <span class="text-danger">*</span>  </label>
-                                      <input type="date" name="date_of_start	"  class="form-control" required>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                      <label class="form-label"> RIB   </label>
-                                      <input type="number" name="rib"  class="form-control">
-                                    </div>
-
-
-                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
-                                        <label class="form-label"> Note <small> (Facutatif) </small> </label>
+                                        <label class="form-label"> Note </label>
                                         <input type="text" class="form-control" name="note" value="{{$employe->note}}">
                                     </div>
                                     
-                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
+                                    <div class="col-xl-12 col-xxl-12 col-md-12 mt-3">
                                         <button id="add_employe" class="btn btn-primary"> Enregistrer </button>
                                     </div>
                                 </div>

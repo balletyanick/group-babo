@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class AgenceUser extends Model
+class AgenceUser extends Model 
 {
     use HasFactory;
     public $incrementing = false; 

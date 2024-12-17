@@ -8,22 +8,17 @@
   <div class="container-fluid">
       <div class="page-titles">
           <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="javascript:void(0)"> Clients </a></li>
-              <li class="breadcrumb-item active"><a href="javascript:void(0)"> Liste des clients </a></li>
+              <li class="breadcrumb-item"><a href="javascript:void(0)"> Employés </a></li>
+              <li class="breadcrumb-item active"><a href="javascript:void(0)"> Liste des Employés de {{$agence->libelle}}  </a></li>
           </ol>
       </div>
       <!-- row --> 
 
       <div class="row">
           @if(Auth::user()->permission('LISTE EMPLOYE'))
-                <div class="col-lg-12 pb-4 px-4">
-                    @foreach($agence as $agences)
-                        <a class="btn btn-primary mr-3" href="{{route('employe.list',[$agences->id])}}" class="btn btn-primary shadow btn-xs sharp me-1 mr-1">
-                            <i class="fa fa-users mr-2"></i> {{$agences->libelle}}
-                        </a>
-                    @endforeach
-                </div>
-              
+            <div class="col-lg-12 pb-4 px-4">
+                <a class="btn btn-primary" style="font-size:15px" href="{{route('customer.add',['ajouter'])}}"> <i class="fa fa-users mr-2"></i> Liste complète </a>
+            </div>
           @endif
           <div class="col-lg-12">
               <div class="card">
@@ -32,7 +27,7 @@
                           <table id="employe" class="table table-bordered table-responsive-sm">
                               <thead>
                                   <tr>
-                                        <th> Matricule </th>
+                                    <th> Matricule </th>
                                       <th> Genre  </th>
                                       <th> Nom & Prénoms </th>
                                       <th> Agence </th>
