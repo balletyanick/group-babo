@@ -35,4 +35,9 @@ class Employe extends Model
     {
         return $this->belongsTo(Agence::class, 'agence_id');
     }
+
+    public function contrats_employes()
+    {
+        return $this->hasMany(ContratsEmployes::class, 'contrats_employes_id');
+    }
 }

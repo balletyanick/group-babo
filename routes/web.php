@@ -12,7 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AgenceController;
 use App\Http\Controllers\AgenceUserController;
 use App\Http\Controllers\EmployesController;
-use App\Http\Controllers\ContratEmployeController;
+use App\Http\Controllers\ContratsEmployesController;
 
 
 /*
@@ -79,12 +79,13 @@ Route::middleware(['auth'])->group(function () {
 
 
     #contrat_employe
-    Route::get('/liste-contrat-employe', [ContratEmployeController::class, 'index'])->name('contrat-employe.index');
-    Route::get('/contrat-employe/{id}', [ContratEmployeController::class, 'add'])->name('contrat-employe.add');
-    Route::post('/save-contrat-employe', [ContratEmployeController::class, 'save'])->name('contrat-employe.save');
-    Route::get('/delete-contrat-employe', [ContratEmployeController::class, 'delete'])->name('contrat-employe.delete');
-    Route::get('/edit-contrat-employe/{id}', [ContratEmployeController::class, 'edit'])->name('contrat-employe.edit');
-    Route::post('/save-edit-contrat-employe', [ContratEmployeController::class, 'save_edit'])->name('contrat-employe.save_edit');
+    Route::get('/liste-contrat-employe', [ContratsEmployesController::class, 'index'])->name('contrat-employe.index');
+    Route::get('/contrat-employe/{id}', [ContratsEmployesController::class, 'add'])->name('contrat-employe.add');
+    Route::post('/save-contrat-employe', [ContratsEmployesController::class, 'save'])->name('contrat-employe.save');
+    Route::get('/delete-contrat-employe', [ContratsEmployesController::class, 'delete'])->name('contrat-employe.delete');
+    Route::get('/resilier-contrat-employe', [ContratsEmployesController::class, 'resilier'])->name('contrat-employe.resilier');
+    Route::get('/edit-contrat-employe/{id}', [ContratsEmployesController::class, 'edit'])->name('contrat-employe.edit');
+    Route::post('/save-edit-contrat-employe', [ContratsEmployesController::class, 'save_edit'])->name('contrat-employe.save_edit');
     
  
     #produit

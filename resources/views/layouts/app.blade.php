@@ -48,6 +48,15 @@
         color: gray;
     }
 
+    .badge-danger {
+        background-color: #cf0013;
+    }
+
+    .light.badge-danger {
+        background-color: #fff3f7;
+        color: #cf0013;
+    }
+
     .light.btn-primary {
         background-color: #c0c1c6;
         border-color: #c0c1c6;
@@ -531,6 +540,59 @@
                 }
             });
         }
+
+        function resilier(id,link){
+
+            Swal.fire({
+                html: '<div class="mt-3"><lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon><div class="mt-4 pt-2 fs-15 mx-5"><h4>Êtes-vous sûr?</h4><p class="text-muted mx-4 mb-0">Une fois résilier, vous ne pourrez plus activer cet élément!</p></div></div>',
+                showCancelButton: !0,
+                confirmButtonClass: "btn btn-primary w-xs me-2 mb-1",
+                confirmButtonText: "Oui",
+                cancelButtonText: "Non",
+                cancelButtonClass: "btn btn-danger w-xs mb-1",
+                buttonsStyling: !1,
+                showCloseButton: !0
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'GET',
+                        url: link,
+                        data: {id:id},
+                        dataType: 'json',
+                        success: function (result){
+                            if(result.status=="success"){
+                                Toastify({
+                                        text: result.message,
+                                        duration: 3000, // 3 seconds
+                                        gravity: "top", // Position at the top of the screen
+                                        backgroundColor: "#0ab39c", // Background color for success
+                                        close: true, // Show a close button
+                                    }).showToast();
+                                setTimeout(() => {
+                                window.location.reload();
+                                }, 2000);
+                            }else{
+                                Toastify({
+                                    text: result.message,
+                                    duration: 3000, // 3 seconds
+                                    gravity: "top", // Position at the top of the screen
+                                    backgroundColor: "#e75050", // Background color for success
+                                    close: true, // Show a close button
+                                }).showToast();
+                            }
+                        },error: function(){
+                            Toastify({
+                                text: "Une erreur c'est produite",
+                                duration: 3000, // 3 seconds
+                                gravity: "top", // Position at the top of the screen
+                                backgroundColor: "#e75050", // Background color for success
+                                close: true, // Show a close button
+                            }).showToast();
+                        }
+                    });
+                }
+            });
+            }
     </script>
     
     @yield('script')

@@ -80,15 +80,15 @@
                 </li>
               @endif
 
-              @if(Auth::user()->permission("LISTE EMPLOYE"))
+              @if(Auth::user()->permission("AJOUT CONTRAT EMPLOYE"))
                 <li>
-                  <a href="#"> Créer un contrat </a>
+                  <a href="{{route("contrat-employe.add",['ajouter'])}}">  Créer un contrat </a>
                 </li>
               @endif
 
-              @if(Auth::user()->permission("LISTE EMPLOYE"))
+              @if(Auth::user()->permission("LISTE CONTRAT EMPLOYE"))
                 <li>
-                  <a href="#"> Liste des contrats </a>
+                  <a href="{{route("contrat-employe.index")}}"> Liste des contrats </a>
                 </li>
               @endif
             </ul>

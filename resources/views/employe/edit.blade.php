@@ -28,7 +28,7 @@
                                 <div class="row form-material">
 
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
-                                      <label class="form-label"> Genre <span class="text-danger">*</span> </label>
+                                      <label class="form-label"> Agence <span class="text-danger">*</span> </label>
                                       <input type="text" class="form-control bg-light" value="{{$employe->agence->libelle}}" readonly>
                                     </div>
                                   
