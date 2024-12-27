@@ -102,6 +102,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/edit-contrat/{id}', [ContratController::class, 'edit'])->name('contrat.edit');
     Route::post('/save-edit-contrat', [ContratController::class, 'save_edit'])->name('contrat.save_edit');
+    Route::get('/resilier-contrat', [ContratController::class, 'resilier'])->name('contrat.resilier');
+
+
     Route::get('/ajouter-montant/{id}', [ContratController::class, 'add_montant'])->name('contrat.add_montant');
     Route::post('/save-ajouter-montant', [ContratController::class, 'save_add_montant'])->name('contrat.save_add_montant');
 

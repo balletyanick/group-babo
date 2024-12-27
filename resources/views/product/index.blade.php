@@ -30,6 +30,10 @@
                                     <tr>
                                         <th>Libelle Produit & Durée</th>
                                         <th>Durée</th>
+                                        <th>Frais de gestion </th>
+                                        <th>Montant Global </th>
+                                        <th> Paiement par mois </th>
+                                        <th> Paiement par jour </th>
                                         <th>Type</th>
                                         <th>Restutition du véhicule</th>
                                         <th>Description</th>
@@ -42,6 +46,10 @@
                                         <tr>
                                             <td> {{$product->libelle}} - {{$product->duration_contrat}} Mois   </td>
                                             <td> {{$product->duration_contrat}} Mois  </td>
+                                            <td>{{$product->frais_gestion}} FCFA </td>
+                                            <td>{{$product->amout_global}} FCFA </td>
+                                            <td>{{$product->pay_mensuel}} FCFA </td>
+                                            <td>{{$product->pay_day}} FCFA </td>
                                             <td>{{$product->type}}</td>
                                             
                                             <td>

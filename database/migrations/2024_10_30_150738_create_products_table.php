@@ -15,7 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('libelle');
             $table->string('description')->nullable();
-            $table->integer('duration_contrat'); /* en mois*/
+            $table->integer('duration_contrat'); 
+            $table->integer('frais_gestion'); 
+            $table->integer('amout_global'); 
+            $table->integer('pay_mensuel'); 
+            $table->integer('pay_day'); 
             $table->string('note')->nullable();
             $table->string('type');
             $table->string('moto_restitue');

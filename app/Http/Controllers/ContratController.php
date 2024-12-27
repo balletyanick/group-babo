@@ -8,7 +8,7 @@ use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Customer;
-use App\Models\Paiement;
+use App\Models\Agence;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,8 +17,9 @@ class ContratController extends Controller
     public function index()
     {
         Auth::user()->access("LISTE CONTRAT");
-        $contrats = Contrat::with('customer','product')
+        $contrats = Contrat::with('customer','product','user','agence')
         ->paginate(100);
+
         return view('contrat.index',compact('contrats'));
     }
 
@@ -34,13 +35,14 @@ class ContratController extends Controller
             $contrat = new Contrat;
             $title = 'Ajouter un contrat';
 
-            Auth::user()->access('AJOUT CONTRAT');
+            Auth::user()->access('AJOUT CONTRAT'); 
         } 
         
         $customer = Customer::all();
         $product = Product::all();
         $user = User::all();
-        return view('contrat.save',compact('contrat','title','customer','product','user'));
+        $agence = Agence::all();
+        return view('contrat.save',compact('contrat','title','customer','product','user','agence'));
     }
 
     public function save(Request $request)
@@ -48,28 +50,58 @@ class ContratController extends Controller
         Auth::user()->access('AJOUT CONTRAT');
 
         $validator = $request->validate([
-            'customer_id' => 'required|string|exists:customers,id',
+            'customer_id' => 'required|string|exists:customers,id', 
             'product_id' => 'required|string|exists:products,id',
-            'date_start' => 'required|date',
-            'date_end' => 'required|date',
-            'amount_global' => 'required|integer',
-            'num_contrat' => 'required|string',
-            'type_contrat' => 'required|string',
+            'agence_id' => 'required|string|exists:agences,id',
             'quantite' => 'required|integer',
             'note' => 'nullable|string',
+            'method_versement' => 'required|string',
         ]);
 
-        $data = $request->only([ 
-        'date_start','date_end','num_contrat','type_contrat','quantite', 'note']);
+        $data = $request->all();
 
-        $data['customer_id'] = $request->input('customer_id');
-        $data['product_id'] = $request->input('product_id');
-        $data['amount_global'] = $request->input('amount_global') * $request->input('quantite');
-        $data['dispo_retrait'] = 0;
+        $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
+        $data['date_day'] = date('Y-m-d'); // date d'aujourd'hui (date de début)
+        $data['numero_contrat'] = 'BC-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $data['status'] = 0;
+
+
+        // Logique pour date_firt_payment
+        $currentDate = new \DateTime($data['date_day']);
+        $dayOfMonth = (int) $currentDate->format('d');
+
+        if ($dayOfMonth <= 15) {
+            // Si la date est entre le 1 et le 15, premier paiement dans deux mois au 15
+            $currentDate->modify('+2 months');
+            $currentDate->setDate((int) $currentDate->format('Y'), (int) $currentDate->format('m'), 15);
+
+        } else {
+            $currentDate->modify('+2 months'); 
+            // Vérification si le mois est février
+            if ((int) $currentDate->format('m') === 2) {
+                // Ajuster la date au 28 février
+                $currentDate->setDate((int) $currentDate->format('Y'), 2, 28);
+            } else {
+                // Autres mois, fixer la date au 30
+                $currentDate->setDate((int) $currentDate->format('Y'), (int) $currentDate->format('m'), 30);
+            }
+        }
+
+        $data['date_firt_payment'] = $currentDate->format('Y-m-d');
+
+        // Récupérer la durée du contrat depuis la table products
+        $product = Product::findOrFail($request->input('product_id'));
+        $durationInMonths = $product->duration_contrat;
+
+         // Calcul de la date de fin de paiement
+        $endPaymentDate = new \DateTime($data['date_firt_payment']);
+        $endPaymentDate->modify("+{$durationInMonths} months");
+        $data['date_end_payment'] = $endPaymentDate->format('Y-m-d');
+  
         
         Contrat::create($data);
 
-        return response()->json(['message' => 'Informations du contrat enregistré avec succès', 'status' => 'success']);
+        return response()->json(['message' => 'Contrat enregistré avec succès', 'status' => 'success']);
     }
 
     public function delete(Request $request){ 
@@ -88,13 +120,14 @@ class ContratController extends Controller
     public function edit($id)
     { 
         Auth::user()->access('EDITION CONTRAT');
-        $title = 'Modifier les informations du contrat';
+        $title = 'Modifier le contrat';
 
         $contrat = Contrat::find($id);
         $customer = User::all();
         $product = Product::all();
+        $agence = Agence::all();
 
-        return view('contrat.edit', compact('contrat', 'title', 'customer', 'product'));
+        return view('contrat.edit', compact('contrat', 'title', 'customer', 'product','agence'));
     }
 
 
@@ -104,73 +137,36 @@ class ContratController extends Controller
         Auth::user()->access('EDITION CONTRAT');
 
         $validator = $request->validate([
-            'customer_id' => 'required|string|exists:customers,id',
-            'product_id' => 'required|string|exists:products,id',
-            'date_start' => 'required|date',
-            'date_end' => 'required|date',
-            'amount_global' => 'required|integer',
-            'num_contrat' => 'required|string',
-            'type_contrat' => 'required|string',
             'quantite' => 'required|integer',
             'note' => 'nullable|string',
+            'method_versement' => 'required|string',
         ]);
 
         $contrat = Contrat::findOrFail($request->id);
 
-        $data = $request->only(['customer_id','product_id', 
-        'date_start','date_end','amount_global','num_contrat','type_contrat', 'note', 'quantite']);
-        
+        $data = $request->all();
         $contrat->update($data);
 
         return response()->json(['message' => 'Informations modifiées avec succès', 'status' => 'success']);
     }
 
-    public function add_montant($id)
-    { 
-        Auth::user()->access('AJOUTER DISPONIBILITE RETRAIT');
-        $title = 'Augmenter le montant disponible pour le retrait';
+    public function resilier(Request $request)
+        {
+            Auth::user()->access('RESILIATION CONTRAT EMPLOYE');
 
-        $contrat = Contrat::find($id);
-        $customer = User::all();
-        $product = Product::all();
+            $contrat = Contrat::find($request->id);
 
-        return view('contrat.add_montant', compact('contrat', 'title', 'customer', 'product'));
-    }
+            // Mettre à jour le statut à 1 (Résilié)
+            $contrat->status = 1;
 
-    public function save_add_montant(Request $request) 
-{
-    Auth::user()->access('AJOUTER DISPONIBILITE RETRAIT');
+            if ($contrat->save()) {
+                return response()->json(['message' => 'Contrat résilié avec succès', "status" => "success"]);
+            } else {
+                return response()->json(['message' => 'Échec de la résiliation, veuillez réessayer', "status" => "error"]);
+            }
+        }
 
-    $validator = $request->validate([
-        'dispo_retrait' => 'required|integer',
-    ]);
 
-    $contrat = Contrat::findOrFail($request->id); 
 
-    // Additionner la valeur existante et la valeur envoyée
-    $nouveau_dispo_retrait = $contrat->dispo_retrait + $request->input('dispo_retrait');
-
-    // Récupérer la somme de tous les paiements validés (status = 1) liés à ce contrat
-    $pay = Paiement::where('contrat_id', $contrat->id)
-    ->where('customer_id', $contrat->customer_id)
-    ->where('status', 1)
-    ->sum('amount'); 
-
-    $payer = $contrat->amount_global - $pay;
-
-    // Vérifier si le nouveau dispo_retrait est <= à amount_global
-    if ($nouveau_dispo_retrait <= $payer) {
-        // Mettre à jour la valeur de dispo_retrait dans la base de données
-        $contrat->dispo_retrait = $nouveau_dispo_retrait;
-        $contrat->save();
-
-        return response()->json(['message' => 'Disponibilité retrait mise à jour avec succès', 'status' => 'success']);
-    } 
-    
-    else {
-        // Retourner un message d'erreur si la condition n'est pas respectée
-        return response()->json(['message' => 'Erreur : la somme dépasse le montant disponible', 'status' => 'error'], 400);
-    }
-}
 
 }

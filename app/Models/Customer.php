@@ -28,7 +28,7 @@ class Customer extends Model
 
     public function contrats()
     {
-        return $this->hasMany(Contrat::class); 
+        return $this->hasMany(Contrat::class, 'contrat_id'); 
     }
 
     public function user()

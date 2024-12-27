@@ -96,4 +96,9 @@ class User extends Authenticatable
         return $this->hasMany(Employe::class);
     }
 
+    public function contrats()
+    {
+        return $this->hasMany(Contrat::class, 'contrat_id'); 
+    }
+
 }

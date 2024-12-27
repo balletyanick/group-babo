@@ -48,7 +48,11 @@ class ProductController extends Controller
             $validator = $request->validate([
                 'libelle' => 'required|string',
                 'description' => 'nullable|string',
-                'duration_contrat' => 'required|string',
+                'duration_contrat' => 'required|integer',
+                'frais_gestion' => 'required|integer',
+                'amout_global' => 'required|integer',
+                'pay_mensuel' => 'required|integer',
+                'pay_day' => 'required|integer',
                 'note' => 'nullable|string',
                 'type' => 'required|string',
                 'moto_restitue' => 'required|string',

@@ -25,43 +25,64 @@
                                     <input type="hidden" name="id" value="{{$product->id}}">
                                     <div class="row form-material">
                                         <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                            <label class="form-label"> Libelle Produit </label>
+                                            <label class="form-label"> Libelle Produit <span class="text-danger">*</span> </label>
                                             <input type="text"  name="libelle" value="{{$product->libelle}}" class="form-control" required>
                                         </div>
 
                                         <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                            <label class="form-label"> Durée du contrat <small> (En mois) </small> </label>
+                                            <label class="form-label"> Durée du contrat <small> (En mois) </small> <span class="text-danger">*</span> </label>
                                             <input type="number" name="duration_contrat" value="{{$product->duration_contrat}}" class="form-control" required>
                                         </div>
 
                                         <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                            <label class="form-label"> Type de vehicule </label>
+                                            <label class="form-label"> Frais de gestion <small> (FCFA) </small> <span class="text-danger">*</span> </label>
+                                            <input type="number" name="frais_gestion" value="{{$product->frais_gestion}}" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                            <label class="form-label"> Montant global <small> (FCFA) </small> <span class="text-danger">*</span> </label>
+                                            <input type="number" name="amout_global" value="{{$product->amout_global}}" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                            <label class="form-label"> Paiement par mois  <small> (FCFA) </small> <span class="text-danger">*</span> </label>
+                                            <input type="number" name="pay_mensuel" value="{{$product->pay_mensuel}}" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                            <label class="form-label"> Paiement par jour  <small> (FCFA) </small> <span class="text-danger">*</span> </label>
+                                            <input type="number" name="pay_day" value="{{$product->pay_day}}" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                            <label class="form-label"> Type de vehicule <span class="text-danger">*</span> </label>
                                             <select class="default-select wide form-control" id="type" name="type">
                                                 <option value="Trycile"> Trycile </option>
                                                 <option value="Electrique"> Electrique </option>
                                                 <option value="Electrique"> Aloba </option>
                                                 <option value="Electrique"> KTM </option>
+                                                <option value="Electrique"> Pack Gold 2 Aloba + 1 Tricycle </option>
                                             </select>
                                         </div>
 
                                         <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                            <label class="form-label"> Restutition du véhicule </label>
+                                            <label class="form-label"> Restutition du véhicule <span class="text-danger">*</span> </label>
                                             <select class="default-select wide form-control" name="moto_restitue" id="moto_restitue">
                                                 <option value="N'est pas restituée"> N'est pas restituée </option>
                                                 <option value="Est restitué"> Est restitué </option>
                                             </select>
                                         </div>
 
-                                        <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                            <label class="form-label"> Description <small> (Facutatif) </small> </label>
+                                        <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
+                                             <label class="form-label"> Description <small> (Facutatif) </small> </label>
                                             <input type="text" class="form-control" name="description" value="{{$product->description}}">
                                         </div>
 
-                                        <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                            <label class="form-label"> Note <small> (Facutatif) </small> </label>
-                                            <input type="text" class="form-control" name="note" value="{{$product->note}}">
-                                        </div>
                                         <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
+                                            <label class="form-label"> Note </label>
+                                            <input type="text" class="form-control" name="note" value="{{$product->note}}">
+                                        </div>  
+                                        <div class="col-xl-12 col-xxl-12 col-md-12 mt-3">
                                             <button id="add_product" class="btn btn-primary"> Enregistrer </button>
                                         </div>
                                     </div>

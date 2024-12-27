@@ -26,7 +26,7 @@
                                 <div class="row form-material">
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
                                         <label name="employe_id"  class="form-label"> Employé </label>
-                                        <select id="mySelect2" name="employe_id" class="form-control">
+                                        <select id="mySelect" name="employe_id" class="form-control mySelect">
                                             @foreach($employe as $employes)
                                                 <option value="{{$employes->id}}" {{$employes->id==$contratsemploye->employe_id ? 'selected' : ''}}>{{$employes->first_name}} {{$employes->last_name}}</option>
                                             @endforeach
@@ -84,6 +84,12 @@
 @section('script')
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#mySelect').select2(); // Remplacez #mySelect par l'ID ou la classe de votre champ
+        });
+    </script>
 
     <script>
 

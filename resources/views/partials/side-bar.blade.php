@@ -40,28 +40,43 @@
           </li>
         @endif
 
-        <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-          <i class="flaticon-381-diploma"></i>
-          <span class="nav-text"> Contrat </span>
-        </a>
-        <ul aria-expanded="false">
-          <li><a href="#"> Créer un contrat </a></li>
-          <li><a href="#"> Liste des contrats </a></li>
-        </ul>
-        </li>
 
-        <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-          <i class="flaticon-381-bookmark-1"></i>
-          <span class="nav-text"> Comptabilité </span>
-        </a>
-        <ul aria-expanded="false">
-          <li><a href="#"> Factures </a></li>
-          <li><a href="#"> Dépenses </a></li>
-        </ul>
-        </li>
+        @if(Auth::user()->permission("LISTE CONTRAT") || Auth::user()->permission("AJOUT CONTRAT"))
+          <li>
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-diploma"></i>
+              <span class="nav-text"> Contrat </span>
+            </a>
+            <ul aria-expanded="false">
+              @if(Auth::user()->permission("AJOUT CONTRAT"))
+                <li>
+                  <a href="{{route("contrat.add",['ajouter'])}}"> Créer un contrat </a>
+                </li>
+              @endif
+
+              @if(Auth::user()->permission("LISTE CONTRAT"))
+              <li>
+                <a href="{{route("contrat.index")}}"> Liste des contrats </a>
+              </li>
+              @endif
+            </ul>
+          </li>
+
+          <li>
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-bookmark-1"></i>
+              <span class="nav-text"> Comptabilité </span>
+            </a>
+            <ul aria-expanded="false">
+              <li><a href="#"> Factures </a></li>
+              <li><a href="#"> Dépenses </a></li>
+            </ul>
+          </li>
+        @endif
+
 
         @if(Auth::user()->permission("LISTE EMPLOYE") || Auth::user()->permission("AJOUT EMPLOYE"))
-          <li class="mb-4">
+          <li>
             <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
               <i class="flaticon-381-user-1"></i>
               <span class="nav-text"> Employes </span>
@@ -94,6 +109,29 @@
             </ul>
           </li>
         @endif
+
+        @if(Auth::user()->permission("LISTE EMPLOYE") || Auth::user()->permission("AJOUT EMPLOYE"))
+        <li class="mb-4">
+          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="flaticon-381-notepad-1"></i>
+            <span class="nav-text"> Envoyer SMS </span>
+          </a>
+
+          <ul aria-expanded="false">
+            @if(Auth::user()->permission("AJOUT EMPLOYE"))
+              <li>
+                <a href="#"> Clients </a>
+              </li> 
+            @endif
+
+            @if(Auth::user()->permission("LISTE EMPLOYE"))
+              <li>
+                <a href="#"> Employés </a>
+              </li>
+            @endif
+          </ul>
+        </li>
+      @endif
 
 
 
