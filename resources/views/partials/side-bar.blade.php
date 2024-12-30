@@ -10,8 +10,26 @@
             </a>
           <ul aria-expanded="false">
             <li><a href="{{route("dashboard")}}" > Général </a></li>
-            <li><a href="{{route("dashboard.yop")}}" > Yopougon </a></li>
-            <li><a href="#" > Cocody </a></li>
+            @if(Auth::user()->permission("STATISTIQUE YOPOUGON"))
+              <li>
+                <a href="{{route("dashboard.yop")}}" > Yopougon </a>
+              </li>
+            @endif
+
+            @if(Auth::user()->permission("STATISTIQUE COCODY"))
+            <li>
+              <a href="{{route("dashboard.cocody")}}" > Cocody </a>
+            </li>
+            @endif
+
+            @if(Auth::user()->permission("STATISTIQUE EMPLOYE"))
+            <li>
+              <a href="{{route("dashboard.employe")}}" > Mes Statistiques  </a>
+            </li>
+            @endif
+
+            
+
           </ul>
         </li>
 

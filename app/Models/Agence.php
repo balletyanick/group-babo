@@ -35,7 +35,7 @@ class Agence extends Model
 
     public function employes()
     {
-        return $this->hasMany(Employe::class);
+        return $this->hasMany(Employe::class, 'employe_id'); 
     }
 
     

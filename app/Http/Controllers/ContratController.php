@@ -214,7 +214,9 @@ class ContratController extends Controller
 
         $prix_produit = $amout_global * $quantite;  // montant total sans les frais de gestion
         $frais = $frais_gestion * $quantite;  // total des frais de gestion
-        $prix_produit_avec_frais = $prix_produit + $frais;  // montant total sans avec frais de gestion
+        
+        $prix_produit_avec_frais = $prix_produit;  // montant total sans avec frais de gestion
+        $prix_produit_sans_frais = $prix_produit - $frais;  // montant total sans avec frais de gestion
 
         $pay_mois = $pay_mensuel + $quantite;  // total paiement mensuel
         $pay_jour = $pay_day + $quantite;  // total paiement par jour
@@ -313,6 +315,10 @@ class ContratController extends Controller
         $templateProcessor->setValue('date_activite', Carbon::parse($date_activite)->format('d/m/Y'));
         $templateProcessor->setValue('date_day', Carbon::parse($date_day)->format('d/m/Y'));
         $templateProcessor->setValue('debut_activite', Carbon::parse($debut_activite)->format('d/m/Y'));
+
+        $templateProcessor->setValue('prix_produit_sans_frais_l', convertirNombreEnLettres($prix_produit_sans_frais));
+        $templateProcessor->setValue('prix_produit_sans_frais_c', formatNombreAvecPoints($prix_produit_sans_frais));
+        
 
         // Définir le nom du fichier et le chemin
         $fileName = 'C'.$contrat->customer->numero_cni.'_'.rand(1000,9999).'.docx';
