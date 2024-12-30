@@ -31,5 +31,10 @@ class Product extends Model
         return $this->hasMany(Contrat::class, 'contrat_id'); 
     }
 
+    public function factures()
+    {
+        return $this->hasMany(Facture::class, 'facture_id'); 
+    }
+
     
 }

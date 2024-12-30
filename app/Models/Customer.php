@@ -17,6 +17,21 @@ class Customer extends Model
         'updated_at',
     ];
 
+    public function scopeAccessibleBy($query, $user)
+    {
+        if ($user->permission('LISTE CLIENT')) {
+            return $query; // Tous les clients
+        } 
+
+        if ($user->permission('LISTE CLIENT PERSONNEL')) {
+            return $query->where('user_id', $user->id); // Clients créés par l'utilisateur
+        }
+
+        // Aucun client si pas de permission
+        return $query->whereRaw('0 = 1');
+    }
+
+
     protected static function boot()
     {
         parent::boot();
@@ -35,6 +50,13 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class, 'facture_id'); 
+    }
+
+
     
 }
  

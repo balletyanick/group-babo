@@ -13,10 +13,12 @@
     {
         public function index()
         {
-            Auth::user()->access("LISTE CLIENT");
-            $customers = Customer::paginate(100);
-            return view('customer.index',compact('customers'));
+            // Filtrer les clients selon les permissions de l'utilisateur
+            $customers = Customer::accessibleBy(Auth::user())->paginate(100);
+
+            return view('customer.index', compact('customers'));
         }
+
  
         public function add($id)
         {

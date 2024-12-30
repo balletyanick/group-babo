@@ -4,6 +4,7 @@
 
 @section('content')
 
+
     <div class="content-body">
         <div class="container-fluid">
             <div class="page-titles">
@@ -83,20 +84,23 @@
                                                 </td>
 
                                                 <td>
-                                                    @if(Auth::user()->permission('EDITION CONTRAT') || Auth::user()->permission('SUPPRESSION CONTRAT') || Auth::user()->permission('RESILIATION CONTRAT EMPLOYE'))
+                                                    @if(Auth::user()->permission('EDITION CONTRAT') || Auth::user()->permission('SUPPRESSION CONTRAT') || Auth::user()->permission('RESILIATION CONTRAT') || Auth::user()->permission('TELECHARGER CONTRAT') || Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))
                                                         <div class="d-flex">
-                                                            @if(Auth::user()->permission('EDITION CONTRAT'))
-                                                                <a href="#" data-bs-toggle="tooltip" 
-                                                                data-bs-placement="top"  title="Télécharger" class="btn btn-success shadow btn-xs sharp me-1 mr-2">
-                                                                    <i class="fa fa-download mt-1"></i>
-                                                                </a>
-                                                            @endif 
 
-                                                            @if(Auth::user()->permission('EDITION CONTRAT'))
-                                                                <a href="#" data-bs-toggle="tooltip" 
+                                                            @if(Auth::user()->permission('GENERATION CONTRAT'))
+                                                                <a href="{{route('contrat.generate_and_save',[$contrat->id])}}" data-bs-toggle="tooltip" 
                                                                 data-bs-placement="top"  title="Générer le contrat" class="btn btn-info shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-repeat"></i>
                                                                 </a>
+                                                            @endif 
+
+                                                            @if(Auth::user()->permission('TELECHARGER CONTRAT'))
+                                                                @if($contrat->chemin_file)
+                                                                    <a href="{{ route('contrat.download', ['id' => $contrat->id]) }}" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  title="Télécharger" class="btn btn-success shadow btn-xs sharp me-1 mr-2">
+                                                                        <i class="fa fa-download mt-1"></i>
+                                                                    </a>
+                                                                @endif
                                                             @endif 
 
                                                             @if(Auth::user()->permission('EDITION CONTRAT'))
@@ -113,19 +117,26 @@
                                                                 </a>
                                                             @endif
 
-                                                            @if(Auth::user()->permission('RESILIATION CONTRAT EMPLOYE') && ($contrat->status == 0) )
+                                                            @if(Auth::user()->permission('RESILIATION CONTRAT') && ($contrat->status == 0) )
                                                                 <a href="javascript:void(0);" title="Résilier" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  onclick="resilier('{{$contrat->id}}','{{route('contrat.resilier')}}')" id="icone-delete" class="btn btn-warning shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-times"></i>
                                                                 </a>
                                                             @endif
 
-                                                            @if(Auth::user()->permission('EDITION CONTRAT'))
-                                                                <a href="{{route('contrat.edit',[$contrat->id])}}" title="Envoyer un SMS" data-bs-toggle="tooltip" 
+                                                            @if(Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))
+                                                                <a href="{{route('sms.send',[$contrat->id])}}" title="Envoyer un SMS" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  class="btn btn-secondary shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-comment"></i>
                                                                 </a>
                                                             @endif 
+
+                                                            @if(Auth::user()->permission('GENERATION FACTURE'))
+                                                            <a href="{{route('contrat.generate_facture',[$contrat->id])}}" title="Générer facture" data-bs-toggle="tooltip" 
+                                                                data-bs-placement="top"  class="btn btn-secondary shadow btn-xs sharp me-1 mr-2">
+                                                                <i class="fa fa-file-text-o"></i>
+                                                            </a>
+                                                        @endif 
                                                         </div>
                                                     @endif
                                                 </td>

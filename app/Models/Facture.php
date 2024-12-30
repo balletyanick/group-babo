@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Contrat extends Model
+
+class Facture extends Model
 {
     use HasFactory;
     public $incrementing = false; 
@@ -16,20 +17,6 @@ class Contrat extends Model
         'created_at',
         'updated_at',
     ];
-
-    public function scopeAccessibleBy($query, $user)
-    {
-        if ($user->permission('LISTE CONTRAT')) {
-            return $query; // Tous les clients
-        } 
-
-        if ($user->permission('LISTE CONTRAT PERSONNELLE')) {
-            return $query->where('user_id', $user->id); // Clients créés par l'utilisateur
-        }
-
-        // Aucun client si pas de permission
-        return $query->whereRaw('0 = 1');
-    }
 
     protected static function boot()
     {
@@ -60,5 +47,8 @@ class Contrat extends Model
         return $this->belongsTo(Agence::class, 'agence_id');
     }
 
-}
- 
+    public function contrat()
+    {
+        return $this->belongsTo(Contrat::class, 'contrat_id');
+    }
+} 

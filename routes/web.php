@@ -13,7 +13,8 @@ use App\Http\Controllers\AgenceController;
 use App\Http\Controllers\AgenceUserController;
 use App\Http\Controllers\EmployesController;
 use App\Http\Controllers\ContratsEmployesController;
-
+use App\Http\Controllers\FactureController;
+use App\Http\Controllers\SmsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,9 @@ Route::middleware(['auth'])->group(function () {
     #dashboard
     Route::get('/', [DashboardController::class, 'index']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard_yop', [DashboardController::class, 'yop'])->name('dashboard.yop');
+    Route::get('/dashboard_cocody', [DashboardController::class, 'cocody'])->name('dashboard.cocody');
+
 
     
     #utilisateur
@@ -99,14 +103,29 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contrat/{id}', [ContratController::class, 'add'])->name('contrat.add');
     Route::post('/save-contrat', [ContratController::class, 'save'])->name('contrat.save');
     Route::get('/delete-contrat', [ContratController::class, 'delete'])->name('contrat.delete');
-
     Route::get('/edit-contrat/{id}', [ContratController::class, 'edit'])->name('contrat.edit');
     Route::post('/save-edit-contrat', [ContratController::class, 'save_edit'])->name('contrat.save_edit');
     Route::get('/resilier-contrat', [ContratController::class, 'resilier'])->name('contrat.resilier');
+    Route::get('/generate-save/{id}', [ContratController::class, 'generate_and_save'])->name('contrat.generate_and_save');
+    Route::get('/contrat/telecharger/{id}', [ContratController::class, 'downloadFile'])->name('contrat.download');
+    Route::get('/generate-facture/{id}', [ContratController::class, 'generate_facture'])->name('contrat.generate_facture');
+  
 
+    #facture
+    Route::get('/liste-facture', [FactureController::class, 'index'])->name('facture.index');
+    Route::get('/delete-facture', [FactureController::class, 'delete'])->name('facture.delete');
+    Route::get('/edit-facture/{id}', [FactureController::class, 'edit'])->name('facture.edit');
+    Route::post('/save-edit-facture', [FactureController::class, 'save_edit'])->name('facture.save_edit');
+    Route::get('/facture/telecharger/{id}', [FactureController::class, 'downloadFile'])->name('facture.download');
 
-    Route::get('/ajouter-montant/{id}', [ContratController::class, 'add_montant'])->name('contrat.add_montant');
-    Route::post('/save-ajouter-montant', [ContratController::class, 'save_add_montant'])->name('contrat.save_add_montant');
+    #sms
+    Route::get('/envoyer-sms-personnel/{id}', [SmsController::class, 'send'])->name('sms.send');
+    Route::post('/save-send', [SmsController::class, 'save_send'])->name('sms.save_send');
+    Route::get('/envoyer-sms-client', [SmsController::class, 'send_client'])->name('sms.client');
+    Route::post('/save-send-client', [SmsController::class, 'save_send_client'])->name('sms.save_send_client');
+
+    Route::get('/envoyer-sms-employe', [SmsController::class, 'send_employe'])->name('sms.employe');
+    Route::post('/save-send-employe', [SmsController::class, 'save_send_employe'])->name('sms.save_send_employe');
 
   
     #role

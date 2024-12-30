@@ -12,6 +12,7 @@ class Agence extends Model
     use HasFactory;
     public $incrementing = false; 
     protected $keyType = 'string';
+    
 
     protected $guarded = [
         'created_at',
@@ -41,5 +42,10 @@ class Agence extends Model
     public function contrats()
     {
         return $this->hasMany(Contrat::class, 'contrat_id'); 
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class, 'facture_id'); 
     }
 }
