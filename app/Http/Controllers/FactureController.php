@@ -28,8 +28,9 @@ class FactureController extends Controller
     public function delete(Request $request)
     { 
         Auth::user()->access('SUPPRESSION FACTURE');
-
         $facture = Facture::find($request->id);
+
+       
 
         if($facture->delete()){
             return response()->json(['message' => 'Information de la facture supprimé avec succès',"status"=>"success"]);

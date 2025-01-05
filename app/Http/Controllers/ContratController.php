@@ -113,8 +113,16 @@ class ContratController extends Controller
     public function delete(Request $request)
     { 
         Auth::user()->access('SUPPRESSION CONTRAT');
-
         $contrat = Contrat::find($request->id);
+
+        $hasFactures = Facture::where('contrat_id', $contrat->id)->exists();
+
+        if ($hasFactures) {
+            return response()->json([
+                'message' => 'Impossible de supprimer cet élément : il est lié à une ou plusieurs factures.',
+                'status' => 'error'
+            ]);
+        }
 
         if($contrat->delete()){
             return response()->json(['message' => 'Information du contrat supprimé avec succès',"status"=>"success"]);

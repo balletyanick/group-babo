@@ -13,7 +13,7 @@
 					</ol>
                 </div>
                 <!-- row -->
-                <div class="row">
+                <div class="row"> 
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
@@ -59,9 +59,9 @@
                                             <select class="default-select wide form-control" id="type" name="type">
                                                 <option value="Trycile"> Trycile </option>
                                                 <option value="Electrique"> Electrique </option>
-                                                <option value="Electrique"> Aloba </option>
-                                                <option value="Electrique"> KTM </option>
-                                                <option value="Electrique"> Pack Gold 2 Aloba + 1 Tricycle </option>
+                                                <option value="Aloba"> Aloba </option>
+                                                <option value="KTM"> KTM </option>
+                                                <option value="Pack Gold 2 Aloba + 1 Tricycle"> Pack Gold 2 Aloba + 1 Tricycle </option>
                                             </select>
                                         </div>
 

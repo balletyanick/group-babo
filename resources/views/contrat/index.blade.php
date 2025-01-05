@@ -59,7 +59,7 @@
                                                 <td>{{$contrat->quantite}}  {{$contrat->product->libelle}} - {{$contrat->product->duration_contrat}} Mois</td>
                                                 <td>{{$contrat->method_versement}} </td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_day))}}</td>
-                                                <td>{{$contrat->product->pay_mensuel}} FCFA </td>
+                                                <td>{{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA </td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_firt_payment))}}</td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_end_payment))}}</td>
                                                 <td>{{$contrat->agence->libelle}} </td>

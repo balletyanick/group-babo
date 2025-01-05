@@ -6,7 +6,7 @@
 <div class="content-body">
   <div class="container-fluid">
       <div class="row">
-        <div class="col-xl-3 col-xxl-6 col-sm-6">
+        <div class="col-xl-6 col-xxl-6 col-sm-6">
           <div class="card grd-card">
             <div class="card-body" id="box_yan">	
               <div class="media align-items-center">
@@ -31,9 +31,8 @@
             </div>
           </div>
         </div>
-        
 
-        <div class="col-xl-3 col-xxl-6 col-sm-6">
+        <div class="col-xl-6 col-xxl-6 col-sm-6">
             <div class="card grd-card">
               <div class="card-body" id="box_yan">	
                 <div class="media align-items-center">
@@ -55,7 +54,6 @@
             </div>
         </div>
        
-
         <div class="col-xl-6">
           <div class="card">
             <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
@@ -87,7 +85,7 @@
           </div>
         </div>
 
-        <div class="col-xl-6">
+        <!--div class="col-xl-6">
             <div class="card">
               <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
                 <div class="me-auto pe-3">
@@ -116,7 +114,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div-->
       </div>
   </div>
 </div>

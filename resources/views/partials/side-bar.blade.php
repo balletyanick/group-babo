@@ -263,7 +263,10 @@
 
       </ul>
       <div class="copyright">
-        <p><strong> Babo Corporate </strong> © <script>document.write(new Date().getFullYear())</script> Tous droits réservés </p>
+        <p>
+          <strong> Babo Corporate </strong>
+          Version  1.0.0 <br>
+        </p>
       </div>
     </div>
 </div>

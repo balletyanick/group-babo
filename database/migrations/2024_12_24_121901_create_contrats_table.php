@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('method_versement');
             $table->string('status');
             $table->integer('quantite');
+            $table->string('score_one')->nullable();
+            $table->string('score')->nullable();
             $table->string('note')->nullable();
             $table->timestamps();
         });

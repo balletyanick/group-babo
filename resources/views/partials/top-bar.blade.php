@@ -4,7 +4,7 @@
         <div class="collapse navbar-collapse justify-content-between">
           <div class="header-left">
             <div class="dashboard_bar">
-              Bienvenue <span> Espace d'administration !</span>
+              Babo Manager <span> Espace d'administration !</span>
             </div>
           </div>
           <ul class="navbar-nav header-right">

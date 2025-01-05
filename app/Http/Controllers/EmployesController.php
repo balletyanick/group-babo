@@ -8,8 +8,11 @@ namespace App\Http\Controllers;
     use App\Models\User;
     use App\Models\Employe;
     use App\Models\Agence;
+    use App\Models\ContratsEmployes;
+
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Storage; 
+    
 
 class EmployesController extends Controller
 {
@@ -116,6 +119,15 @@ class EmployesController extends Controller
             Auth::user()->access('SUPPRESSION EMPLOYE');
 
             $employe = Employe::find($request->id);
+            $hasContratsEmployes = ContratsEmployes::where('employe_id', $employe->id)->exists();
+
+            if ($hasContratsEmployes) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à un ou plusieurs contrats employés.',
+                    'status' => 'error'
+                ]);
+            }
+
 
             if($employe->delete()){
                 return response()->json(['message' => 'Client supprimé avec succès',"status"=>"success"]);

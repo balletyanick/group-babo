@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contrat;
 use App\Models\Product;
+use App\Models\Facture;
+use App\Models\Customer;
+use App\Models\Employe;
+use App\Models\AgenceUser;
+use App\Models\ContratsEmployes;
 use App\Models\Role;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -68,10 +74,26 @@ class ProductController extends Controller
 
     public function delete(Request $request)
         {
-
             Auth::user()->access('SUPPRESSION PRODUIT');
 
             $product = Product::find($request->id);
+            $hasContrats = Contrat::where('product_id', $product->id)->exists();
+            $hasFactures = Facture::where('product_id', $product->id)->exists();
+
+
+            if ($hasContrats) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à un ou plusieurs contrats.',
+                    'status' => 'error'
+                ]);
+            }
+
+            if ($hasFactures) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à une ou plusieurs factures.',
+                    'status' => 'error'
+                ]);
+            }
 
             if($product->delete()){
                 return response()->json(['message' => 'Produit supprimé avec succès',"status"=>"success"]);

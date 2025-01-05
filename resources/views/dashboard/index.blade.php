@@ -100,7 +100,7 @@
           </div>
         </div>
 
-        <div class="col-xl-6 col-xxl-12 col-sm-12">
+        <div class="col-xl-12 col-xxl-12 col-sm-12">
           <div class="card grd-card">
             <div class="card-body" id="box_yan">	
               <div class="media align-items-center">

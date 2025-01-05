@@ -7,6 +7,13 @@
     use App\Models\Business;
     use App\Models\Role;
     use App\Models\Region;
+    use App\Models\Customer;
+    use App\Models\Facture;
+    use App\Models\Contrat;
+    use App\Models\Employe;
+    use App\Models\Agence;
+    use App\Models\ContratsEmployes;
+    use App\Models\AgenceUser;
     use Illuminate\Support\Facades\Auth;
 
     class UserController extends Controller
@@ -111,8 +118,50 @@
         public function delete(Request $request){ 
 
             Auth::user()->access('SUPPRESSION UTILISATEUR');
-
             $user = User::find($request->id);
+            $hasCusromers = Customer::where('user_id', $user->id)->exists();
+            $hasContrats = Contrat::where('user_id', $user->id)->exists();
+            $hasFacture = Facture::where('user_id', $user->id)->exists();
+            $hasEmployes = Employe::where('user_id', $user->id)->exists();
+            $AgenceUsers = AgenceUser::where('user_id', $user->id)->exists();
+
+
+            if ($hasCusromers) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à un client.',
+                    'status' => 'error'
+                ]);
+            }
+
+            if ($hasContrats) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à une contrat.',
+                    'status' => 'error'
+                ]);
+            }
+
+            if ($hasFacture) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à une facture.',
+                    'status' => 'error'
+                ]);
+            }
+            
+            if ($hasEmployes) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à un employé.',
+                    'status' => 'error'
+                ]);
+            }
+
+            
+            if ($AgenceUsers) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à un agents.',
+                    'status' => 'error'
+                ]);
+            }
+
 
             if($user->delete()){
                 return response()->json(['message' => 'Utilisateur supprimé avec succès',"status"=>"success"]);
