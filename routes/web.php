@@ -15,6 +15,11 @@ use App\Http\Controllers\EmployesController;
 use App\Http\Controllers\ContratsEmployesController;
 use App\Http\Controllers\FactureController;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\CompteController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\Gesion_payController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +46,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard_cocody', [DashboardController::class, 'cocody'])->name('dashboard.cocody');
     Route::get('/dashboard_employe', [DashboardController::class, 'employe'])->name('dashboard.employe');
 
+
+    #compte
+    Route::get('/mon-compte', [CompteController::class, 'index'])->name('compte.index');
 
     
     #utilisateur
@@ -71,6 +79,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/delete-customer', [CustomerController::class, 'delete'])->name('customer.delete');
     Route::get('/edit-client/{id}', [CustomerController::class, 'edit'])->name('customer.edit');
     Route::post('/save-edit-client', [CustomerController::class, 'save_edit'])->name('customer.save_edit');
+
+    
+    #client-user
+    Route::get('/liste-client-affecter', [ClientController::class, 'index'])->name('client.index');
+    Route::get('/client-affecter/{id}', [ClientController::class, 'add'])->name('client.add');
+    Route::post('/save-client-affecter', [ClientController::class, 'save'])->name('client.save');
+    Route::get('/delete-client-affecter', [ClientController::class, 'delete'])->name('client.delete');
 
 
     #employe
@@ -118,6 +133,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/edit-facture/{id}', [FactureController::class, 'edit'])->name('facture.edit');
     Route::post('/save-edit-facture', [FactureController::class, 'save_edit'])->name('facture.save_edit');
     Route::get('/facture/telecharger/{id}', [FactureController::class, 'downloadFile'])->name('facture.download');
+
+
+    #paiement
+    Route::get('/liste-paiement-partenaire', [PaiementController::class, 'index'])->name('paiement.index');
+    Route::get('/demander-paiement/{id}', [PaiementController::class, 'add'])->name('paiement.add');
+    Route::post('/save-paiement', [PaiementController::class, 'save'])->name('paiement.save');
+    Route::get('/historique-paiement', [PaiementController::class, 'historique'])->name('paiement.historique');
+
+
+    #paiement
+    Route::get('/liste-paiement-en-cours', [Gesion_payController::class, 'en_cours'])->name('gestion_paiement.en_cours');
+    Route::get('/liste-paiements-traitées', [Gesion_payController::class, 'index'])->name('gestion_paiement.index');
+    Route::get('/paiement-refuser/{id}', [Gesion_payController::class, 'refuser_paiement'])->name('paiement.refuser');
+    Route::get('/paiement-valider/{id}', [Gesion_payController::class, 'valider_paiement'])->name('paiement.valider');
 
     #sms
     Route::get('/envoyer-sms-personnel/{id}', [SmsController::class, 'send'])->name('sms.send');

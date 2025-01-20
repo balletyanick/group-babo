@@ -40,9 +40,9 @@ class Contrat extends Model
         });
     }
 
-    public function customer()
+    public function client()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
     public function product()
@@ -63,6 +63,11 @@ class Contrat extends Model
     public function factures()
     {
         return $this->hasMany(Facture::class, 'facture_id'); 
+    }
+
+    public function paiements()
+    {
+        return $this->hasMany(Paiement::class, 'paiement_id'); 
     }
 
 }

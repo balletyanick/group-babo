@@ -42,6 +42,7 @@
                                             <th> Premier Paiement </th>
                                             <th> Dernier  Paiement </th>
                                             <th> Status </th>
+                                            <th> Actions </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -64,9 +65,27 @@
                                                         <span class="badge badge-warning"> En cours </span>
                                                         
                                                     @elseif ($paiement->status == 1)
-                                                        <span class="badge badge-success"> Validé </span>
+                                                        <span class="badge badge-danger"> Validé </span>
                                                     @else
-                                                        <span class="badge badge-danger"> Refusé </span>
+                                                        <span class="badge badge-success"> Refusé </span>
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    @if(Auth::user()->permission('REFUSER PAIEMENT') || Auth::user()->permission('VALIDER PAIEMENT'))
+                                                        <div class="d-flex">
+                                                            @if(Auth::user()->permission('REFUSER PAIEMENT'))
+                                                                <a href="{{route('paiement.refuser',[$paiement->id])}}" class="btn btn-success shadow btn-xs sharp me-1 mr-1">
+                                                                    <i class="fa fa-check"></i>
+                                                                </a>
+                                                            @endif 
+        
+                                                            @if(Auth::user()->permission('VALIDER PAIEMENT'))
+                                                                <a href="javascript:void(0);"  id="icone-delete" class="btn btn-danger shadow btn-xs sharp">
+                                                                    <i class="fa fa-times"></i>   
+                                                                </a>
+                                                            @endif 
+                                                        </div>
                                                     @endif
                                                 </td>
                                             </tr>

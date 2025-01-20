@@ -20,59 +20,39 @@
                             <h4 class="card-title"> {{$title}} </h4> 
                         </div>
                         <div class="card-body">
-                            <form action="{{route('contrat.save')}}" class="add_contrat">
+                            <form action="{{route('paiement.save')}}" class="add_paiement">
                                 @csrf
+                                <input type="hidden" name="date_demande" value="<?php echo date('Y-m-d H:i'); ?>"/>
+                                <input name="client_id" type="hidden" value="{{ $contrat->first()->client_id ?? ''}}">
                                 <div class="row form-material">
-                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
-                                        <label class="form-label"> Partenaire <span class="text-danger">*</span> </label>
-                                        <select id="mySelect" name="client_id" class="form-control">
-                                            @foreach($client as $clients)
-                                                <option value="{{$clients->id}}" {{$clients->id==$contrat->client_id ? 'selected' : ''}}>{{$clients->customer->first_name}} {{$clients->customer->last_name}}</option>
+
+                                    <div class="col-xl-12 col-xxl-12 col-md-12">
+                                        <label class="form-label"> Contrat <span class="text-danger">*</span> </label>
+                                        <select id="mySelect" name="contrat_id" class="form-control">
+                                            @foreach($contrat as $contrats)
+                                                <option value="{{$contrats->id}}" {{$contrats->id==$contrats->client->user_id ? 'selected' : ''}}>  {{$contrats->numero_contrat}}  </option>
                                             @endforeach
                                         </select>
                                     </div>
 
-                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3"> 
-                                        <label name="localisation"  class="form-label"> Produit <span class="text-danger">*</span> </label>
-                                        <select id="mySelect2" name="product_id" class="form-control">
-                                            @foreach($product as $products)
-                                                <option value="{{$products->id}}" {{$products->id==$contrat->product_id ? 'selected' : ''}}>{{$products->libelle}} - {{$products->duration_contrat}} Mois </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Quantité <span class="text-danger">*</span>  </label>
-                                        <input type="number" name="quantite"  class="form-control" required>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Methode de versement du client <span class="text-danger">*</span> </label>
+                                    <div class="col-xl-12 col-xxl-12 col-md-12 mt-3">
+                                        <label class="form-label"> Mode de paiement <span class="text-danger">*</span> </label>
                                         
-                                        <select name="method_versement" class="form-control default-select form-control-sm">
-                                            <option value="Espèce"> Espèce </option>
-                                            <option value="Mobile Money"> Mobile Money </option>
+                                        <select name="mode_paiement" class="form-control default-select form-control-sm">
+                                            <option value="Wave"> Wave </option>
+                                            <option value="Orange Money"> Orange Money </option>
                                             <option value="Virement bancaire"> Virement bancaire  </option>
-                                            <option value="Autre"> Autre </option>
                                         </select>
                                     </div>
 
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label name="localisation"  class="form-label"> Agence <span class="text-danger">*</span> </label>
-                                        <select id="mySelect3" name="agence_id" class="form-control">
-                                            @foreach($agence as $agences)
-                                                <option value="{{$agences->id}}" {{$agences->id==$contrat->agence_id ? 'selected' : ''}}>{{$agences->libelle}} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Note </label>
-                                        <input type="text" class="form-control" name="note">
-                                    </div>
                                     
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mt-3">
-                                        <button id="add_contrat" class="btn btn-primary"> Enregistrer </button>
+                                        <label class="form-label"> Montant <span class="text-danger">*</span>  </label>
+                                        <input type="number" name="amount"  class="form-control" required>
+                                    </div>
+
+                                    <div class="col-xl-12 col-xxl-12 col-md-12 mt-3">
+                                        <button id="add_paiement" class="btn btn-primary"> Enregistrer </button>
                                     </div>
                                 </div>
                             </form>
@@ -141,14 +121,14 @@
             $('.summernote').summernote({height: 600});
         });
 
-        $('.add_contrat').submit(function(e){
+        $('.add_paiement').submit(function(e){
 
             e.preventDefault();
 
             var form = new FormData($(this)[0]);
 
-            var buttonDefault = $('#add_contrat').text();
-            var button = $('#add_contrat');
+            var buttonDefault = $('#add_paiement').text();
+            var button = $('#add_paiement');
 
             button.attr('disabled',true);
             button.text('Veuillez patienter ...');

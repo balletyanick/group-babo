@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="page-titles">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Contrat</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Agence</a></li>
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">{{$title}}</a></li>
                 </ol>
             </div>
@@ -20,59 +20,29 @@
                             <h4 class="card-title"> {{$title}} </h4> 
                         </div>
                         <div class="card-body">
-                            <form action="{{route('contrat.save')}}" class="add_contrat">
+                            <form action="{{route('client.save')}}" class="add_client">
                                 @csrf
                                 <div class="row form-material">
-                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
-                                        <label class="form-label"> Partenaire <span class="text-danger">*</span> </label>
-                                        <select id="mySelect" name="client_id" class="form-control">
-                                            @foreach($client as $clients)
-                                                <option value="{{$clients->id}}" {{$clients->id==$contrat->client_id ? 'selected' : ''}}>{{$clients->customer->first_name}} {{$clients->customer->last_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3"> 
-                                        <label name="localisation"  class="form-label"> Produit <span class="text-danger">*</span> </label>
-                                        <select id="mySelect2" name="product_id" class="form-control">
-                                            @foreach($product as $products)
-                                                <option value="{{$products->id}}" {{$products->id==$contrat->product_id ? 'selected' : ''}}>{{$products->libelle}} - {{$products->duration_contrat}} Mois </option>
+                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                        <label class="form-label"> Utilisateur </label>
+                                        <select id="mySelect" name="user_id" class="form-control">
+                                            @foreach($user as $users)
+                                                <option value="{{$users->id}}" {{$users->id==$client->user_id ? 'selected' : ''}}>{{$users->first_name}} {{$users->last_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Quantité <span class="text-danger">*</span>  </label>
-                                        <input type="number" name="quantite"  class="form-control" required>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Methode de versement du client <span class="text-danger">*</span> </label>
-                                        
-                                        <select name="method_versement" class="form-control default-select form-control-sm">
-                                            <option value="Espèce"> Espèce </option>
-                                            <option value="Mobile Money"> Mobile Money </option>
-                                            <option value="Virement bancaire"> Virement bancaire  </option>
-                                            <option value="Autre"> Autre </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label name="localisation"  class="form-label"> Agence <span class="text-danger">*</span> </label>
-                                        <select id="mySelect3" name="agence_id" class="form-control">
-                                            @foreach($agence as $agences)
-                                                <option value="{{$agences->id}}" {{$agences->id==$contrat->agence_id ? 'selected' : ''}}>{{$agences->libelle}} </option>
+                                        <label name="localisation"  class="form-label"> Client </label>
+                                        <select id="mySelect2" name="customer_id" class="form-control">
+                                            @foreach($customer as $customers)
+                                                <option value="{{$customers->id}}" {{$customers->id==$client->user_id ? 'selected' : ''}}>{{$customers->first_name}} {{$customers->last_name}}</option>
                                             @endforeach
                                         </select>
-                                    </div>
-
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Note </label>
-                                        <input type="text" class="form-control" name="note">
                                     </div>
                                     
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mt-3">
-                                        <button id="add_contrat" class="btn btn-primary"> Enregistrer </button>
+                                        <button id="add_client" class="btn btn-primary"> Enregistrer </button>
                                     </div>
                                 </div>
                             </form>
@@ -105,17 +75,11 @@
         });
     </script>
 
-    <script>
-        $(document).ready(function() {
-            $('#mySelect2').select2(); // Remplacez #mySelect par l'ID ou la classe de votre champ
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $('#mySelect3').select2(); // Remplacez #mySelect par l'ID ou la classe de votre champ
-        });
-    </script>
+<script>
+    $(document).ready(function() {
+        $('#mySelect2').select2(); // Remplacez #mySelect par l'ID ou la classe de votre champ
+    });
+</script>
 
 
 
@@ -141,14 +105,14 @@
             $('.summernote').summernote({height: 600});
         });
 
-        $('.add_contrat').submit(function(e){
+        $('.add_client').submit(function(e){
 
             e.preventDefault();
 
             var form = new FormData($(this)[0]);
 
-            var buttonDefault = $('#add_contrat').text();
-            var button = $('#add_contrat');
+            var buttonDefault = $('#add_client').text();
+            var button = $('#add_client');
 
             button.attr('disabled',true);
             button.text('Veuillez patienter ...');
@@ -175,7 +139,7 @@
                             backgroundColor: "#4CAF50", // green
                         }).showToast();
 
-                        window.location='{{route("contrat.index")}}'
+                        window.location='{{route("client.index")}}'
                     }else{
                         Toastify({
                             text: result.message,

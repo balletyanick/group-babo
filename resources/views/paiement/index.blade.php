@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "Liste des paiements")
+@section('title', "Liste des contrats")
 
 @section('content')
 
@@ -9,8 +9,8 @@
         <div class="container-fluid">
             <div class="page-titles">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Paiement</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)"> Historique </a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Contrat</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Liste des contrats  </a></li>
                 </ol>
             </div>
             <!-- row -->
@@ -33,40 +33,48 @@
                                 <table id="produit" class="table table-bordered table-responsive-sm">
                                     <thead>
                                         <tr>
-                                            <th> N Contrat  </th>
+                                            <th> N Contrat</th>
                                             <th> Client  </th>
-                                            <th> Téléphone  </th>
-                                            <th> Date de la demande</th>
-                                            <th> Montant </th>
-                                            <th> Mode de paiement  </th>
+                                            <th> Produit & Durée</th>
+                                            <th> Début du contrat </th>
+                                            <th> Paiement mensuelle </th>
                                             <th> Premier Paiement </th>
                                             <th> Dernier  Paiement </th>
-                                            <th> Status </th>
+                                            <th> Note  </th>
+                                            <th>Status </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($paiements as $paiement)
+                                        @foreach ($contrats as $contrat)
                                             <tr>
-                                                <td> {{$paiement->contrat->numero_contrat}}</td>
-                                                <td> {{$paiement->client->customer->first_name}} {{$paiement->client->customer->last_name}}</td>
-                                                <td> {{$paiement->client->customer->phone}}</td>
-                                                <td>{{date('d/m/Y',strtotime($paiement->date_demande))}}</td>
                                                 <td> 
                                                     <span class="badge light badge-success">
-                                                        {{$paiement->amount}} FCFA
+                                                        {{$contrat->numero_contrat}}
                                                     </span>
                                                 </td>
-                                                <td> {{$paiement->mode_paiement}}</td>
-                                                <td> {{$paiement->contrat->date_firt_payment}}</td>
-                                                <td> {{$paiement->contrat->date_end_payment}}</td>
+
+                                                <td> {{$contrat->client->customer->first_name}} {{$contrat->client->customer->last_name}}</td>
+                                                <td>{{$contrat->quantite}}  {{$contrat->product->libelle}} - {{$contrat->product->duration_contrat}} Mois</td>
+                                                <td>{{date('d/m/Y',strtotime($contrat->date_day))}}</td>
+                                                <td>{{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA </td>
+                                                <td>{{date('d/m/Y',strtotime($contrat->date_firt_payment))}}</td>
+                                                <td>{{date('d/m/Y',strtotime($contrat->date_end_payment))}}</td>
+                                                <td>{{$contrat->note}} </td>
+                                                
                                                 <td>
-                                                    @if ($paiement->status == 0)
-                                                        <span class="badge badge-warning"> En cours </span>
+                                                    @php
+                                                        $dure_contrat = $contrat->product->duration_contrat;
+                                                        $dateFinTimestamp = strtotime("+$dure_contrat months", strtotime($contrat->date_day));
+                                                        $todayTimestamp = strtotime(date('Y-m-d'));
+                                                    @endphp
+
+                                                    @if ($dateFinTimestamp < $todayTimestamp && $contrat->status == 0)
+                                                        <span class="badge badge-success"> Terminé </span>
                                                         
-                                                    @elseif ($paiement->status == 1)
-                                                        <span class="badge badge-success"> Validé </span>
+                                                    @elseif ($contrat->status == 1)
+                                                        <span class="badge badge-danger"> Résilié </span>
                                                     @else
-                                                        <span class="badge badge-danger"> Refusé </span>
+                                                        <span class="badge badge-warning"> En cours </span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -76,21 +84,21 @@
                             </div>
                             <div>
                                 <ul class="pagination pagination-gutter justify-content-center mb-0">
-                                    @if ($paiements->onFirstPage())
+                                    @if ($contrats->onFirstPage())
                                         <li class="page-item page-indicator">
                                             <a class="page-link">
                                             <i class="la la-angle-left"></i></a>
                                         </li>
                                     @else
                                         <li class="page-item">
-                                            <a class="page-link" href="{{ $paiements->previousPageUrl() }}" rel="prev">
+                                            <a class="page-link" href="{{ $contrats->previousPageUrl() }}" rel="prev">
                                                 <i class="mdi mdi-chevron-left"></i>
                                             </a>
                                         </li>
                                     @endif
 
-                                    @foreach ($paiements->getUrlRange(1, $paiements->lastPage()) as $page => $url)
-                                            @if ($page == $paiements->currentPage())
+                                    @foreach ($contrats->getUrlRange(1, $contrats->lastPage()) as $page => $url)
+                                            @if ($page == $contrats->currentPage())
                                                 <li class="page-item active">
                                                     <span class="page-link">{{ $page }}</span>
                                                 </li>
@@ -101,9 +109,9 @@
                                             @endif
                                     @endforeach
 
-                                    @if ($paiements->hasMorePages())
+                                    @if ($contrats->hasMorePages())
                                             <li class="page-item">
-                                                <a href="{{ $paiements->nextPageUrl() }}" class="page-link" rel="next"><i class="mdi mdi-chevron-right"></i></a>
+                                                <a href="{{ $contrats->nextPageUrl() }}" class="page-link" rel="next"><i class="mdi mdi-chevron-right"></i></a>
                                             </li>
                                     @else
                                             <li class="page-item disabled">

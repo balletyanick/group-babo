@@ -41,19 +41,14 @@ class Customer extends Model
         });
     }
 
-    public function contrats()
-    {
-        return $this->hasMany(Contrat::class, 'contrat_id'); 
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function factures()
+    public function clients()
     {
-        return $this->hasMany(Facture::class, 'facture_id'); 
+        return $this->hasMany(Client::class, 'client_id'); 
     }
 
 

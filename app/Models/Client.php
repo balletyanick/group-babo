@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-
-class Facture extends Model
+class Client extends Model
 {
-    use HasFactory;
+    use HasFactory; 
     public $incrementing = false; 
     protected $keyType = 'string';
 
@@ -27,28 +26,18 @@ class Facture extends Model
         });
     }
 
-    public function client()
+    public function customer()
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'product_id');
-    } 
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function agence()
+    public function paiements()
     {
-        return $this->belongsTo(Agence::class, 'agence_id');
+        return $this->hasMany(Paiement::class, 'paiement_id'); 
     }
-
-    public function contrat()
-    {
-        return $this->belongsTo(Contrat::class, 'contrat_id');
-    }
-} 
+}

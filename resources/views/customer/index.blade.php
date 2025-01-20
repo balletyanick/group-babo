@@ -101,7 +101,7 @@
                                                     @endif
                                                 </div>
                                             @endif
-                                        </td>
+                                          </td>
                                       </tr>
                                   @endforeach
                               </tbody>

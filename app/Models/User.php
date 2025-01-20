@@ -107,4 +107,9 @@ class User extends Authenticatable
         return $this->hasMany(Facture::class, 'facture_id'); 
     }
 
+    public function clients()
+    {
+        return $this->hasMany(Contrat::class, 'client_id'); 
+    }
+
 }

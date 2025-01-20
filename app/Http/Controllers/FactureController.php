@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\Agence;
 use App\Models\Facture;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -19,7 +20,7 @@ class FactureController extends Controller
     public function index()
     {
         Auth::user()->access("LISTE FACTURE");
-        $factures = Facture::with('customer','product','user','agence','contrat')
+        $factures = Facture::with('client','product','user','agence','contrat')
         ->paginate(100);
 
         return view('facture.index',compact('factures'));
@@ -29,9 +30,6 @@ class FactureController extends Controller
     { 
         Auth::user()->access('SUPPRESSION FACTURE');
         $facture = Facture::find($request->id);
-
-       
-
         if($facture->delete()){
             return response()->json(['message' => 'Information de la facture supprimé avec succès',"status"=>"success"]);
         }else{

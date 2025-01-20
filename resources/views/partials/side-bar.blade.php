@@ -18,7 +18,7 @@
 
             @if(Auth::user()->permission("STATISTIQUE COCODY"))
             <li>
-              <a href="{{route("dashboard.cocody")}}" > Cocody </a>
+              <a href="{{route("dashboard.cocody")}}"> Cocody </a>
             </li>
             @endif
 
@@ -28,13 +28,49 @@
             </li>
             @endif
 
-            
+            @if(Auth::user()->permission("MON COMPTE"))
+            <li>
+              <a href="{{route("compte.index")}}" > Mon compte  </a>
+            </li>
+            @endif
 
           </ul>
         </li>
 
     
 
+
+        @if(Auth::user()->permission("LISTE PAIEMENT PARTENAIRE") || Auth::user()->permission("DEMANDER PAIEMENT")  || Auth::user()->permission("LISTE CONTRAT PARTENAIRE"))
+          <li>
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-networking"></i>
+              <span class="nav-text"> Paiement </span> 
+            </a>
+
+            <ul aria-expanded="false">
+
+              @if(Auth::user()->permission("LISTE CONTRAT PARTENAIRE")) 
+                <li>
+                  <a href="{{route("paiement.index")}}"> Mes Contrats  </a>
+                </li>
+              @endif
+
+              @if(Auth::user()->permission("DEMANDER PAIEMENT")) 
+                <li>
+                  <a href="{{route("paiement.add",['ajouter'])}}"> Demander un paiement   </a>
+                </li>
+             @endif
+
+              @if(Auth::user()->permission("LISTE PAIEMENT PARTENAIRE"))
+                <li>
+                  <a href="{{route("paiement.historique")}}"> Historique </a>
+                </li>
+              @endif
+
+             
+            </ul>
+          </li>
+        @endif
 
         @if(Auth::user()->permission("LISTE CLIENT") || Auth::user()->permission("AJOUT CLIENT")  || Auth::user()->permission("LISTE CLIENT PERSONNEL"))
           <li>
@@ -58,6 +94,29 @@
             </ul>
           </li>
         @endif
+
+        @if(Auth::user()->permission("LISTE PARTENAIRE") || Auth::user()->permission("AJOUT PARTENAIRE"))
+        <li>
+          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="flaticon-381-user"></i>
+            <span class="nav-text"> Partenaire </span> 
+          </a>
+
+          <ul aria-expanded="false">
+            @if(Auth::user()->permission("AJOUT PARTENAIRE"))
+              <li>
+                <a href="{{route("client.add",['ajouter'])}}"> Ajouter un partenaire </a>
+              </li>
+            @endif
+
+            @if(Auth::user()->permission("LISTE PARTENAIRE")) 
+              <li>
+                <a href="{{route("client.index")}}"> Liste des partenaires </a>
+              </li>
+            @endif
+          </ul>
+        </li>
+      @endif
 
 
         @if(Auth::user()->permission("LISTE CONTRAT") || Auth::user()->permission("AJOUT CONTRAT") || Auth::user()->permission("LISTE CONTRAT PERSONNELLE"))
@@ -95,6 +154,38 @@
             </ul>
           </li>
         @endif
+
+        @if(Auth::user()->permission("LISTE PAIEMENT EN COURS") || Auth::user()->permission("LISTE PAIEMENT TRAITEE"))
+        <li>
+          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="flaticon-381-networking"></i>
+            <span class="nav-text"> Paiement </span> 
+          </a>
+
+          <ul aria-expanded="false">
+
+            @if(Auth::user()->permission("LISTE PAIEMENT EN COURS")) 
+              <li>
+                <a href="{{route("gestion_paiement.en_cours")}}"> Paiement en cours  </a>
+              </li>
+            @endif
+
+            @if(Auth::user()->permission("LISTE PAIEMENT TRAITEE")) 
+              <li>
+                <a href="{{route("gestion_paiement.index")}}"> Paiement Traité   </a>
+              </li>
+           @endif
+
+            @if(Auth::user()->permission("LISTE PAIEMENT PARTENAIRE"))
+              <li>
+                <a href="{{route("paiement.historique")}}"> Historique </a>
+              </li>
+            @endif
+
+           
+          </ul>
+        </li>
+      @endif
 
 
         @if(Auth::user()->permission("LISTE EMPLOYE") || Auth::user()->permission("AJOUT EMPLOYE"))

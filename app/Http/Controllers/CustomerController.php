@@ -102,23 +102,6 @@
             Auth::user()->access('SUPPRESSION CLIENT');
 
             $customer = Customer::find($request->id);
-            $hasContrats = Contrat::where('customer_id', $customer->id)->exists();
-            $hasFactures = Facture::where('customer_id', $customer->id)->exists();
-
-
-            if ($hasContrats) {
-                return response()->json([
-                    'message' => 'Impossible de supprimer cet élément : il est lié à un ou plusieurs contrats.',
-                    'status' => 'error'
-                ]);
-            }
-
-            if ($hasFactures) {
-                return response()->json([
-                    'message' => 'Impossible de supprimer cet élément : il est lié à une ou plusieurs factures.',
-                    'status' => 'error'
-                ]);
-            }
 
             if($customer->delete()){
                 return response()->json(['message' => 'Client supprimé avec succès',"status"=>"success"]);
