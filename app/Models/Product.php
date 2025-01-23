@@ -36,5 +36,10 @@ class Product extends Model
         return $this->hasMany(Facture::class, 'facture_id'); 
     }
 
+    public function disponibilites()
+    {
+        return $this->hasMany(Disponibilite::class, 'disponibilite_id'); 
+    }
+
     
 }

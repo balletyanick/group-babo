@@ -19,6 +19,7 @@ use App\Http\Controllers\CompteController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\Gesion_payController;
+use App\Http\Controllers\DisponibiliteController;
 
 
 /*
@@ -123,9 +124,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-edit-contrat', [ContratController::class, 'save_edit'])->name('contrat.save_edit');
     Route::get('/resilier-contrat', [ContratController::class, 'resilier'])->name('contrat.resilier');
     Route::get('/generate-save/{id}', [ContratController::class, 'generate_and_save'])->name('contrat.generate_and_save');
+    Route::get('/generate-save-promo/{id}', [ContratController::class, 'generate_promo_save'])->name('contrat.generate_promo_save');
     Route::get('/contrat/telecharger/{id}', [ContratController::class, 'downloadFile'])->name('contrat.download');
     Route::get('/generate-facture/{id}', [ContratController::class, 'generate_facture'])->name('contrat.generate_facture');
+    Route::get('/contrat/telecharger-promo/{id}', [ContratController::class, 'downloadFilePromo'])->name('contrat.download_promo');
   
+    Route::get('/ajouter-disponibilité/{id}', [ContratController::class, 'add_disponibilite'])->name('contrat.add_disponibilite');
+
 
     #facture
     Route::get('/liste-facture', [FactureController::class, 'index'])->name('facture.index');
@@ -135,14 +140,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/facture/telecharger/{id}', [FactureController::class, 'downloadFile'])->name('facture.download');
 
 
-    #paiement
+    #Disponibilite
+    Route::get('/disponibilite/{id}', [DisponibiliteController::class, 'index'])->name('dispo.index');
+
+
+    #paiement client
     Route::get('/liste-paiement-partenaire', [PaiementController::class, 'index'])->name('paiement.index');
     Route::get('/demander-paiement/{id}', [PaiementController::class, 'add'])->name('paiement.add');
     Route::post('/save-paiement', [PaiementController::class, 'save'])->name('paiement.save');
     Route::get('/historique-paiement', [PaiementController::class, 'historique'])->name('paiement.historique');
 
 
-    #paiement
+    #paiement gestion
     Route::get('/liste-paiement-en-cours', [Gesion_payController::class, 'en_cours'])->name('gestion_paiement.en_cours');
     Route::get('/liste-paiements-traitées', [Gesion_payController::class, 'index'])->name('gestion_paiement.index');
     Route::get('/paiement-refuser/{id}', [Gesion_payController::class, 'refuser_paiement'])->name('paiement.refuser');
@@ -153,7 +162,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-send', [SmsController::class, 'save_send'])->name('sms.save_send');
     Route::get('/envoyer-sms-client', [SmsController::class, 'send_client'])->name('sms.client');
     Route::post('/save-send-client', [SmsController::class, 'save_send_client'])->name('sms.save_send_client');
-
     Route::get('/envoyer-sms-employe', [SmsController::class, 'send_employe'])->name('sms.employe');
     Route::post('/save-send-employe', [SmsController::class, 'save_send_employe'])->name('sms.save_send_employe');
 

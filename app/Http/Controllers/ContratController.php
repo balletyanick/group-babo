@@ -11,10 +11,11 @@ use App\Models\Customer;
 use App\Models\Agence;
 use App\Models\Facture;
 use App\Models\Client;
+use App\Models\Disponibilite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
-
+use Illuminate\Support\Str;
 
 class ContratController extends Controller
 {
@@ -63,6 +64,7 @@ class ContratController extends Controller
             'quantite' => 'required|integer',
             'note' => 'nullable|string',
             'method_versement' => 'required|string',
+            'type_contrat' => 'required|string',
         ]);
 
         $data = $request->all();
@@ -71,6 +73,22 @@ class ContratController extends Controller
         $data['date_day'] = date('Y-m-d'); // date d'aujourd'hui (date de début)
         $data['numero_contrat'] = 'BC-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
         $data['status'] = 0;
+
+        // Vérifie si le type de contrat est "normal"
+        if ($data['type_contrat'] === 'Normal') {
+
+            $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
+            $data['date_day'] = date('Y-m-d'); // Date d'aujourd'hui
+            $data['numero_contrat'] = 'BC-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $data['status'] = 0; 
+
+        } else {
+            $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
+            $data['date_day'] = date('Y-m-d'); // Date d'aujourd'hui
+            $data['numero_contrat'] = 'BCP-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $data['status'] = 0;
+            $data['premier_pay'] = 200000;
+        }
 
 
         // Logique pour date_firt_payment
@@ -227,8 +245,8 @@ class ContratController extends Controller
         $prix_produit_avec_frais = $prix_produit;  // montant total sans avec frais de gestion
         $prix_produit_sans_frais = $prix_produit - $frais;  // montant total sans avec frais de gestion
 
-        $pay_mois = $pay_mensuel + $quantite;  // total paiement mensuel
-        $pay_jour = $pay_day + $quantite;  // total paiement par jour
+        $pay_mois = $pay_mensuel * $quantite;  // total paiement mensuel
+        $pay_jour = $pay_day * $quantite;  // total paiement par jour
 
         $montant = $pay_mois * $dure_contrat;  // tMontant total recu par le 
         $date_aujourdhui = Carbon::now()->toDateString(); 
@@ -473,5 +491,247 @@ class ContratController extends Controller
     }
 
 
+    public function generate_promo_save($id) 
+    {
 
+        Auth::user()->access('GENERATION CONTRAT');
+            
+        $contrat = Contrat::find($id);
+        $product = Product::all();
+        $client = Client::all();
+        $agence = Agence::all();
+        $customer = Customer::all();
+
+    
+        if (!$contrat) {
+            return response()->json(['message' => 'Contrat non trouvé.'], 404);
+        }
+    
+        // Charger le modèle Word
+        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('app/public/Templates/Promo/Promotion.docx'));
+    
+        // Fonction pour convertir les nombres en lettres
+        function convertirNombreEnLettres($nombre) {
+            $f = new \NumberFormatter("fr", \NumberFormatter::SPELLOUT);
+            return mb_strtoupper($f->format($nombre)); // En majuscules
+        }
+    
+        // Fonction pour ajouter des points au format français
+        function formatNombreAvecPoints($nombre) {
+            return number_format($nombre, 0, ',', '.');
+        }
+    
+        // les Variables sans calcule
+        $amout_global = $contrat->product->amout_global;
+        $frais_gestion = $contrat->product->frais_gestion;
+        $pay_mensuel = $contrat->product->pay_mensuel;
+        $pay_day = $contrat->product->pay_day;
+        $dure_contrat = $contrat->product->duration_contrat;
+        $quantite = $contrat->quantite; 
+        $date_day = $contrat->date_day;
+
+
+        $prix_produit = $amout_global * $quantite;  // montant total sans les frais de gestion
+        $frais = $frais_gestion * $quantite;  // total des frais de gestion
+        
+        $prix_produit_avec_frais = $prix_produit;  // montant total sans avec frais de gestion
+        $prix_produit_sans_frais = $prix_produit - $frais;  // montant total sans avec frais de gestion
+
+        $pay_mois = $pay_mensuel * $quantite;  // total paiement mensuel
+        $pay_jour = $pay_day * $quantite;  // total paiement par jour
+
+        $montant = ($pay_mois * 12) + 200000;  // tMontant total recu par le 
+        $date_aujourdhui = Carbon::now()->toDateString(); 
+
+        $premier = $quantite * 200000;  // 
+
+
+        // Date de carrence
+        $date = new \DateTime($date_day);
+        $date->modify('+1 month');
+        $date_carrence = $date->format('Y-m-d');
+
+        // Debut periode activite
+        $periode_date = new \DateTime($date_carrence);
+        $periode_date->modify('+1 day');
+        $debut_activite = $periode_date->format('Y-m-d');
+
+
+        // periode d'activité
+        $dates = new \DateTime($date_carrence);
+        $dates->modify('+1 month');
+        $date_activite = $dates->format('Y-m-d');
+
+        
+    
+        //client
+        $templateProcessor->setValue('first_name', $contrat->client->customer->first_name);
+        $templateProcessor->setValue('last_name', $contrat->client->customer->last_name);
+        $templateProcessor->setValue('genre', $contrat->client->customer->genre);
+        $templateProcessor->setValue('date_of_birth', Carbon::parse($contrat->client->customer->date_of_birth)->format('d/m/Y'));
+        $templateProcessor->setValue('place_of_birth', $contrat->client->customer->place_of_birth);
+        $templateProcessor->setValue('neighborhood', $contrat->client->customer->neighborhood);
+        $templateProcessor->setValue('common', $contrat->client->customer->common);
+        $templateProcessor->setValue('numero_cni', $contrat->client->customer->numero_cni);
+        $templateProcessor->setValue('date_start_cni', Carbon::parse($contrat->client->customer->date_start_cni)->format('d/m/Y'));
+        $templateProcessor->setValue('date_end_cni', Carbon::parse($contrat->client->customer->date_end_cni)->format('d/m/Y'));
+        $templateProcessor->setValue('etat_matrimonial', $contrat->client->customer->etat_matrimonial);
+        $templateProcessor->setValue('work', $contrat->client->customer->work);
+        $templateProcessor->setValue('email', $contrat->client->customer->email);
+        $templateProcessor->setValue('phone', $contrat->client->customer->phone);
+        $templateProcessor->setValue('name_doc_client', $contrat->client->customer->name_doc_client);
+        
+    
+        //ayant droit
+        $templateProcessor->setValue('first_name_death', $contrat->client->customer->first_name_death);
+        $templateProcessor->setValue('last_name_death', $contrat->client->customer->last_name_death);
+        $templateProcessor->setValue('numero_piece_death', $contrat->client->customer->numero_piece_death);
+        $templateProcessor->setValue('name_doc', $contrat->client->customer->name_doc);
+        $templateProcessor->setValue('date_start_doc_death', Carbon::parse($contrat->client->customer->date_start_doc_death)->format('d/m/Y'));
+        $templateProcessor->setValue('date_end_doc_death', Carbon::parse($contrat->client->customer->date_end_doc_death)->format('d/m/Y'));
+        $templateProcessor->setValue('date_of_birth_death', Carbon::parse($contrat->client->customer->date_of_birth_death)->format('d/m/Y'));
+        $templateProcessor->setValue('place_of_birth_death', $contrat->client->customer->place_of_birth_death);
+        $templateProcessor->setValue('place_death', $contrat->client->customer->place_death);
+        $templateProcessor->setValue('phone_number_death', $contrat->client->customer->phone_number_death);
+        $templateProcessor->setValue('genre_death', $contrat->client->customer->genre_death);
+
+
+    
+        // placeholder produit
+        $templateProcessor->setValue('libelle', $contrat->product->libelle);
+        $templateProcessor->setValue('description', $contrat->product->description);
+        $templateProcessor->setValue('duration_contrat', $contrat->product->duration_contrat);
+        $templateProcessor->setValue('duration_contrat_l', convertirNombreEnLettres($contrat->product->duration_contrat));
+        $templateProcessor->setValue('duration_contrat_c', formatNombreAvecPoints($contrat->product->duration_contrat));
+        $templateProcessor->setValue('amout_global', $contrat->product->amout_global);
+        $templateProcessor->setValue('type', $contrat->product->type);
+        $templateProcessor->setValue('moto_restitue', $contrat->product->moto_restitue);
+
+
+
+
+        // Placeholder information du contrat 
+        $templateProcessor->setValue('date_aujourdhui', $date_aujourdhui);
+        $templateProcessor->setValue('numero_contrat', $contrat->numero_contrat);
+       
+        $templateProcessor->setValue('prix_produit_l', convertirNombreEnLettres($prix_produit));
+        $templateProcessor->setValue('prix_produit_c', formatNombreAvecPoints($prix_produit));
+        $templateProcessor->setValue('frais_l', convertirNombreEnLettres($frais));
+        $templateProcessor->setValue('frais_c', formatNombreAvecPoints($frais));
+        $templateProcessor->setValue('quantite_l', convertirNombreEnLettres($quantite));
+        $templateProcessor->setValue('quantite_c', formatNombreAvecPoints($quantite));
+        $templateProcessor->setValue('method_versement', $contrat->method_versement);
+        $templateProcessor->setValue('prix_produit_avec_frais_l', convertirNombreEnLettres($prix_produit_avec_frais));
+        $templateProcessor->setValue('prix_produit_avec_frais_c', formatNombreAvecPoints($prix_produit_avec_frais));
+        $templateProcessor->setValue('pay_mois_l', convertirNombreEnLettres($pay_mois));
+        $templateProcessor->setValue('pay_mois_c', formatNombreAvecPoints($pay_mois));
+        $templateProcessor->setValue('pay_jour_l', convertirNombreEnLettres($pay_jour));
+        $templateProcessor->setValue('pay_jour_c', formatNombreAvecPoints($pay_jour));
+        $templateProcessor->setValue('date_firt_payment', Carbon::parse($contrat->date_firt_payment)->format('d/m/Y'));
+        $templateProcessor->setValue('date_end_payment', Carbon::parse($contrat->date_end_payment)->format('d/m/Y'));
+        $templateProcessor->setValue('montant_l', convertirNombreEnLettres($montant));
+        $templateProcessor->setValue('montant_c', formatNombreAvecPoints($montant));
+        $templateProcessor->setValue('date_carrence', Carbon::parse($date_carrence)->format('d/m/Y'));
+        $templateProcessor->setValue('date_activite', Carbon::parse($date_activite)->format('d/m/Y'));
+        $templateProcessor->setValue('date_day', Carbon::parse($date_day)->format('d/m/Y'));
+        $templateProcessor->setValue('debut_activite', Carbon::parse($debut_activite)->format('d/m/Y'));
+
+        $templateProcessor->setValue('prix_produit_sans_frais_l', convertirNombreEnLettres($prix_produit_sans_frais));
+        $templateProcessor->setValue('prix_produit_sans_frais_c', formatNombreAvecPoints($prix_produit_sans_frais));
+        
+
+        
+        $templateProcessor->setValue('premier_l', convertirNombreEnLettres($premier));
+        $templateProcessor->setValue('premier_c', formatNombreAvecPoints($premier));
+        
+
+        // Définir le nom du fichier et le chemin
+        $fileName = 'CP'.$contrat->client->customer->numero_cni.'_'.rand(1000,9999).'.docx';
+        $path_file = 'contrats/' . $fileName;
+
+        // verification
+        $fullPath = storage_path('app/public/' . $path_file);
+        $directory = dirname($fullPath); // Chemin du répertoire
+
+        // Vérifiez et créez le répertoire si nécessaire
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+    
+        // Sauvegarder le fichier Word généré
+        $templateProcessor->saveAs(storage_path('app/public/' . $path_file));
+    
+        // Stocker les informations du contrat dans la base de données
+        $contrat->chemin_file_promo = $path_file;
+        $contrat->save();
+    
+        return redirect()->route('contrat.index')->with('success', 'Contrat généré et sauvegardé avec succès.');
+        return response()->json(['message' => 'Contrat généré et sauvegardé avec succès.', 'status' => 'success']);
+    }
+
+    public function downloadFilePromo($id) 
+    {
+
+        Auth::user()->access('TELECHARGER CONTRAT');
+
+        $contrat = Contrat::find($id);
+        $product = Product::all();
+
+        if (!$contrat || !$contrat->chemin_file_promo) {
+            return redirect()->route('contrat.index')->with('error', 'Fichier non trouvé.');
+        }
+
+        // Chemin du fichier
+        $fileName = 'C'.$contrat->client->customer->numero_cni.'_'.rand(1000,9999).'.docx';
+        $filePath = storage_path('app/public/' . $contrat->chemin_file_promo);
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            return redirect()->route('contrat.index')->with('error', 'Fichier non trouvé.');
+        }
+    }
+
+
+    public function add_disponibilite($id) 
+    {
+        $contrat = Contrat::with('product')->findOrFail($id);
+
+        // Vérifier que le produit est disponible
+        if (!$contrat->product) {
+            return response()->json(['message' => 'Produit associé introuvable.'], 404);
+        }
+
+        $date_aujourdhui = today();
+        $duree = $contrat->product->duration_contrat; 
+        $duration = $duree + 1; // Durée du contrat en mois 
+        $amount_mensuel = $contrat->product->pay_mensuel; // paiement mensuel
+        $quantite = $contrat->quantite; // Quantite contrat
+
+        $amount_mensuel_total = $amount_mensuel * $quantite; // Montant mensuel total
+
+
+        // Générer les enregistrements pour chaque période de la durée du contrat
+        $disponibilites = [];
+        $startDate = Carbon::parse($contrat->date_firt_payment);
+        for ($i = 1; $i < $duration; $i++) {
+            $disponibilites[] = [
+                'id' => (string) Str::uuid(),
+                'user_id' => Auth::user()->id,
+                'client_id' => $contrat->client_id,
+                'product_id' => $contrat->product->id,
+                'contrat_id' => $contrat->id,
+                'date_day' =>  $date_aujourdhui,
+                'date_payment' =>$startDate->copy()->addMonths($i), // Paiement après 15 jours
+                'amount' => $amount_mensuel_total, 
+                'compter' => $i,
+            ];
+        }
+
+        // Insérer en une seule requête pour optimiser
+        Disponibilite::insert($disponibilites);
+
+        return response()->json(['message' => 'Disponibilités créées avec succès !'], 201);
+      
+    }
 }

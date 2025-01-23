@@ -112,4 +112,9 @@ class User extends Authenticatable
         return $this->hasMany(Contrat::class, 'client_id'); 
     }
 
+    public function disponibilites()
+    {
+        return $this->hasMany(Disponibilite::class, 'disponibilite_id'); 
+    }
+
 }

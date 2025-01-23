@@ -57,6 +57,16 @@
                                         </select>
                                     </div>
 
+                                    
+                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                        <label class="form-label"> Type de contrat <span class="text-danger">*</span> </label>
+                                        
+                                        <select name="type_contrat" class="form-control default-select form-control-sm">
+                                            <option value="Normal"> Normal </option>
+                                            <option value="Promotion"> Promotion </option>
+                                        </select>
+                                    </div>
+
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
                                         <label name="localisation"  class="form-label"> Agence <span class="text-danger">*</span> </label>
                                         <select id="mySelect3" name="agence_id" class="form-control">
@@ -66,7 +76,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
+                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
                                         <label class="form-label"> Note </label>
                                         <input type="text" class="form-control" name="note">
                                     </div>

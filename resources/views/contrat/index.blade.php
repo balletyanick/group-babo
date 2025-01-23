@@ -33,15 +33,19 @@
                                             <th> N Contrat</th>
                                             <th> Client  </th>
                                             <th> Produit & Durée</th>
+                                            <th> Type de contrat </th>
                                             <th> Methode de Versement </th>
                                             <th> Début du contrat </th>
+                                            <th> Premier Paiement </th>
                                             <th> Paiement mensuelle </th>
                                             <th> Premier Paiement </th>
                                             <th> Dernier  Paiement </th>
                                             <th> Agence </th>
                                             <th> Enregistrer par  </th>
-                                            <th> Note  </th>
                                             <th>Status </th>
+                                            <th>Contrat Promo </th>
+                                            <th>Contrat Normal </th>
+                                            <th> Note  </th>
                                             <th>Action</th>
 
                                         </tr>
@@ -57,14 +61,23 @@
 
                                                 <td> {{$contrat->client->customer->first_name}} {{$contrat->client->customer->last_name}}</td>
                                                 <td>{{$contrat->quantite}}  {{$contrat->product->libelle}} - {{$contrat->product->duration_contrat}} Mois</td>
+                                                <td>{{$contrat->type_contrat}} </td>
                                                 <td>{{$contrat->method_versement}} </td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_day))}}</td>
+
+                                                <td>
+                                                    @if ($contrat->type_contrat === 'Normal')
+                                                        {{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA 
+                                                    @else
+                                                        {{ $contrat->premier_pay * $contrat->quantite }} FCFA
+                                                    @endif
+                                                </td>
+
                                                 <td>{{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA </td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_firt_payment))}}</td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_end_payment))}}</td>
                                                 <td>{{$contrat->agence->libelle}} </td>
                                                 <td> {{$contrat->user->first_name}} {{$contrat->user->last_name}}</td>
-                                                <td>{{$contrat->note}} </td>
                                                 
                                                 <td>
                                                     @php
@@ -84,27 +97,72 @@
                                                 </td>
 
                                                 <td>
+                                                    @if($contrat->type_contrat === 'Promotion')
+                                                        @if(Auth::user()->permission('TELECHARGER CONTRAT') || Auth::user()->permission('GENERATION CONTRAT'))
+                                                            <div class="d-flex">
+
+                                                                @if(Auth::user()->permission('GENERATION CONTRAT'))
+                                                                    <a href="{{route('contrat.generate_promo_save',[$contrat->id])}}" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  title="Générer le contrat" class="btn btn-info shadow btn-xs sharp me-1 mr-2">
+                                                                        <i class="fa fa-repeat"></i>
+                                                                    </a>
+                                                                @endif 
+
+                                                                @if(Auth::user()->permission('TELECHARGER CONTRAT'))
+                                                                    @if($contrat->chemin_file_promo)
+                                                                        <a href="{{ route('contrat.download_promo', ['id' => $contrat->id]) }}" data-bs-toggle="tooltip" 
+                                                                        data-bs-placement="top"  title="Télécharger" class="btn btn-success shadow btn-xs sharp me-1 mr-2">
+                                                                            <i class="fa fa-download mt-1"></i>
+                                                                        </a>
+                                                                    @endif
+                                                                @endif 
+                                                            </div>
+                                                        @endif
+                                                    @endif
+                                                </td>
+
+                                                
+                                                <td>
+                                                    @if($contrat->type_contrat === 'Normal')
+                                                        @if(Auth::user()->permission('EDITION CONTRAT') || Auth::user()->permission('SUPPRESSION CONTRAT') || Auth::user()->permission('RESILIATION CONTRAT') || Auth::user()->permission('TELECHARGER CONTRAT') || Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))
+                                                            <div class="d-flex">
+
+                                                                @if(Auth::user()->permission('GENERATION CONTRAT'))
+                                                                    <a href="{{route('contrat.generate_and_save',[$contrat->id])}}" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  title="Générer le contrat" class="btn btn-info shadow btn-xs sharp me-1 mr-2">
+                                                                        <i class="fa fa-repeat"></i>
+                                                                    </a>
+                                                                @endif 
+
+                                                                @if(Auth::user()->permission('TELECHARGER CONTRAT'))
+                                                                    @if($contrat->chemin_file)
+                                                                        <a href="{{ route('contrat.download', ['id' => $contrat->id]) }}" data-bs-toggle="tooltip" 
+                                                                        data-bs-placement="top"  title="Télécharger" class="btn btn-success shadow btn-xs sharp me-1 mr-2">
+                                                                            <i class="fa fa-download mt-1"></i>
+                                                                        </a>
+                                                                    @endif
+                                                                @endif 
+                                                            </div>
+                                                        @endif
+                                                    @endif
+                                                </td>
+
+                                                <td>{{$contrat->note}} </td>
+
+
+                                                <td>
                                                     @if(Auth::user()->permission('EDITION CONTRAT') || Auth::user()->permission('SUPPRESSION CONTRAT') || Auth::user()->permission('RESILIATION CONTRAT') || Auth::user()->permission('TELECHARGER CONTRAT') || Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))
                                                         <div class="d-flex">
 
-                                                            @if(Auth::user()->permission('GENERATION CONTRAT'))
-                                                                <a href="{{route('contrat.generate_and_save',[$contrat->id])}}" data-bs-toggle="tooltip" 
-                                                                data-bs-placement="top"  title="Générer le contrat" class="btn btn-info shadow btn-xs sharp me-1 mr-2">
-                                                                    <i class="fa fa-repeat"></i>
+                                                            @if(Auth::user()->permission('EDITION CONTRAT'))
+                                                                <a href="{{route('contrat.edit',[$contrat->id])}}" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  title="Modifier" class="btn btn-primary shadow btn-xs sharp me-1 mr-2">
+                                                                    <i class="fa fa-pencil"></i>
                                                                 </a>
                                                             @endif 
 
-                                                            @if(Auth::user()->permission('TELECHARGER CONTRAT'))
-                                                                @if($contrat->chemin_file)
-                                                                    <a href="{{ route('contrat.download', ['id' => $contrat->id]) }}" data-bs-toggle="tooltip" 
-                                                                    data-bs-placement="top"  title="Télécharger" class="btn btn-success shadow btn-xs sharp me-1 mr-2">
-                                                                        <i class="fa fa-download mt-1"></i>
-                                                                    </a>
-                                                                @endif
-                                                            @endif 
-
                                                             @if(Auth::user()->permission('EDITION CONTRAT'))
-                                                                <a href="{{route('contrat.edit',[$contrat->id])}}" data-bs-toggle="tooltip" 
+                                                                <a href="{{route('dispo.index',[$contrat->id])}}" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  title="Modifier" class="btn btn-primary shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-pencil"></i>
                                                                 </a>
@@ -124,19 +182,27 @@
                                                                 </a>
                                                             @endif
 
+                                                            @if(Auth::user()->permission('GENERATION FACTURE'))
+                                                                <a href="{{route('contrat.generate_facture',[$contrat->id])}}" title="Générer facture" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  class="btn btn-secondary shadow btn-xs sharp me-1 mr-2">
+                                                                    <i class="fa fa-file-text-o"></i>
+                                                                </a>
+                                                            @endif 
+
+                                                            @if(Auth::user()->permission('GENERATION FACTURE'))
+                                                                <a href="{{route('contrat.add_disponibilite',[$contrat->id])}}" title="ajouter monatant disponible" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  class="btn btn-success shadow btn-xs sharp me-1 mr-2">
+                                                                    <i class="fa fa-money"></i>
+                                                                </a>
+                                                            @endif 
+
                                                             @if(Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))
                                                                 <a href="{{route('sms.send',[$contrat->id])}}" title="Envoyer un SMS" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  class="btn btn-secondary shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-comment"></i>
                                                                 </a>
                                                             @endif 
-
-                                                            @if(Auth::user()->permission('GENERATION FACTURE'))
-                                                            <a href="{{route('contrat.generate_facture',[$contrat->id])}}" title="Générer facture" data-bs-toggle="tooltip" 
-                                                                data-bs-placement="top"  class="btn btn-secondary shadow btn-xs sharp me-1 mr-2">
-                                                                <i class="fa fa-file-text-o"></i>
-                                                            </a>
-                                                        @endif 
+                                                            
                                                         </div>
                                                     @endif
                                                 </td>

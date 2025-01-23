@@ -70,5 +70,10 @@ class Contrat extends Model
         return $this->hasMany(Paiement::class, 'paiement_id'); 
     }
 
+    public function disponibilites()
+    {
+        return $this->hasMany(Disponibilite::class, 'disponibilite_id'); 
+    }
+
 }
  
