@@ -16,6 +16,8 @@ use App\Models\ContratsEmployes;
 use App\Models\Client;
 use App\Models\Paiement;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 
 class PaiementController extends Controller
@@ -84,9 +86,32 @@ class PaiementController extends Controller
         ]);
 
         $user = Auth::user(); 
+        $contratId = $request->input('contrat_id');
+        $montantDemande = $request->input('amount');
+        $premierPay = Contrat::where('id', $contratId)->value('premier_pay');
+
+        // Récupérer la somme des paiements existants pour le contrat donné
+        $montantDispo = DB::table('disponibilites') 
+        ->where('contrat_id', $contratId)
+        ->whereDate('date_payment', '<=', now()) 
+        ->sum('amount'); 
+
+
+        // Récupérer la somme des paiements en cours
+        $pay_cours = Paiement::where('contrat_id', $contratId)
+        ->where('status', 0)
+        ->sum('amount');
+
+
+        // Récupérer la somme des paiements validés
+        $pay_valider = Paiement::where('contrat_id', $contratId)
+        ->where('status', 1)
+        ->sum('amount');
+
+        $dispo_retrait = ($montantDispo +  $premierPay) - ($pay_valider + $pay_cours);
 
         // Vérifier si l'amount est inférieur ou égal à la somme de dispo_retrait
-        if ($request->input('amount')) {
+        if ($montantDemande <= $dispo_retrait) {
             $data = $request->only(['amount', 'date_demande', 'mode_paiement']);
             $data['client_id'] = $request->input('client_id');
             $data['contrat_id'] = $request->input('contrat_id');

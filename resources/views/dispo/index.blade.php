@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="page-titles">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Liste des versement de
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Liste des versements de
                          <span style="color: #cf0013"> {{$contrat->client->customer->first_name}} {{$contrat->client->customer->last_name}} </span> 
                         pour le contrat <span style="color: #cf0013"> {{$contrat->numero_contrat}} </span>  
                     </a></li>
@@ -18,6 +18,14 @@
                          <span style="color: #cf0013"> {{date('d/m/Y',strtotime($contrat->date_day))}}</span> 
                     </a></li>
                 </ol>
+
+                @if($contrat->type_contrat === 'Promotion')
+                    <ol class="breadcrumb mt-3">
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)"> Paiement Bonus
+                            <span style="color: #cf0013"> {{$contrat->premier_pay}} FCFA </span> 
+                        </a></li>
+                    </ol>
+                @endif
             </div>
             <!-- row -->
 

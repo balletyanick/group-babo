@@ -24,6 +24,16 @@
                     </div>
                 @endif
                 <div class="col-lg-12"> 
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                     <div class="card">
                         <div class="card-body">
                             <div class="table-responsive">
@@ -36,7 +46,7 @@
                                             <th> Type de contrat </th>
                                             <th> Methode de Versement </th>
                                             <th> Début du contrat </th>
-                                            <th> Premier Paiement </th>
+                                            <th> Paiement Bonus </th>
                                             <th> Paiement mensuelle </th>
                                             <th> Premier Paiement </th>
                                             <th> Dernier  Paiement </th>
@@ -45,6 +55,8 @@
                                             <th>Status </th>
                                             <th>Contrat Promo </th>
                                             <th>Contrat Normal </th>
+                                            <th> Montant Retiré </th>
+                                            <th> Monant Restant </th>
                                             <th> Note  </th>
                                             <th>Action</th>
 
@@ -66,11 +78,7 @@
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_day))}}</td>
 
                                                 <td>
-                                                    @if ($contrat->type_contrat === 'Normal')
-                                                        {{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA 
-                                                    @else
-                                                        {{ $contrat->premier_pay * $contrat->quantite }} FCFA
-                                                    @endif
+                                                    {{ $contrat->premier_pay * $contrat->quantite }} FCFA
                                                 </td>
 
                                                 <td>{{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA </td>
@@ -147,8 +155,10 @@
                                                     @endif
                                                 </td>
 
+                                                <td>{{$contrat->somme_retire}} FCFA </td>
+                                                
+                                                <td> {{ (($contrat->product->duration_contrat - 1) * $contrat->product->pay_mensuel * $contrat->quantite) + ($contrat->premier_pay * $contrat->quantite) - $contrat->somme_retire}} FCFA </td>
                                                 <td>{{$contrat->note}} </td>
-
 
                                                 <td>
                                                     @if(Auth::user()->permission('EDITION CONTRAT') || Auth::user()->permission('SUPPRESSION CONTRAT') || Auth::user()->permission('RESILIATION CONTRAT') || Auth::user()->permission('TELECHARGER CONTRAT') || Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))
@@ -156,13 +166,6 @@
 
                                                             @if(Auth::user()->permission('EDITION CONTRAT'))
                                                                 <a href="{{route('contrat.edit',[$contrat->id])}}" data-bs-toggle="tooltip" 
-                                                                    data-bs-placement="top"  title="Modifier" class="btn btn-primary shadow btn-xs sharp me-1 mr-2">
-                                                                    <i class="fa fa-pencil"></i>
-                                                                </a>
-                                                            @endif 
-
-                                                            @if(Auth::user()->permission('EDITION CONTRAT'))
-                                                                <a href="{{route('dispo.index',[$contrat->id])}}" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  title="Modifier" class="btn btn-primary shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-pencil"></i>
                                                                 </a>
@@ -193,6 +196,13 @@
                                                                 <a href="{{route('contrat.add_disponibilite',[$contrat->id])}}" title="ajouter monatant disponible" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  class="btn btn-success shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-money"></i>
+                                                                </a>
+                                                            @endif 
+
+                                                            @if(Auth::user()->permission('EDITION CONTRAT'))
+                                                                <a href="{{route('dispo.index',[$contrat->id])}}" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  title="Liste des versements" class="btn btn-primary shadow btn-xs sharp me-1 mr-2">
+                                                                    <i class="fa fa-eye"></i>
                                                                 </a>
                                                             @endif 
 

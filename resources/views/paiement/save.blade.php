@@ -155,7 +155,7 @@
                             backgroundColor: "#4CAF50", // green
                         }).showToast();
 
-                        window.location='{{route("contrat.index")}}'
+                        window.location='{{route("paiement.historique")}}' 
                     }else{
                         Toastify({
                             text: result.message,

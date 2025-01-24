@@ -12,6 +12,7 @@ use App\Models\Agence;
 use App\Models\Facture;
 use App\Models\Client;
 use App\Models\Disponibilite;
+use App\Models\Paiement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -26,6 +27,15 @@ class ContratController extends Controller
         $contrats = Contrat::with('client', 'product', 'user', 'agence')
             ->accessibleBy(Auth::user())
             ->paginate(100);
+
+
+        // Pour chaque contrat, calculer la somme des paiements associés
+        foreach ($contrats as $contrat) {
+            // Calcul de la somme des paiements associés au contrat avec 'status' = 1
+            $contrat->somme_retire = Paiement::where('status', 1)
+                ->where('contrat_id', $contrat->id) // Assurez-vous que le paiement est lié au contrat
+                ->sum('amount');
+        }
 
         return view('contrat.index', compact('contrats')); 
     }
@@ -699,22 +709,36 @@ class ContratController extends Controller
 
         // Vérifier que le produit est disponible
         if (!$contrat->product) {
-            return response()->json(['message' => 'Produit associé introuvable.'], 404);
+            return redirect()->route('contrat.index')->with('error', 'Produit associé introuvable.');
         }
+
+        // Vérifier si l'identifiant de contrat existe déjà dans la table disponibilite
+        $existingDisponibilites = Disponibilite::where('contrat_id', $contrat->id)->count();
+
+        if ($existingDisponibilites > 0) {
+            return redirect()->route('contrat.index')->with('error', 'Cet contrat est déja lié à un ou plusieurs versement.');
+        }
+
+        
+        
 
         $date_aujourdhui = today();
         $duree = $contrat->product->duration_contrat; 
-        $duration = $duree + 1; // Durée du contrat en mois 
         $amount_mensuel = $contrat->product->pay_mensuel; // paiement mensuel
         $quantite = $contrat->quantite; // Quantite contrat
-
         $amount_mensuel_total = $amount_mensuel * $quantite; // Montant mensuel total
+
+        if ($contrat->type_contrat === 'Normal') {
+            $duration = $duree; 
+        } else {
+            $duration = $duree - 1;  
+        }
 
 
         // Générer les enregistrements pour chaque période de la durée du contrat
         $disponibilites = [];
         $startDate = Carbon::parse($contrat->date_firt_payment);
-        for ($i = 1; $i < $duration; $i++) {
+        for ($i = 1; $i <= $duration; $i++) {
             $disponibilites[] = [
                 'id' => (string) Str::uuid(),
                 'user_id' => Auth::user()->id,
@@ -731,7 +755,7 @@ class ContratController extends Controller
         // Insérer en une seule requête pour optimiser
         Disponibilite::insert($disponibilites);
 
-        return response()->json(['message' => 'Disponibilités créées avec succès !'], 201);
-      
+        return redirect()->route('contrat.index')->with('success', 'Versement ajoutée avec succès.');
+
     }
 }
