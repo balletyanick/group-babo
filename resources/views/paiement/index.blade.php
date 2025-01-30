@@ -40,8 +40,12 @@
                                             <th> Paiement mensuelle </th>
                                             <th> Premier Paiement </th>
                                             <th> Dernier  Paiement </th>
-                                            <th> Note  </th>
+                                            <th>Disponible retrait  </th>
+                                            <th> Montant Retiré </th>
+                                            <th> Monant Restant </th>
+                                            <th> Monant Total </th>
                                             <th>Status </th>
+                                            <th> Action  </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -59,7 +63,42 @@
                                                 <td>{{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA </td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_firt_payment))}}</td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_end_payment))}}</td>
-                                                <td>{{$contrat->note}} </td>
+                                                <td>{{ $contrat->totalDisponibilite - $contrat->totalPaiementsValides }} FCFA </td>
+
+                                                <td>{{ $contrat->totalPaiementsValides }} FCFA </td>
+
+                                                <td>
+                                                    @if($contrat->type_contrat === 'Normal')
+                                                        {{ 
+                                                            ($contrat->product->duration_contrat * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                            - $contrat->totalPaiementsValides 
+                                                        }} FCFA
+                                                    @else
+                                                        {{ 
+                                                            (($contrat->product->duration_contrat - 1) * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                            - $contrat->totalPaiementsValides 
+                                                        }} FCFA
+                                                    @endif
+                                                </td>
+
+
+                                                <td>
+                                                    @if($contrat->type_contrat === 'Normal')
+                                                        {{ 
+                                                            ($contrat->product->duration_contrat * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                           
+                                                        }} FCFA
+                                                    @else
+                                                        {{ 
+                                                            (($contrat->product->duration_contrat - 1) * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                            
+                                                        }} FCFA
+                                                    @endif
+                                                </td>
                                                 
                                                 <td>
                                                     @php
@@ -75,6 +114,18 @@
                                                         <span class="badge badge-danger"> Résilié </span>
                                                     @else
                                                         <span class="badge badge-warning"> En cours </span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if(Auth::user()->permission('LISTE VERSEMENT'))
+                                                        <div class="d-flex">
+                                                            @if(Auth::user()->permission('LISTE VERSEMENT'))
+                                                                <a href="{{route('dispo.index',[$contrat->id])}}" data-bs-toggle="tooltip" 
+                                                                    data-bs-placement="top"  title="Liste des versements" class="btn btn-primary shadow btn-xs sharp me-1 mr-2">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            @endif 
+                                                        </div>
                                                     @endif
                                                 </td>
                                             </tr>

@@ -20,6 +20,17 @@
     {
         public function index()
         {
+
+            // Vérifier si l'utilisateur connecté a le rôle 'PARTENAIRE'
+            if (Auth::user()->role->name === 'PARTENAIRE') {
+                return redirect()->route('compte.index');
+            }
+
+            if (Auth::user()->role->name === 'AGENT') {
+                return redirect()->route('dashboard.employe');
+            }
+
+
             $nbUsers = User::count();
             $nbProduct = Product::count();
             $nbCustomer = Customer::count();

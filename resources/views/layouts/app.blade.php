@@ -463,6 +463,7 @@
 	</script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="//code.tidio.co/qi9kpmbt2wbxfecinn9xac6k5yy2nlyl.js" async></script>
 
     <!-- NEW END -->
 
@@ -539,6 +540,112 @@
                     });
                 }
             });
+        }
+
+        function refuser(id,link){
+
+        Swal.fire({
+            html: '<div class="mt-3"><svg xmlns="http://www.w3.org/2000/svg" width="230" height="230" style="width:30%;height:30%;transform:translate3d(0,0,0);content-visibility:visible" viewBox="0 0 430 430"><defs><clipPath id="e"><path d="M0 0h430v430H0z"/></clipPath><clipPath id="i"><path d="M0 0h430v430H0z"/></clipPath><clipPath id="g"><path d="M0 0h430v430H0z"/></clipPath><clipPath id="f"><path d="M0 0h430v430H0z"/></clipPath><filter id="a" width="100%" height="100%" x="0%" y="0%" filterUnits="objectBoundingBox"><feComponentTransfer in="SourceGraphic"><feFuncA tableValues="1.0 0.0" type="table"/></feComponentTransfer></filter><filter id="c" width="100%" height="100%" x="0%" y="0%" filterUnits="objectBoundingBox"><feComponentTransfer in="SourceGraphic"><feFuncA tableValues="1.0 0.0" type="table"/></feComponentTransfer></filter><path id="d" fill="red" d="M2.704-41.892h-5.408c-7.383 0-13.467-5.794-13.827-13.169l-2.827-57.89c-.457-9.358 7.008-17.196 16.377-17.196h5.962c9.369 0 16.834 7.838 16.377 17.196l-2.827 57.89c-.36 7.375-6.444 13.169-13.827 13.169M-15.853 0c0-8.755 7.098-15.853 15.853-15.853S15.853-8.755 15.853 0 8.755 15.853 0 15.853-15.853 8.755-15.853 0" style="display:block" transform="translate(215 300.48)"/><path id="b" style="display:none"/><mask id="j" mask-type="alpha"><g filter="url(#a)"><path fill="#fff" d="M0 0h430v430H0z" opacity="0"/><use xmlns:ns1="http://www.w3.org/1999/xlink" ns1:href="#b"/></g></mask><mask id="h" mask-type="alpha"><g filter="url(#c)"><path fill="#fff" d="M0 0h430v430H0z" opacity="0"/><use xmlns:ns2="http://www.w3.org/1999/xlink" ns2:href="#d"/></g></mask></defs><g clip-path="url(#e)"><g fill="none" clip-path="url(#f)" style="display:none"><path class="primary" style="display:none"/><path class="secondary" style="display:none"/></g><g clip-path="url(#g)" style="display:block"><g mask="url(#h)" style="display:block"><path fill="none" stroke="#121330" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="m226.287 88.084 139.026 240.799c5.016 8.689-1.254 19.55-11.287 19.55H75.974c-10.033 0-16.303-10.861-11.287-19.55L203.713 88.084c5.016-8.689 17.558-8.689 22.574 0" class="primary"/></g><path fill="none" stroke="#109120" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M2.704-41.892h-5.408c-7.383 0-13.467-5.794-13.827-13.169l-2.827-57.89c-.457-9.358 7.008-17.196 16.377-17.196h5.962c9.369 0 16.834 7.838 16.377 17.196l-2.827 57.89c-.36 7.375-6.444 13.169-13.827 13.169M-15.853 0c0-8.755 7.098-15.853 15.853-15.853S15.853-8.755 15.853 0 8.755 15.853 0 15.853-15.853 8.755-15.853 0" class="secondary" style="display:block" transform="translate(215 300.48)"/></g><g clip-path="url(#i)" style="display:none"><g mask="url(#j)" style="display:none; width:30%;height:30%;"><path fill="none" class="primary"/></g><path fill="none" class="secondary" style="display:none"/></g></g></svg><div class="mt-4 pt-2 fs-15 mx-5"><h4>Êtes-vous sûr?</h4><p class="text-muted mx-4 mb-0">Une fois supprimé, vous ne pourrez plus récupérer cet élément!</p></div></div>',
+            showCancelButton: !0,
+            confirmButtonClass: "btn btn-primary w-xs me-2 mb-1",
+            confirmButtonText: "Oui",
+            cancelButtonText: "Non",
+            cancelButtonClass: "btn btn-danger w-xs mb-1",
+            buttonsStyling: !1,
+            showCloseButton: !0
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'GET',
+                    url: link,
+                    data: {id:id},
+                    dataType: 'json',
+                    success: function (result){
+                        if(result.status=="success"){
+                            Toastify({
+                                    text: result.message,
+                                    duration: 3000, // 3 seconds
+                                    gravity: "top", // Position at the top of the screen
+                                    backgroundColor: "#0ab39c", // Background color for success
+                                    close: true, // Show a close button
+                                }).showToast();
+                            setTimeout(() => {
+                            window.location.reload();
+                            }, 2000);
+                        }else{
+                            Toastify({
+                                text: result.message,
+                                duration: 3000, // 3 seconds
+                                gravity: "top", // Position at the top of the screen
+                                backgroundColor: "#e75050", // Background color for success
+                                close: true, // Show a close button
+                            }).showToast();
+                        }
+                    },error: function(){
+                        Toastify({
+                            text: "Une erreur c'est produite",
+                            duration: 3000, // 3 seconds
+                            gravity: "top", // Position at the top of the screen
+                            backgroundColor: "#e75050", // Background color for success
+                            close: true, // Show a close button
+                        }).showToast();
+                    }
+                });
+            }
+        });
+        }
+
+        function valider(id,link){
+
+        Swal.fire({
+            html: '<div class="mt-3"><svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" style="width:30%;height:30%;transform:translate3d(0,0,0);content-visibility:visible;color:#2bc155" viewBox="0 0 430 430"><defs><clipPath id="a"><path d="M0 0h430v430H0z"/></clipPath><clipPath id="e"><path d="M0 0h430v430H0z"/></clipPath><clipPath id="d"><path d="M0 0h430v430H0z"/></clipPath><clipPath id="c"><path d="M0 0h430v430H0z"/></clipPath><clipPath id="b"><path d="M0 0h430v430H0z"/></clipPath></defs><g clip-path="url(#a)"><g fill="none" clip-path="url(#b)" style="display:none"><path class="primary" style="display:none"/><path class="primary" style="display:none"/></g><g fill="none" clip-path="url(#c)" style="display:none"><path class="primary" style="display:none"/><path class="primary" style="display:none"/></g><g clip-path="url(#d)" style="display:block"><path fill="none" stroke="#121330" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="m-36.765 2.509 22.907 22.873 51.221-51.181" class="primary" style="display:block" transform="translate(220.22 225.717)scale(4.255)"/></g><g clip-path="url(#e)" style="display:none"><path fill="none" class="primary" style="display:none"/></g></g></svg><div class="mt-4 pt-2 fs-15 mx-5"><h4>Êtes-vous sûr?</h4><p class="text-muted mx-4 mb-0">Une fois supprimé, vous ne pourrez plus récupérer cet élément!</p></div></div>',
+            showCancelButton: !0,
+            confirmButtonClass: "btn btn-primary w-xs me-2 mb-1",
+            confirmButtonText: "Oui",
+            cancelButtonText: "Non",
+            cancelButtonClass: "btn btn-danger w-xs mb-1",
+            buttonsStyling: !1,
+            showCloseButton: !0
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'GET',
+                    url: link,
+                    data: {id:id},
+                    dataType: 'json',
+                    success: function (result){
+                        if(result.status=="success"){
+                            Toastify({
+                                    text: result.message,
+                                    duration: 3000, // 3 seconds
+                                    gravity: "top", // Position at the top of the screen
+                                    backgroundColor: "#0ab39c", // Background color for success
+                                    close: true, // Show a close button
+                                }).showToast();
+                            setTimeout(() => {
+                            window.location.reload();
+                            }, 2000);
+                        }else{
+                            Toastify({
+                                text: result.message,
+                                duration: 3000, // 3 seconds
+                                gravity: "top", // Position at the top of the screen
+                                backgroundColor: "#e75050", // Background color for success
+                                close: true, // Show a close button
+                            }).showToast();
+                        }
+                    },error: function(){
+                        Toastify({
+                            text: "Une erreur c'est produite",
+                            duration: 3000, // 3 seconds
+                            gravity: "top", // Position at the top of the screen
+                            backgroundColor: "#e75050", // Background color for success
+                            close: true, // Show a close button
+                        }).showToast();
+                    }
+                });
+            }
+        });
         }
 
         function resilier(id,link){

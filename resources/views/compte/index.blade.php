@@ -60,7 +60,7 @@
             <div class="card-body" id="box_yan">	
               <div class="media align-items-center">
                 <div class="media-body mr-2">
-                  <h2 class="text-white font-w600"> 0 FCFA </h2>
+                  <h2 class="text-white font-w600"> {{ number_format($paiement_valide, 0, '', '.') }} FCFA </h2>
                   <span class="text-white"> Déja retiré  </span>
                 </div>
                 <div class="d-inline-block position-relative donut-chart-sale">
@@ -108,8 +108,30 @@
             <div class="card-body" id="box_yan">	
               <div class="media align-items-center">
                 <div class="media-body mr-2">
-                  <h2 class="text-white font-w600"> 0 </h2>
-                  <span  class="text-white"> Disponible pour retrait </span>
+                  <h2 class="text-white font-w600"> {{ number_format($montantRestant, 0, '', '.') }} FCFA </h2>
+                  <span  class="text-white"> Montant Restant </span>
+                </div>
+                <div class="d-inline-block position-relative donut-chart-sale">
+                  <span style="color: white" class="donut1" data-peity='{ "fill": ["rgb(255, 255, 255)", "rgba(255, 255, 255, 0)"],   "innerRadius": 41, "radius": 10}'>7/8</span>
+                  <small class="text-primary">
+                    <svg width="20" height="36" viewBox="0 0 20 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19.08 24.36C19.08 25.64 18.76 26.8667 18.12 28.04C17.48 29.1867 16.5333 30.1467 15.28 30.92C14.0533 31.6933 12.5733 32.1333 10.84 32.24V35.48H8.68V32.24C6.25333 32.0267 4.28 31.2533 2.76 29.92C1.24 28.56 0.466667 26.84 0.44 24.76H4.32C4.42667 25.88 4.84 26.8533 5.56 27.68C6.30667 28.5067 7.34667 29.0267 8.68 29.24V19.24C6.89333 18.7867 5.45333 18.32 4.36 17.84C3.26667 17.36 2.33333 16.6133 1.56 15.6C0.786667 14.5867 0.4 13.2267 0.4 11.52C0.4 9.36 1.14667 7.57333 2.64 6.16C4.16 4.74666 6.17333 3.96 8.68 3.8V0.479998H10.84V3.8C13.1067 3.98667 14.9333 4.72 16.32 6C17.7067 7.25333 18.5067 8.89333 18.72 10.92H14.84C14.7067 9.98667 14.2933 9.14667 13.6 8.4C12.9067 7.62667 11.9867 7.12 10.84 6.88V16.64C12.6 17.0933 14.0267 17.56 15.12 18.04C16.24 18.4933 17.1733 19.2267 17.92 20.24C18.6933 21.2533 19.08 22.6267 19.08 24.36ZM4.12 11.32C4.12 12.6267 4.50667 13.6267 5.28 14.32C6.05333 15.0133 7.18667 15.5867 8.68 16.04V6.8C7.29333 6.93333 6.18667 7.38667 5.36 8.16C4.53333 8.90667 4.12 9.96 4.12 11.32ZM10.84 29.28C12.28 29.12 13.4 28.6 14.2 27.72C15.0267 26.84 15.44 25.7867 15.44 24.56C15.44 23.2533 15.04 22.2533 14.24 21.56C13.44 20.84 12.3067 20.2667 10.84 19.84V29.28Z" fill="#EA7A9A"/>
+                    </svg>
+                  </small>
+                  <span class="circle bg-white"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-12 col-xxl-12 col-sm-12">
+          <div class="card grd-card">
+            <div class="card-body" id="box_yan" style=" background: linear-gradient(to top, #AC0111 0%, #AC0111 100%) !important;">	
+              <div class="media align-items-center">
+                <div class="media-body mr-2">
+                  <h2 class="text-white font-w600"> Prêt 00 FCFA   </h2>
+                  <span  class="text-white"> Remboursé (00 FCFA/Mois) sur 00 Mois </span>
                 </div>
                 <div class="d-inline-block position-relative donut-chart-sale">
                   <span style="color: white" class="donut1" data-peity='{ "fill": ["rgb(255, 255, 255)", "rgba(255, 255, 255, 0)"],   "innerRadius": 41, "radius": 10}'>7/8</span>
@@ -146,6 +168,118 @@
             </div>
           </div>
         </div>
+
+        <input type="checkbox" id="check"> <label class="chat-btn" for="check"> 			<svg class="fa comment" xmlns="http://www.w3.org/2000/svg" style="color:#fff;width:1.5em;height:1.5em;" viewBox="0 0 512 512">
+			<path fill="#fff" d="M144 208C126.3 208 112 222.2 112 239.1C112 257.7 126.3 272 144 272s31.1-14.25 31.1-32S161.8 208 144 208zM256 207.1c-17.75 0-31.1 14.25-31.1 32s14.25 31.1 31.1 31.1s31.1-14.25 31.1-31.1S273.8 207.1 256 207.1zM368 208c-17.75 0-31.1 14.25-31.1 32s14.25 32 31.1 32c17.75 0 31.99-14.25 31.99-32C400 222.2 385.8 208 368 208zM256 31.1c-141.4 0-255.1 93.12-255.1 208c0 47.62 19.91 91.25 52.91 126.3c-14.87 39.5-45.87 72.88-46.37 73.25c-6.624 7-8.373 17.25-4.624 26C5.818 474.2 14.38 480 24 480c61.49 0 109.1-25.75 139.1-46.25c28.87 9 60.16 14.25 92.9 14.25c141.4 0 255.1-93.13 255.1-207.1S397.4 31.1 256 31.1zM256 400c-26.75 0-53.12-4.125-78.36-12.12l-22.75-7.125L135.4 394.5c-14.25 10.12-33.87 21.38-57.49 29c7.374-12.12 14.37-25.75 19.87-40.25l10.62-28l-20.62-21.87C69.81 314.1 48.06 282.2 48.06 240c0-88.25 93.24-160 207.1-160s207.1 71.75 207.1 160S370.8 400 256 400z"/></svg> 
+<i class="fa close">X</i> </label> 
+
+<iframe id="lomtalkframe" src="https://yanick.chatoverflow.com?q=2f255fff$2f255fff$$$"></iframe>
+
+
+
+<style type="text/css">
+.fa .close{font-weight: 400;}
+
+.chat-btn {
+    position: fixed; bottom:0;
+    right: 14px;
+    bottom: 30px;
+	  z-index: 1000;
+    cursor: pointer
+}
+
+.chat-btn .close {
+    display: none
+}
+
+.chat-btn i {
+    transition: all 0.9s ease
+}
+
+#check:checked~.chat-btn i {
+    display: block;
+    pointer-events: auto;
+    transform: rotate(180deg)
+}
+
+#check:checked~.chat-btn .comment {
+    display: none
+}
+
+.chat-btn i {
+    font-size: 22px;
+    color: #fff !important
+}
+
+.chat-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    background-color: #2f255fff;
+	  object-fit: cover;
+  margin-right: 10px;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 22px;
+    border: none
+}
+
+#lomtalkframe {
+    position: fixed;
+    right: 20px;
+    bottom: 100px;
+	display: none;
+	z-index:10000;
+     width: 400px;
+  height: 500px;
+  overflow: hidden;
+  background: #1f2937;
+    background-color: #fff;
+    border-radius: 5px;
+    opacity: 0;
+    transition: all 0.4s
+}
+
+#check:checked~#lomtalkframe {
+  opacity: 1;
+	display: block;
+}
+
+.chat-form {
+    padding: 15px
+}
+
+.chat-form input,
+textarea,
+button {
+    margin-bottom: 10px
+}
+
+.chat-form textarea {
+    resize: none
+}
+
+.form-control:focus,
+.btn:focus {
+    box-shadow: none
+}
+
+.btn,
+.btn:focus,
+.btn:hover {
+    background-color: #2f255fff;
+    border: #2f255fff
+}
+
+#check {
+    display: none !important
+}
+</style>
+
+       
        
       </div>
     @endif

@@ -58,7 +58,7 @@
                                                 </td>
                                                 <td> {{$paiement->mode_paiement}}</td>
                                                 <td> {{$paiement->contrat->date_firt_payment}}</td>
-                                                <td> {{$paiement->contrat->date_end_payment}}</td>
+                                                <td> {{$paiement->contrat->date_end_payment}}</td> 
                                                 <td>
                                                     @if ($paiement->status == 0)
                                                         <span class="badge badge-warning"> En cours </span>

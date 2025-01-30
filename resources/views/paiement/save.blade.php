@@ -30,7 +30,7 @@
                                         <label class="form-label"> Contrat <span class="text-danger">*</span> </label>
                                         <select id="mySelect" name="contrat_id" class="form-control">
                                             @foreach($contrat as $contrats)
-                                                <option value="{{$contrats->id}}" {{$contrats->id==$contrats->client->user_id ? 'selected' : ''}}>  {{$contrats->numero_contrat}}  </option>
+                                                <option value="{{$contrats->id}}" {{$contrats->id==$contrats->client->user_id ? 'selected' : ''}}>  {{$contrats->numero_contrat}} - {{$contrats->totalDisponibilite - $contrats->totalPaiementsValides}} FCFA  </option>
                                             @endforeach
                                         </select>
                                     </div>

@@ -15,6 +15,7 @@ use App\Models\AgenceUser;
 use App\Models\ContratsEmployes;
 use App\Models\Client;
 use App\Models\Paiement;
+use App\Models\Disponibilite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -32,6 +33,25 @@ class PaiementController extends Controller
         })
         ->with('product') // Charge les produits liés
         ->paginate(100);
+
+        $contrats->each(function ($contrat) {
+            // Récupérer la somme des paiements dans disponibilités
+            $totalDisponibilite = Disponibilite::where('contrat_id', $contrat->id)
+            ->whereDate('date_payment', '<=', now()) // Filtrer par date
+            ->sum('amount');
+
+
+            // Récupérer la somme des paiements validés
+            $totalPaiementsValides = Paiement::where('contrat_id', $contrat->id)
+            ->where('status', 1) 
+            ->sum('amount');
+
+        
+            // Disponibilité pour retrait*
+            $contrat->totalDisponibilite = ($totalDisponibilite + $contrat->premier_pay) - $contrat->totalPaiementsValides;
+            // Paiement validé*
+            $contrat->totalPaiementsValides = $totalPaiementsValides; 
+        });
 
         return view('paiement.index',compact('contrats'));
     } 
@@ -66,9 +86,24 @@ class PaiementController extends Controller
         ->with('product') // Charge les produits liés
         ->paginate(100);
         
-        if ($contrat->isEmpty()) {
-            return redirect()->route('contrat.index')->with('error', 'Aucun contrat trouvé.');
-        }
+        $contrat->each(function ($contrat) {
+            // Récupérer la somme des paiements dans disponibilités
+            $totalDisponibilite = Disponibilite::where('contrat_id', $contrat->id)
+            ->whereDate('date_payment', '<=', now()) // Filtrer par date
+            ->sum('amount');
+
+
+            // Récupérer la somme des paiements validés
+            $totalPaiementsValides = Paiement::where('contrat_id', $contrat->id)
+            ->where('status', 1) 
+            ->sum('amount');
+
+        
+            // Disponibilité pour retrait*
+            $contrat->totalDisponibilite = ($totalDisponibilite + $contrat->premier_pay) - $contrat->totalPaiementsValides;
+            // Paiement validé*
+            $contrat->totalPaiementsValides = $totalPaiementsValides; 
+        });
         
         return view('paiement.save',compact('contrat','title'));
     }
@@ -76,7 +111,6 @@ class PaiementController extends Controller
     public function save(Request $request)
     {
         
-
         $validator = $request->validate([
             'client_id' => 'required|string|exists:clients,id',
             'contrat_id' => 'required|string|exists:contrats,id',
@@ -89,13 +123,21 @@ class PaiementController extends Controller
         $contratId = $request->input('contrat_id');
         $montantDemande = $request->input('amount');
         $premierPay = Contrat::where('id', $contratId)->value('premier_pay');
+        $status = Contrat::where('id', $contratId)->value('status');
+
+        // Vérifier si le contrat est résilié (status == 1)
+        if ($status == 1) {
+            return response()->json([
+                'message' => 'Votre contrat a été résilié.',
+                'status' => 'error'
+            ], 400);
+        }
 
         // Récupérer la somme des paiements existants pour le contrat donné
         $montantDispo = DB::table('disponibilites') 
         ->where('contrat_id', $contratId)
         ->whereDate('date_payment', '<=', now()) 
         ->sum('amount'); 
-
 
         // Récupérer la somme des paiements en cours
         $pay_cours = Paiement::where('contrat_id', $contratId)

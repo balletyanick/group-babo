@@ -57,6 +57,7 @@
                                             <th>Contrat Normal </th>
                                             <th> Montant Retiré </th>
                                             <th> Monant Restant </th>
+                                            <th> Monant Total </th>
                                             <th> Note  </th>
                                             <th>Action</th>
 
@@ -157,7 +158,38 @@
 
                                                 <td>{{$contrat->somme_retire}} FCFA </td>
                                                 
-                                                <td> {{ (($contrat->product->duration_contrat - 1) * $contrat->product->pay_mensuel * $contrat->quantite) + ($contrat->premier_pay * $contrat->quantite) - $contrat->somme_retire}} FCFA </td>
+                                                <td>
+                                                    @if($contrat->type_contrat === 'Normal')
+                                                        {{ 
+                                                            ($contrat->product->duration_contrat * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                            - $contrat->somme_retire 
+                                                        }} FCFA
+                                                    @else
+                                                        {{ 
+                                                            (($contrat->product->duration_contrat - 1) * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                            - $contrat->somme_retire 
+                                                        }} FCFA
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    @if($contrat->type_contrat === 'Normal')
+                                                        {{ 
+                                                            ($contrat->product->duration_contrat * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                           
+                                                        }} FCFA
+                                                    @else
+                                                        {{ 
+                                                            (($contrat->product->duration_contrat - 1) * $contrat->product->pay_mensuel * $contrat->quantite) 
+                                                            + ($contrat->premier_pay * $contrat->quantite) 
+                                                            
+                                                        }} FCFA
+                                                    @endif
+                                                </td>
+                                                
                                                 <td>{{$contrat->note}} </td>
 
                                                 <td>
@@ -192,14 +224,14 @@
                                                                 </a>
                                                             @endif 
 
-                                                            @if(Auth::user()->permission('GENERATION FACTURE'))
+                                                            @if(Auth::user()->permission('AJOUT VERSEMENT'))
                                                                 <a href="{{route('contrat.add_disponibilite',[$contrat->id])}}" title="ajouter monatant disponible" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  class="btn btn-success shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-money"></i>
                                                                 </a>
                                                             @endif 
 
-                                                            @if(Auth::user()->permission('EDITION CONTRAT'))
+                                                            @if(Auth::user()->permission('LISTE VERSEMENT'))
                                                                 <a href="{{route('dispo.index',[$contrat->id])}}" data-bs-toggle="tooltip" 
                                                                     data-bs-placement="top"  title="Liste des versements" class="btn btn-primary shadow btn-xs sharp me-1 mr-2">
                                                                     <i class="fa fa-eye"></i>

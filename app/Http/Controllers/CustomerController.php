@@ -8,6 +8,7 @@
     use App\Models\User;
     use App\Models\Facture;
     use App\Models\Contrat;
+    use App\Models\Client;
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Storage; 
 
@@ -101,7 +102,15 @@
 
             Auth::user()->access('SUPPRESSION CLIENT');
 
-            $customer = Customer::find($request->id);
+            $customer = Customer::find($request->id); 
+            $hasClient = Client::where('customer_id', $customer->id)->exists();
+
+            if ($hasClient) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à un partenaire.',
+                    'status' => 'error'
+                ]);
+            }
 
             if($customer->delete()){
                 return response()->json(['message' => 'Client supprimé avec succès',"status"=>"success"]);

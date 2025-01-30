@@ -9,7 +9,13 @@
               <span class="nav-text"> Tableau de bord </span>
             </a>
           <ul aria-expanded="false">
-            <li><a href="{{route("dashboard")}}" > Général </a></li>
+
+            @if(Auth::user()->permission("GENERALE"))
+              <li>
+                <a href="{{route("dashboard")}}" > Général </a>
+              </li>
+            @endif
+
             @if(Auth::user()->permission("STATISTIQUE YOPOUGON"))
               <li>
                 <a href="{{route("dashboard.yop")}}" > Yopougon </a>
@@ -318,7 +324,7 @@
           </li>
         @endif
 
-        @if(Auth::user()->permission('AJOUT UTILISATEUR') || Auth::user()->permission('LISTE UTILISATEUR') || Auth::user()->permission('LISTE ROLE') || Auth::user()->permission('LISTE PERMISSION'))
+        @if(Auth::user()->permission('AJOUT UTILISATEUR') || Auth::user()->permission('LISTE UTILISATEUR') || Auth::user()->permission('LISTE ROLE') || Auth::user()->permission('LISTE PERMISSION')  || Auth::user()->permission('AJOUTER UTILISATEUR PARTENAIRE')  || Auth::user()->permission('LISTE UTILISATEUR PARTENAIRE'))
           <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
             <i class="flaticon-381-settings-2"></i>
             <span class="nav-text"> Utilisateur </span>
@@ -331,9 +337,21 @@
               </li>
             @endif
 
+            @if(Auth::user()->permission('AJOUTER UTILISATEUR PARTENAIRE'))
+              <li>
+                <a href="{{route("user.add_user",['ajouter'])}}"> Ajouter</a>
+              </li>
+            @endif
+
             @if(Auth::user()->permission('LISTE UTILISATEUR'))
               <li>
                 <a href="{{route("user.index")}}"> Liste </a>
+              </li>
+            @endif
+
+            @if(Auth::user()->permission('LISTE UTILISATEUR PARTENAIRE'))
+              <li>
+                <a href="{{route("user.liste")}}"> Liste </a>
               </li>
             @endif
 

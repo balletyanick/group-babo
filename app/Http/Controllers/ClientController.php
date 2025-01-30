@@ -21,7 +21,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-        Auth::user()->access("LISTE AGENT");
+        Auth::user()->access("LISTE PARTENAIRE");
         $clients = Client::with('user','customer')
         ->paginate(100);
         return view('client.index',compact('clients'));
@@ -34,7 +34,7 @@ class ClientController extends Controller
         $client = new Client;
         $title = "Affectation d'un utilisateur à un client";
 
-        Auth::user()->access('AJOUT AGENT');
+        Auth::user()->access('AJOUT PARTENAIRE');
         
         $user = User::orderBy('first_name', 'asc')->get();
         $customer = Customer::orderBy('first_name', 'asc')->get();

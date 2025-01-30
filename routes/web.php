@@ -54,8 +54,12 @@ Route::middleware(['auth'])->group(function () {
     
     #utilisateur
     Route::get('/liste-des-utilisateurs', [UserController::class, 'index'])->name('user.index');
+    Route::get('/liste-des-utilisateur', [UserController::class, 'liste'])->name('user.liste');
+
     Route::get('/utilisateur/{id}', [UserController::class, 'add'])->name('user.add');
+    Route::get('/utilisateurs/{id}', [UserController::class, 'add_user'])->name('user.add_user');
     Route::post('/save-user', [UserController::class, 'save'])->name('user.save');
+    Route::post('/saves-user', [UserController::class, 'saves'])->name('user.saves');
     Route::get('/delete-user', [UserController::class, 'delete'])->name('user.delete'); 
 
 
@@ -142,6 +146,7 @@ Route::middleware(['auth'])->group(function () {
 
     #Disponibilite
     Route::get('/disponibilite/{id}', [DisponibiliteController::class, 'index'])->name('dispo.index');
+    Route::get('/supprimer-disponibilite/{id}', [DisponibiliteController::class, 'delete'])->name('dispo.delete');
 
 
     #paiement client
@@ -154,8 +159,8 @@ Route::middleware(['auth'])->group(function () {
     #paiement gestion
     Route::get('/liste-paiement-en-cours', [Gesion_payController::class, 'en_cours'])->name('gestion_paiement.en_cours');
     Route::get('/liste-paiements-traitées', [Gesion_payController::class, 'index'])->name('gestion_paiement.index');
-    Route::get('/paiement-refuser/{id}', [Gesion_payController::class, 'refuser_paiement'])->name('paiement.refuser');
-    Route::get('/paiement-valider/{id}', [Gesion_payController::class, 'valider_paiement'])->name('paiement.valider');
+    Route::get('/paiement-refuser/{id}', [Gesion_payController::class, 'refuser_paiement'])->name('gestion_paiement.refuser');
+    Route::get('/paiement-valider/{id}', [Gesion_payController::class, 'valider_paiement'])->name('gestion_paiement.valider');
 
     #sms
     Route::get('/envoyer-sms-personnel/{id}', [SmsController::class, 'send'])->name('sms.send');

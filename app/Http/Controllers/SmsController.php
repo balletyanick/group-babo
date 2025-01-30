@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\Agence;
 use App\Models\Facture;
 use App\Models\Employe;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
@@ -24,8 +25,8 @@ class SmsController extends Controller
 
         Auth::user()->access('ENVOYER MESSAGE PERSONNEL');
         $contrat = Contrat::find($id);
-        $customer = $contrat->customer;
-        $phone = $customer->phone;
+        $client = $contrat->client;
+        $phone = $client->customer->phone;
 
         return view('sms.send',compact('title','phone'));
     } 
@@ -87,7 +88,7 @@ class SmsController extends Controller
 
         Auth::user()->access('ENVOYER SMS AUX CLIENTS');
 
-        $customers = Customer::all(); // Récupérer tous les clients
+        $clients = Client::all(); // Récupérer tous les clients
 
         // Validation du message
         $validator = $request->validate([
@@ -99,9 +100,9 @@ class SmsController extends Controller
 
         // Construire la liste des contacts
         $contacts = [];
-        foreach ($customers as $customer) {
-            if (!empty($customer->phone)) { // Vérifiez que le numéro de téléphone existe
-                $contacts[] = ['Dest' => $customer->phone];
+        foreach ($clients as $client) {
+            if (!empty($client->customer->phone)) { // Vérifiez que le numéro de téléphone existe
+                $contacts[] = ['Dest' => $client->customer->phone];
             }
         }
 

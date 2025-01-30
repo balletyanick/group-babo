@@ -122,6 +122,8 @@
           </div>
         </div>
 
+       
+
         <div class="col-xl-6">
           <div class="card">
             <div class="card-header d-sm-flex flex-wrap d-block pb-0 border-0">
@@ -189,6 +191,8 @@
             </div>
           </div>
         </div>
+
+       
       </div>
     @endif
   </div>

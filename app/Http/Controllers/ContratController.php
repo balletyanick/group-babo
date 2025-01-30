@@ -705,6 +705,8 @@ class ContratController extends Controller
 
     public function add_disponibilite($id) 
     {
+        Auth::user()->access('AJOUT VERSEMENT');
+
         $contrat = Contrat::with('product')->findOrFail($id);
 
         // Vérifier que le produit est disponible
@@ -719,25 +721,23 @@ class ContratController extends Controller
             return redirect()->route('contrat.index')->with('error', 'Cet contrat est déja lié à un ou plusieurs versement.');
         }
 
-        
-        
-
         $date_aujourdhui = today();
         $duree = $contrat->product->duration_contrat; 
         $amount_mensuel = $contrat->product->pay_mensuel; // paiement mensuel
         $quantite = $contrat->quantite; // Quantite contrat
         $amount_mensuel_total = $amount_mensuel * $quantite; // Montant mensuel total
+        $startDate = Carbon::parse($contrat->date_firt_payment);
 
         if ($contrat->type_contrat === 'Normal') {
             $duration = $duree; 
+
         } else {
-            $duration = $duree - 1;  
+            $duration = $duree - 1; 
         }
 
 
         // Générer les enregistrements pour chaque période de la durée du contrat
         $disponibilites = [];
-        $startDate = Carbon::parse($contrat->date_firt_payment);
         for ($i = 1; $i <= $duration; $i++) {
             $disponibilites[] = [
                 'id' => (string) Str::uuid(),

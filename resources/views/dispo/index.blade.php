@@ -22,7 +22,8 @@
                 @if($contrat->type_contrat === 'Promotion')
                     <ol class="breadcrumb mt-3">
                         <li class="breadcrumb-item active"><a href="javascript:void(0)"> Paiement Bonus
-                            <span style="color: #cf0013"> {{$contrat->premier_pay}} FCFA </span> 
+                            <span style="color: #cf0013"> {{$contrat->premier_pay}} FCFA </span> le  
+                            <span style="color: #cf0013"> {{date('d/m/Y',strtotime($contrat->date_firt_payment))}} </span>
                         </a></li>
                     </ol>
                 @endif
@@ -30,11 +31,6 @@
             <!-- row -->
 
             <div class="row">
-                @if(Auth::user()->permission('AJOUTER AGENCE'))
-                    <div class="col-lg-12 py-4 px-4">
-                        <a class="btn btn-primary" style="font-size:15px" href="{{route('agence.add',['ajouter'])}}">Ajouter une agence <i class="flaticon-381-add-3 mx-1"></i></a>
-                    </div>
-                @endif
                 <div class="col-lg-12"> 
                     <div class="card">
                         <div class="card-body">
@@ -99,12 +95,15 @@
                         </div>
                     </div>
                 </div>
+                @if(Auth::user()->permission('SUPPRESSION DISPONIBILITE'))
+                    <div class="col-lg-12 px-4">
+                        <a class="btn btn-primary" style="font-size:15px" onclick="refuser('{{$contrat->id}}','{{route('dispo.delete', ['id' => $contrat->id]) }}')"> Tout Supprimer </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
-
-
-        <!-- End Page-content -->
+    <!-- End Page-content -->
 
 
 @endsection

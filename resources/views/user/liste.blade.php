@@ -1,68 +1,62 @@
 @extends('layouts.app')
 
-@section('title', "Liste des paiements")
+@section('title', 'Liste des utilisateurs')
 
 @section('content')
-
 
     <div class="content-body">
         <div class="container-fluid">
             <div class="page-titles">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Paiement</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)"> Historique </a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Utilisateurs</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)"> Liste des utilisateurs </a></li>
                 </ol>
             </div>
             <!-- row -->
 
             <div class="row">
-                <div class="col-lg-12"> 
-                    @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+                <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="table-responsive"> 
+                            <div class="table-responsive">
                                 <table id="produit" class="table table-bordered table-responsive-sm">
                                     <thead>
                                         <tr>
-                                            <th> N Contrat  </th>
-                                            <th> Client  </th>
-                                            <th> Téléphone  </th>
-                                            <th> Date de la demande</th>
-                                            <th> Montant </th>
-                                            <th> Mode de paiement  </th>
-                                            <th> Status </th>
+                                            <th>Libelle</th>
+                                            <th> Nom & prénoms</th>
+                                            <th>Téléphone</th>
+                                            <th>Email</th>
+                                            <th>Type de compte</th>
+                                            <th> Action </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($paiements as $paiement)
+                                        @foreach ($users as $user)
                                             <tr>
-                                                <td> {{$paiement->contrat->numero_contrat}}</td>
-                                                <td> {{$paiement->client->customer->first_name}} {{$paiement->client->customer->last_name}}</td>
-                                                <td> {{$paiement->client->customer->phone}}</td>
-                                                <td>{{date('d/m/Y',strtotime($paiement->date_demande))}}</td>
-                                                <td> 
+                                                <td><img width="50" style="border-radius: 50px" src="{{ $user->avatar!='' ? Storage::url($user->avatar) : asset('/images/user.jpeg')}}" alt=""></td>
+                                                <td> {{$user->first_name}} {{$user->last_name}}</td>
+                                                <td>
                                                     <span class="badge light badge-success">
-                                                        {{$paiement->amount}} FCFA
+                                                        {{$user->phone}}
                                                     </span>
                                                 </td>
-                                                <td> {{$paiement->mode_paiement}}</td>
+                                                <td> {{$user->email}} </td>
+                                                <td>{{$user->role->name}}</td>
                                                 <td>
-                                                    @if ($paiement->status == 0)
-                                                        <span class="badge badge-warning"> En cours </span>
-                                                        
-                                                    @elseif ($paiement->status == 1)
-                                                        <span class="badge badge-success"> Validé </span>
-                                                    @else
-                                                        <span class="badge badge-danger"> Refusé </span>
+                                                    @if(Auth::user()->permission('EDITION UTILISATEUR') || Auth::user()->permission('SUPPRESSION UTILISATEUR'))
+                                                        <div class="d-flex">
+                                                            @if(Auth::user()->permission('EDITION UTILISATEUR'))
+                                                                <a href="{{route('user.add',[$user->id])}}" class="btn btn-primary shadow btn-xs sharp me-1 mr-1">
+                                                                    <i class="fa fa-pencil"></i>
+                                                                </a>
+                                                            @endif 
+
+                                                            @if(Auth::user()->permission('SUPPRESSION UTILISATEUR'))
+                                                                <a href="javascript:void(0);" onclick="deleted('{{$user->id}}','{{route('user.delete')}}')" id="icone-delete" class="btn btn-danger shadow btn-xs sharp">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </a>
+                                                            @endif
+                                                        </div>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -72,21 +66,21 @@
                             </div>
                             <div>
                                 <ul class="pagination pagination-gutter justify-content-center mb-0">
-                                    @if ($paiements->onFirstPage())
+                                    @if ($users->onFirstPage())
                                         <li class="page-item page-indicator">
                                             <a class="page-link">
                                             <i class="la la-angle-left"></i></a>
                                         </li>
                                     @else
                                         <li class="page-item">
-                                            <a class="page-link" href="{{ $paiements->previousPageUrl() }}" rel="prev">
+                                            <a class="page-link" href="{{ $users->previousPageUrl() }}" rel="prev">
                                                 <i class="mdi mdi-chevron-left"></i>
                                             </a>
                                         </li>
                                     @endif
 
-                                    @foreach ($paiements->getUrlRange(1, $paiements->lastPage()) as $page => $url)
-                                            @if ($page == $paiements->currentPage())
+                                    @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
+                                            @if ($page == $users->currentPage())
                                                 <li class="page-item active">
                                                     <span class="page-link">{{ $page }}</span>
                                                 </li>
@@ -97,9 +91,9 @@
                                             @endif
                                     @endforeach
 
-                                    @if ($paiements->hasMorePages())
+                                    @if ($users->hasMorePages())
                                             <li class="page-item">
-                                                <a href="{{ $paiements->nextPageUrl() }}" class="page-link" rel="next"><i class="mdi mdi-chevron-right"></i></a>
+                                                <a href="{{ $users->nextPageUrl() }}" class="page-link" rel="next"><i class="mdi mdi-chevron-right"></i></a>
                                             </li>
                                     @else
                                             <li class="page-item disabled">
@@ -115,25 +109,11 @@
         </div>
     </div>
 
-
-        <!-- End Page-content -->
-
+   
 
 @endsection
 
 @section('script')
-
-<!-- Info Bulle -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-        new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
-
-</script>
-
 <script>
     $(document).ready(function() {
         new DataTable("#produit", {

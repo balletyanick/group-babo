@@ -53,7 +53,7 @@
                                                 <td> {{$paiement->client->customer->phone}}</td>
                                                 <td>{{date('d/m/Y',strtotime($paiement->date_demande))}}</td>
                                                 <td> 
-                                                    <span class="badge light badge-success">
+                                                    <span class="badge light badge-success"> 
                                                         {{$paiement->amount}} FCFA
                                                     </span>
                                                 </td>
@@ -74,15 +74,16 @@
                                                 <td>
                                                     @if(Auth::user()->permission('REFUSER PAIEMENT') || Auth::user()->permission('VALIDER PAIEMENT'))
                                                         <div class="d-flex">
-                                                            @if(Auth::user()->permission('REFUSER PAIEMENT'))
-                                                                <a href="{{route('paiement.refuser',[$paiement->id])}}" class="btn btn-success shadow btn-xs sharp me-1 mr-1">
+                                                            @if(Auth::user()->permission('VALIDER PAIEMENT'))
+                                                                <a href="javascript:void(0);" onclick="valider('{{ $paiement->id }}', '{{ route('gestion_paiement.valider', ['id' => $paiement->id]) }}')" class="btn btn-success shadow btn-xs sharp me-1 mr-1">
                                                                     <i class="fa fa-check"></i>
                                                                 </a>
                                                             @endif 
+                                                           
         
-                                                            @if(Auth::user()->permission('VALIDER PAIEMENT'))
-                                                                <a href="javascript:void(0);"  id="icone-delete" class="btn btn-danger shadow btn-xs sharp">
-                                                                    <i class="fa fa-times"></i>   
+                                                            @if(Auth::user()->permission('REFUSER PAIEMENT'))
+                                                                <a href="javascript:void(0);" onclick="refuser('{{$paiement->id}}','{{route('gestion_paiement.refuser', ['id' => $paiement->id]) }}')"  class="btn btn-danger shadow btn-xs sharp me-1 mr-1">
+                                                                    <i class="fa fa-times"></i>    
                                                                 </a>
                                                             @endif 
                                                         </div>

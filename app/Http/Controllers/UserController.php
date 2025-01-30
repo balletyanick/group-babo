@@ -14,6 +14,7 @@
     use App\Models\Agence;
     use App\Models\ContratsEmployes;
     use App\Models\AgenceUser;
+    use App\Models\Client;
     use Illuminate\Support\Facades\Auth;
 
     class UserController extends Controller
@@ -46,6 +47,38 @@
             return view('user.index',compact('users'));
         }
 
+        public function liste()
+        {
+            Auth::user()->access('LISTE UTILISATEUR PARTENAIRE');
+
+            $departement_id = Auth::user()->departement_id;
+            $region_id = Auth::user()->region_id;
+            $sous_prefecture_id = Auth::user()->sous_prefecture_id;
+            
+
+            if(!is_null($sous_prefecture_id)){
+
+                $users = User::where('sous_prefecture_id',$sous_prefecture_id)->paginate(100);
+
+            }elseif(!is_null($departement_id)){
+
+                $users = User::where('departement_id',$departement_id)->paginate(100);
+
+            }elseif(!is_null($region_id)){
+
+                $users = User::where('region_id',$region_id)->paginate(100);
+
+            }else{
+                $users = User::paginate(100);
+                $users = User::whereHas('role', function ($query) {
+                    $query->where('name', 'PARTENAIRE');
+                })->paginate(100);                
+            }
+            
+            return view('user.liste',compact('users'));
+        }
+
+
         public function add($id)
         {
             $user = User::find($id);
@@ -65,9 +98,27 @@
             return view('user.save',compact('user','title','roles'));
         }
 
+        public function add_user($id)
+        {
+            $user = User::find($id);
+
+            if(!is_null($user)){
+                $title = "Modifier $user->fist_name $user->last_name";
+
+                Auth::user()->access('EDITION UTILISATEUR');
+            }else{
+                $user = new User;
+                $title = 'Ajouter un utilisateur';
+
+                Auth::user()->access('AJOUTER UTILISATEUR PARTENAIRE');
+            }
+            
+            $roles = Role::all();
+            return view('user.saves',compact('user','title','roles'));
+        }
+
         public function save(Request $request)
         {
-            
             if($request->id){
                 Auth::user()->access('EDITION UTILISATEUR');
             }else{
@@ -124,7 +175,15 @@
             $hasFacture = Facture::where('user_id', $user->id)->exists();
             $hasEmployes = Employe::where('user_id', $user->id)->exists();
             $AgenceUsers = AgenceUser::where('user_id', $user->id)->exists();
+            $HasClient = Client::where('user_id', $user->id)->exists();
 
+
+            if ($HasClient) {
+                return response()->json([
+                    'message' => 'Impossible de supprimer cet élément : il est lié à un client.',
+                    'status' => 'error'
+                ]);
+            }
 
             if ($hasCusromers) {
                 return response()->json([
