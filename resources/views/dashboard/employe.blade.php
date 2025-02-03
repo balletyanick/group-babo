@@ -34,7 +34,7 @@
 
         <div class="col-xl-6 col-xxl-6 col-sm-6">
             <div class="card grd-card">
-              <div class="card-body" id="box_yan">	
+              <div class="card-body" id="box_yan">	 
                 <div class="media align-items-center">
                   <div class="media-body mr-2">
                     <h2 class="text-white font-w600">{{$CA_anuelle}}  FCFA </h2>

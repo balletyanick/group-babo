@@ -75,12 +75,13 @@ class ContratController extends Controller
             'note' => 'nullable|string',
             'method_versement' => 'required|string',
             'type_contrat' => 'required|string',
+            'date_day' => 'required|date',
+            
         ]);
 
         $data = $request->all();
 
         $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
-        $data['date_day'] = date('Y-m-d'); // date d'aujourd'hui (date de début)
         $data['numero_contrat'] = 'BC-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
         $data['status'] = 0;
 
@@ -88,13 +89,11 @@ class ContratController extends Controller
         if ($data['type_contrat'] === 'Normal') {
 
             $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
-            $data['date_day'] = date('Y-m-d'); // Date d'aujourd'hui
             $data['numero_contrat'] = 'BC-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $data['status'] = 0; 
 
         } else {
             $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
-            $data['date_day'] = date('Y-m-d'); // Date d'aujourd'hui
             $data['numero_contrat'] = 'BCP-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $data['status'] = 0;
             $data['premier_pay'] = 200000;

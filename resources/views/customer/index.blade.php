@@ -27,6 +27,7 @@
                           <table id="customer" class="table table-bordered table-responsive-sm">
                               <thead>
                                   <tr>
+                                      <th> Genre </th>
                                       <th> Nom & Prénoms </th>
                                       <th> Email </th>
                                       <th> Téléphone </th>
@@ -55,6 +56,7 @@
                               <tbody>
                                   @foreach ($customers as $customer)
                                       <tr>
+                                          <td> {{$customer->genre}}</td>
                                           <td> {{$customer->first_name}} {{$customer->last_name}}</td>
                                           <td> {{$customer->email}}</td>
                                           <td>
@@ -84,7 +86,7 @@
                                           <td> {{date('d/m/Y',strtotime($customer->date_of_birth_death))}}</td>
                                           <td> {{$customer->place_of_birth_death}}</td>
                                           <td> {{$customer->place_death}}</td>
-                                          <td> {{$customer->user->first_name}} {{$customer->user->last_name}}</td>
+                                          <td>{{ optional($customer->user)->first_name }} {{ optional($customer->user)->last_name }}</td>
                                           <td>
                                             @if(Auth::user()->permission('EDITION CLIENT') || Auth::user()->permission('SUPPRESSION CLIENT'))
                                                 <div class="d-flex">

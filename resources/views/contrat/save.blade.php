@@ -23,6 +23,12 @@
                             <form action="{{route('contrat.save')}}" class="add_contrat">
                                 @csrf
                                 <div class="row form-material">
+
+                                    <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
+                                        <label class="form-label"> Date début contrat <span class="text-danger">*</span> </label>
+                                        <input type="date" name="date_day"  class="form-control" required>
+                                    </div>
+
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
                                         <label class="form-label"> Partenaire <span class="text-danger">*</span> </label>
                                         <select id="mySelect" name="client_id" class="form-control">

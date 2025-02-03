@@ -46,7 +46,7 @@
                                                 <td>
                                                     @if(Auth::user()->permission('SUPPRESSION PARTENAIRE'))
                                                         <div class="d-flex">
-                                                            @if(Auth::user()->permission('SUPPRESSION AGENT'))
+                                                            @if(Auth::user()->permission('SUPPRESSION PARTENAIRE'))
                                                                 <a href="javascript:void(0);" onclick="deleted('{{$client->id}}','{{route('client.delete')}}')" id="icone-delete" class="btn btn-danger shadow btn-xs sharp">
                                                                     <i class="fa fa-trash"></i>
                                                                 </a>

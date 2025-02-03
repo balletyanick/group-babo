@@ -77,7 +77,7 @@
 
                                         <div class="col-lg-12 mb-3">
                                           <div class="form-group mb-3">
-                                            <label class=" form-label"> Email <span class="text-danger">*</span></label>
+                                            <label class=" form-label"> Email <span class="text-danger">*</span> </label>
                                             <input type="email" name="email" value="{{$customer->email}}" class="form-control" required>
                                           </div>
                                         </div>
@@ -150,14 +150,14 @@
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class="form-label"> Date de création pièce d'identité </label>
-                                            <input type="date" name="date_start_cni" value="{{$customer->date_start_cni}}" class="form-control" required>
+                                            <input type="date" name="date_start_cni" value="{{$customer->date_start_cni}}" class="form-control">
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class="form-label"> Date d'expiration pièce d'Identité </label>
-                                            <input type="date" name="date_end_cni" value="{{$customer->date_end_cni}}" class="form-control" required>
+                                            <input type="date" name="date_end_cni" value="{{$customer->date_end_cni}}" class="form-control">
                                           </div>
                                         </div>
 
@@ -228,14 +228,14 @@
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Date de création (Pièce d'identité) </label>
-                                            <input type="date" name="date_start_doc_death" class="form-control" value="{{$customer->date_start_doc_death}}" required>
+                                            <input type="date" name="date_start_doc_death" class="form-control" value="{{$customer->date_start_doc_death}}">
                                           </div>
                                         </div>
     
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Date d'expiration (Pièce d'identité) </label>
-                                            <input type="date" name="date_end_doc_death" class="form-control" value="{{$customer->date_end_doc_death}}" required>
+                                            <input type="date" name="date_end_doc_death" class="form-control" value="{{$customer->date_end_doc_death}}">
                                           </div>
                                         </div>
 
@@ -270,7 +270,7 @@
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Note </label>
-                                            <input type="text" name="note_second" class="form-control" value="{{$customer->note_second}}" required>
+                                            <input type="text" name="note_second" class="form-control" value="{{$customer->note_second}}">
                                           </div>
                                         </div>
 

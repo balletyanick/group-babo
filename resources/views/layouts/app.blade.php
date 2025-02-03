@@ -463,7 +463,6 @@
 	</script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script src="//code.tidio.co/qi9kpmbt2wbxfecinn9xac6k5yy2nlyl.js" async></script>
 
     <!-- NEW END -->
 

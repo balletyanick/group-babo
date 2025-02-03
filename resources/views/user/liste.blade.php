@@ -46,7 +46,7 @@
                                                     @if(Auth::user()->permission('EDITION UTILISATEUR') || Auth::user()->permission('SUPPRESSION UTILISATEUR'))
                                                         <div class="d-flex">
                                                             @if(Auth::user()->permission('EDITION UTILISATEUR'))
-                                                                <a href="{{route('user.add',[$user->id])}}" class="btn btn-primary shadow btn-xs sharp me-1 mr-1">
+                                                                <a href="{{route('user.add_user',[$user->id])}}" class="btn btn-primary shadow btn-xs sharp me-1 mr-1">
                                                                     <i class="fa fa-pencil"></i>
                                                                 </a>
                                                             @endif 

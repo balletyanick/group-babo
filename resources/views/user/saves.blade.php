@@ -166,7 +166,7 @@
                             backgroundColor: "#4CAF50", // green
                         }).showToast();
 
-                        window.location='{{route("user.index")}}'
+                        window.location='{{route("user.liste")}}'
                     }else{
                         Toastify({
                             text: result.message,

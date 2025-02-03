@@ -33,7 +33,7 @@ class Client extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id'); 
     }
 
     public function paiements()
@@ -44,5 +44,10 @@ class Client extends Model
     public function disponibilites()
     {
         return $this->hasMany(Disponibilite::class, 'disponibilite_id'); 
+    }
+
+    public function contrats()
+    {
+        return $this->hasMany(Contrat::class, 'contrat_id'); 
     }
 }

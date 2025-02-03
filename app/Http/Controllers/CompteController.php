@@ -26,25 +26,36 @@ class CompteController extends Controller
         Auth::user()->access("MON COMPTE");
         $user = Auth::user();
 
-
-     
-
-
-        $solde_total = Contrat::whereHas('client', function ($query) use ($user) {
+       // Récupérer les contrats de l'utilisateur avec le produit associé
+        $contrats = Contrat::whereHas('client', function($query) use ($user) {
             $query->where('user_id', $user->id);
-        })
-        ->join('products', 'contrats.product_id', '=', 'products.id')
-        ->selectRaw('
-            SUM(
-                CASE 
-                    WHEN contrats.type_contrat = "Promotion" 
-                    THEN products.pay_mensuel * (products.duration_contrat - 1) * contrats.quantite
-                    ELSE products.pay_mensuel * products.duration_contrat * contrats.quantite
-                END
-            ) +
-            SUM(contrats.premier_pay * contrats.quantite) as total_combined
-        ')
-        ->value('total_combined');
+        })->with('product')->get();
+
+        $solde_total = 0;
+
+        foreach ($contrats as $contrat) {
+            // S'assurer que le contrat possède un produit associé
+            if (!$contrat->product) {
+                continue;
+            }
+
+            $payMensuel = $contrat->product->pay_mensuel;
+            $duration   = $contrat->product->duration_contrat;
+            $quantite   = $contrat->quantite;
+            $premierPay = $contrat->premier_pay;
+
+            // Calcul selon le type de contrat
+            if ($contrat->type_contrat === 'Promotion') {
+                $calcul = $payMensuel * ($duration - 1) * $quantite;
+            } else {
+                $calcul = $payMensuel * $duration * $quantite;
+            }
+
+            // Ajouter le paiement initial
+            $calcul += $premierPay * $quantite;
+            $solde_total += $calcul;
+        }
+
 
 
         // Somme Paiement valide

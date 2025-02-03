@@ -119,12 +119,6 @@
 
         public function save(Request $request)
         {
-            if($request->id){
-                Auth::user()->access('EDITION UTILISATEUR');
-            }else{
-                Auth::user()->access('AJOUT UTILISATEUR');
-            }
-
             $validator = $request->validate([
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
                 'first_name' => 'required|string',

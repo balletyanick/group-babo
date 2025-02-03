@@ -57,7 +57,7 @@
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Type de compte  </label>
+                                        <label class="form-label"> Type de compte  <span class="text-danger">*</span> </label>
                                         <select name="role_id" id="role_id" class="form-control default-select form-control-sm">
                                             @foreach($roles as $role)
                                                 <option value="{{$role->id}}" {{$role->id==$user->role_id ? 'selected' : ''}}>{{$role->name}}</option>
@@ -71,17 +71,17 @@
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Nom  </label>
+                                        <label class="form-label"> Nom  <span class="text-danger">*</span></label>
                                         <input type="text" name="first_name" value="{{$user->first_name}}" class="form-control" required>
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Téléphone </label>
+                                        <label class="form-label"> Téléphone <span class="text-danger">*</span> </label>
                                         <input type="text" class="form-control" name="phone" value="{{$user->phone}}" required>
                                     </div>
 
                                     <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                        <label class="form-label"> Prénoms </label>
+                                        <label class="form-label"> Prénoms <span class="text-danger">*</span> </label>
                                         <input type="text" class="form-control" name="last_name" value="{{$user->last_name}}" required>
                                     </div>
 
@@ -96,12 +96,12 @@
 
                                         <div class="row form-material"> 
                                             <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                                <label class="form-label"> Mot de passe  </label>
+                                                <label class="form-label"> Mot de passe  <span class="text-danger">*</span> </label>
                                                 <input type="text" class="form-control" name="password">
                                             </div>
         
                                             <div class="col-xl-3 col-xxl-6 col-md-6 mb-3">
-                                                <label class="form-label"> Confirmer mot de passe </label>
+                                                <label class="form-label"> Confirmer mot de passe <span class="text-danger">*</span> </label>
                                                 <input type="text" name="password_confirmation" class="form-control">
                                             </div> 
                                         </div>
