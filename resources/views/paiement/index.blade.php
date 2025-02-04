@@ -57,7 +57,7 @@
                                                     </span>
                                                 </td>
 
-                                                <td> {{$contrat->client->customer->first_name}} {{$contrat->client->customer->last_name}}</td>
+                                                <td> {{$contrat->user->first_name}} {{$contrat->user->last_name}}</td>
                                                 <td>{{$contrat->quantite}}  {{$contrat->product->libelle}} - {{$contrat->product->duration_contrat}} Mois</td>
                                                 <td>{{date('d/m/Y',strtotime($contrat->date_day))}}</td>
                                                 <td>{{$contrat->product->pay_mensuel * $contrat->quantite}}  FCFA </td>

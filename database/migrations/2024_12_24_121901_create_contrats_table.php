@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('contrats', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->char('user_id', 36);
-            $table->char('client_id', 36);
             $table->char('agence_id', 36);
             $table->char('product_id', 36);
             $table->string('numero_contrat');
@@ -36,16 +35,11 @@ return new class extends Migration
         });
 
         Schema::table('contrats', function (Blueprint $table) {
-            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('agence_id')->references('id')->on('agences')->onDelete('cascade');
         });
     }
-
-
-
-
    
     public function down(): void
     {

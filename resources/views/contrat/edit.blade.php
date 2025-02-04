@@ -26,12 +26,12 @@
                                 <div class="row form-material">
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
                                         <label  class="form-label"> Client <span class="text-danger">*</span>  </label>
-                                        <input type="text" class="form-control bg-light" value="{{$contrat->client->customer->first_name}} {{$contrat->client->customer->last_name}}" readonly>
+                                        <input type="text" class="form-control bg-light" value="{{$contrat->user->first_name}} {{$contrat->user->last_name}}" readonly>
                                     </div>
 
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
                                         <label  class="form-label"> Produit <span class="text-danger">*</span>  </label>
-                                        <input type="text" class="form-control bg-light" value="{{$contrat->product->libelle}} {{$contrat->product->duration_contrat}} - Mois" readonly>
+                                        <input type="text" class="form-control bg-light" value="{{$contrat->product->libelle}} - {{$contrat->product->duration_contrat}} Mois" readonly>
                                     </div>
 
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">

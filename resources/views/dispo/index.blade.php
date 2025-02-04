@@ -9,7 +9,7 @@
             <div class="page-titles">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">Liste des versements de
-                         <span style="color: #cf0013"> {{$contrat->client->customer->first_name}} {{$contrat->client->customer->last_name}} </span> 
+                         <span style="color: #cf0013"> {{$contrat->user->first_name}} {{$contrat->user->last_name}} </span> 
                         pour le contrat <span style="color: #cf0013"> {{$contrat->numero_contrat}} </span>  
                     </a></li>
                 </ol>

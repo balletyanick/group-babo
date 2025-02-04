@@ -31,9 +31,9 @@
 
                                     <div class="col-xl-12 col-xxl-12 col-md-12 mb-3">
                                         <label class="form-label"> Partenaire <span class="text-danger">*</span> </label>
-                                        <select id="mySelect" name="client_id" class="form-control">
-                                            @foreach($client as $clients)
-                                                <option value="{{$clients->id}}" {{$clients->id==$contrat->client_id ? 'selected' : ''}}>{{$clients->customer->first_name}} {{$clients->customer->last_name}}</option>
+                                        <select id="mySelect" name="user_id" class="form-control">
+                                            @foreach($user as $users)
+                                                <option value="{{$users->id}}" {{$users->id==$contrat->user_id ? 'selected' : ''}}>{{$users->first_name}} {{$users->last_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>

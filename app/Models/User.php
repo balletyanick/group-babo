@@ -117,4 +117,9 @@ class User extends Authenticatable
         return $this->hasMany(Disponibilite::class, 'disponibilite_id'); 
     }
 
+    public function paiements()
+    {
+        return $this->hasMany(Paiement::class, 'paiement_id'); 
+    }
+
 }

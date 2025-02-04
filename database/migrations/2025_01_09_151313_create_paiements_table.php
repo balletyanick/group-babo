@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('paiements', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->char('contrat_id', 36);
-            $table->char('client_id', 36);
+            $table->char('user_id', 36);
             $table->integer('amount');
             $table->date('date_demande');
             $table->integer('status');
@@ -25,7 +25,7 @@ return new class extends Migration
 
         Schema::table('paiements', function (Blueprint $table) {
             $table->foreign('contrat_id')->references('id')->on('contrats')->onDelete('cascade');
-            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

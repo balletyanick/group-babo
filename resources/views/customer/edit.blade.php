@@ -37,8 +37,8 @@
                                 </ul>
                                 <form action="{{route('customer.save_edit')}}" class="edit_customer">
                                   @csrf
-                                  <input type="hidden" name="id" value="{{$customer->id}}">
-                                  <input type="hidden" name="user_id" value="{{$customer->user_id}}">
+                                  <input type="hidden" name="id" value="{{$user->id}}">
+                                  <input type="hidden" name="role_id" value="b5839acb-be4e-4cd5-a0ca-ab26e45c1ad2">
                                   <div class="tab-content mt-4">
                                     <div id="client_detail_1" class="tab-pane" role="tabpanel">
                                       <div class="row">
@@ -66,21 +66,35 @@
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Nom  <span class="text-danger">*</span></label>
-                                            <input type="text" name="first_name" value="{{$customer->first_name}}" class="form-control"  required>
+                                            <input type="text" name="first_name" value="{{$user->first_name}}" class="form-control"  required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Prénoms <span class="text-danger">*</span></label>
-                                            <input type="text" name="last_name" class="form-control" value="{{$customer->last_name}}" required>
+                                            <input type="text" name="last_name" class="form-control" value="{{$user->last_name}}" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-12 mb-3">
                                           <div class="form-group mb-3">
-                                            <label class=" form-label"> Email <span class="text-danger">*</span></label>
-                                            <input type="email" name="email" value="{{$customer->email}}" class="form-control" required>
+                                            <label class=" form-label"> Email <span class="text-danger">*</span> </label>
+                                            <input type="email" name="email" value="{{$user->email}}" class="form-control" required>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-2">
+                                          <div class="form-group mb-3">
+                                            <label class="form-label"> Mot de passe  </label>
+                                            <input type="text" class="form-control" name="password">
+                                          </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-2">
+                                          <div class="form-group mb-3">
+                                            <label class="form-label"> Confirmer mot de passe </label>
+                                            <input type="text" name="password_confirmation" class="form-control">
                                           </div>
                                         </div>
 
@@ -93,35 +107,35 @@
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Téléphone <span class="text-danger">*</span></label>
-                                            <input type="number" name="phone" value="{{$customer->phone}}" class="form-control" required>
+                                            <input type="text" pattern="\+225\d{10}"  placeholder="+225XXXXXXXXXX" name="phone" value="{{$user->phone}}" class="form-control" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Date de naissance <span class="text-danger">*</span></label>
-                                            <input type="date" name="date_of_birth" value="{{$customer->date_of_birth}}" class="form-control" required>
+                                            <input type="date" name="date_of_birth" value="{{$user->date_of_birth}}" class="form-control" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Lieu de naissance <span class="text-danger">*</span></label>
-                                            <input type="text" name="place_of_birth" value="{{$customer->place_of_birth}}" class="form-control" required>
+                                            <input type="text" name="place_of_birth" value="{{$user->place_of_birth}}" class="form-control" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Quartier <span class="text-danger">*</span></label>
-                                            <input type="text" name="neighborhood" value="{{$customer->neighborhood}}" class="form-control" required>
+                                            <input type="text" name="neighborhood" value="{{$user->neighborhood}}" class="form-control" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-12 mb-3">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Commune <span class="text-danger">*</span></label>
-                                            <input type="text" name="common" value="{{$customer->common}}" class="form-control" required>
+                                            <input type="text" name="common" value="{{$user->common}}" class="form-control" required>
                                           </div>
                                         </div>
                                       </div>
@@ -145,35 +159,35 @@
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Identifiant de la pièce d'identité <span class="text-danger">*</span></label>
-                                            <input type="text" name="numero_cni" value="{{$customer->numero_cni}}" class="form-control" required>
+                                            <input type="text" name="numero_cni" value="{{$user->numero_cni}}" class="form-control" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class="form-label"> Date de création pièce d'identité </label>
-                                            <input type="date" name="date_start_cni" value="{{$customer->date_start_cni}}" class="form-control" required>
+                                            <input type="date" name="date_start_cni" value="{{$user->date_start_cni}}" class="form-control">
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class="form-label"> Date d'expiration pièce d'Identité </label>
-                                            <input type="date" name="date_end_cni" value="{{$customer->date_end_cni}}" class="form-control" required>
+                                            <input type="date" name="date_end_cni" value="{{$user->date_end_cni}}" class="form-control">
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class="form-label"> Profession <span class="text-danger">*</span></label>
-                                            <input type="text" name="work" value="{{$customer->work}}" class="form-control" required>
+                                            <input type="text" name="fonction" value="{{$user->fonction}}" class="form-control" required>
                                           </div>
                                         </div>
                                         
                                         <div class="col-lg-6 mb-3">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Note </label>
-                                            <input type="text" name="note_first" value="{{$customer->note_first}}" class="form-control">
+                                            <input type="text" name="note_first" value="{{$user->note_first}}" class="form-control">
                                           </div>
                                         </div>
                                       </div>
@@ -197,7 +211,7 @@
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Nom  <span class="text-danger">*</span></label>
-                                            <input type="text" name="first_name_death" value="{{$customer->first_name_death}}" class="form-control"  required>
+                                            <input type="text" name="first_name_death" value="{{$user->first_name_death}}" class="form-control"  required>
                                           </div>
                                         </div>
 
@@ -216,63 +230,63 @@
                                         <div class="col-lg-6 mb-2">
                                             <div class="form-group mb-3">
                                               <label class=" form-label"> Prénoms <span class="text-danger">*</span></label>
-                                              <input type="text" name="last_name_death" class="form-control" value="{{$customer->last_name_death}}" required>
+                                              <input type="text" name="last_name_death" class="form-control" value="{{$user->last_name_death}}" required>
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Identifiant (Pièce d'identité) <span class="text-danger">*</span></label>
-                                            <input type="text" name="numero_piece_death" class="form-control" value="{{$customer->numero_piece_death}}" required>
+                                            <input type="text" name="numero_piece_death" class="form-control" value="{{$user->numero_piece_death}}" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Date de création (Pièce d'identité) </label>
-                                            <input type="date" name="date_start_doc_death" class="form-control" value="{{$customer->date_start_doc_death}}" required>
+                                            <input type="date" name="date_start_doc_death" class="form-control" value="{{$user->date_start_doc_death}}">
                                           </div>
                                         </div>
     
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Date d'expiration (Pièce d'identité) </label>
-                                            <input type="date" name="date_end_doc_death" class="form-control" value="{{$customer->date_end_doc_death}}" required>
+                                            <input type="date" name="date_end_doc_death" class="form-control" value="{{$user->date_end_doc_death}}">
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Date de naissance <span class="text-danger">*</span></label>
-                                            <input type="date" name="date_of_birth_death" class="form-control" value="{{$customer->date_of_birth_death}}" required>
+                                            <input type="date" name="date_of_birth_death" class="form-control" value="{{$user->date_of_birth_death}}" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Lieu de naissance <span class="text-danger">*</span></label>
-                                            <input type="text" name="place_of_birth_death" class="form-control" value="{{$customer->place_of_birth_death}}" required>
+                                            <input type="text" name="place_of_birth_death" class="form-control" value="{{$user->place_of_birth_death}}" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Lieu de résidence <span class="text-danger">*</span></label>
-                                            <input type="text" name="place_death" class="form-control" value="{{$customer->place_death}}" required>
+                                            <input type="text" name="place_death" class="form-control" value="{{$user->place_death}}" required>
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Téléphone <span class="text-danger">*</span> </label>
-                                            <input type="number" name="phone_number_death" class="form-control" value="{{$customer->phone_number_death}}">
+                                            <input type="text" pattern="\+225\d{10}"  placeholder="+225XXXXXXXXXX" name="phone_number_death" class="form-control" value="{{$user->phone_number_death}}">
                                           </div>
                                         </div>
 
                                         <div class="col-lg-6 mb-2">
                                           <div class="form-group mb-3">
                                             <label class=" form-label"> Note </label>
-                                            <input type="text" name="note_second" class="form-control" value="{{$customer->note_second}}" required>
+                                            <input type="text" name="note_second" class="form-control" value="{{$user->note_second}}">
                                           </div>
                                         </div>
 

@@ -23,14 +23,14 @@
                             <form action="{{route('paiement.save')}}" class="add_paiement">
                                 @csrf
                                 <input type="hidden" name="date_demande" value="<?php echo date('Y-m-d H:i'); ?>"/>
-                                <input name="client_id" type="hidden" value="{{ $contrat->first()->client_id ?? ''}}">
+                                <input name="user_id" type="hidden" value="{{ $contrat->first()->user_id ?? ''}}">
                                 <div class="row form-material">
 
                                     <div class="col-xl-12 col-xxl-12 col-md-12">
                                         <label class="form-label"> Contrat <span class="text-danger">*</span> </label>
                                         <select id="mySelect" name="contrat_id" class="form-control">
                                             @foreach($contrat as $contrats)
-                                                <option value="{{$contrats->id}}" {{$contrats->id==$contrats->client->user_id ? 'selected' : ''}}>  {{$contrats->numero_contrat}} - {{$contrats->totalDisponibilite - $contrats->totalPaiementsValides}} FCFA  </option>
+                                                <option value="{{$contrats->id}}" {{$contrats->id==$contrats->user->id ? 'selected' : ''}}>  {{$contrats->numero_contrat}} - {{$contrats->totalDisponibilite - $contrats->totalPaiementsValides}} FCFA  </option>
                                             @endforeach
                                         </select>
                                     </div>

@@ -27,9 +27,9 @@ class CompteController extends Controller
         $user = Auth::user();
 
        // Récupérer les contrats de l'utilisateur avec le produit associé
-        $contrats = Contrat::whereHas('client', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->with('product')->get();
+       $contrats = Contrat::where('user_id', $user->id)
+       ->with('product')
+       ->get();
 
         $solde_total = 0;
 
@@ -56,30 +56,21 @@ class CompteController extends Controller
             $solde_total += $calcul;
         }
 
-
-
         // Somme Paiement valide
         $paiement_valide = Paiement::whereHas('contrat', function ($query) use ($user) {
-            $query->whereHas('client', function ($subQuery) use ($user) {
-                $subQuery->where('user_id', $user->id);
-            });
+            $query->where('user_id', $user->id);
         })
-        ->where('status', 1) 
-        ->sum('amount'); 
+        ->where('status', 1)
+        ->sum('amount');
 
     
         // Somme Montant Restant
         $montantRestant = $solde_total - $paiement_valide;
         
-    
-        $nombre_contrats = Contrat::whereHas('client', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->count();
+        $nombre_contrats = Contrat::where('user_id', $user->id)->count();
 
-        $total_vehicules = Contrat::whereHas('client', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->sum('quantite');
-        
+        $total_vehicules = Contrat::where('user_id', $user->id)->sum('quantite');
+
         return view('compte.index', compact('solde_total','nombre_contrats','total_vehicules','paiement_valide','montantRestant')); 
 
     } 

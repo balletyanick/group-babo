@@ -41,7 +41,10 @@
                 $users = User::where('region_id',$region_id)->paginate(100);
 
             }else{
-                $users = User::paginate(100);
+                $users = User::whereHas('role', function($query) {
+                    $query->where('name', '<>', 'PARTENAIRE');
+                })->paginate(100);
+                
             }
             
             return view('user.index',compact('users'));
@@ -126,6 +129,30 @@
                 'phone' => 'required|string',
                 'email' => 'required|email',
                 'password' => 'nullable|string|min:6|confirmed',
+
+                'genre' => 'nullable|string',
+                'date_of_birth' => 'nullable|date',
+                'place_of_birth' => 'nullable|string',
+                'neighborhood' => 'nullable|string',
+                'common' => 'nullable|string',
+                'numero_cni' => 'nullable|string',
+                'date_start_cni' => 'nullable|date',
+                'date_end_cni' => 'nullable|date',
+                'etat_matrimonial' => 'nullable|string',
+                'name_doc_client' => 'nullable|string',
+                'note_second' => 'nullable|string',
+                'note_first' => 'nullable|string',
+                'first_name_death' => 'nullable|string',
+                'last_name_death' => 'nullable|string',
+                'numero_piece_death' => 'nullable|string',
+                'name_doc' => 'nullable|string',
+                'date_start_doc_death' => 'nullable|date',
+                'date_end_doc_death' => 'nullable|date',
+                'date_of_birth_death' => 'nullable|date',
+                'place_of_birth_death' => 'nullable|string',
+                'place_death' => 'nullable|string',
+                'phone_number_death' => 'nullable|string',
+                'genre_death' => 'nullable|string',
             ]);
             
             $data = $request->except(['avatar']);
@@ -154,7 +181,7 @@
                     $data
                 );
             }
-            
+             
             return response()->json(['message' => 'Utilisateur enregistré avec succès', 'status' => 'success']);
             
 

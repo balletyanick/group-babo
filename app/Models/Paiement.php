@@ -31,9 +31,9 @@ class Paiement extends Model
         return $this->belongsTo(Contrat::class, 'contrat_id');
     }
 
-     public function client()
+     public function user()
     {
-        return $this->belongsTo(Client::class, 'client_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
  

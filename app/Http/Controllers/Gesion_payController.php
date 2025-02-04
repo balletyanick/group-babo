@@ -29,8 +29,6 @@ class Gesion_payController extends Controller
         // Récupérer les paiements avec status égal à 1 ou 2
         $paiements = Paiement::whereIn('status', [1, 2])->paginate(100);
 
-
-
         return view('gestion-paiement.index',compact('paiements'));
     }
 
@@ -41,7 +39,6 @@ class Gesion_payController extends Controller
 
         // Récupérer les paiements avec status = 1
         $paiements = Paiement::where('status', 0)->paginate(100);
-
 
         return view('gestion-paiement.en_cours',compact('paiements'));
     }

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ContratController extends Controller
 {
@@ -24,7 +25,7 @@ class ContratController extends Controller
     public function index()
     {
         // Filtrer les contrats selon les permissions de l'utilisateur
-        $contrats = Contrat::with('client', 'product', 'user', 'agence')
+        $contrats = Contrat::with('product', 'user', 'agence')
             ->accessibleBy(Auth::user())
             ->paginate(100);
 
@@ -56,11 +57,14 @@ class ContratController extends Controller
             Auth::user()->access('AJOUT CONTRAT'); 
         } 
         
-        $client = Client::all();
         $product = Product::all();
-        $user = User::all();
+        $user = DB::table('users')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->where('roles.name', 'PARTENAIRE')
+            ->select('users.*')
+            ->paginate(100);
         $agence = Agence::all();
-        return view('contrat.save',compact('contrat','title','client','product','user','agence'));
+        return view('contrat.save',compact('contrat','title','product','user','agence'));
     }
 
     public function save(Request $request)
@@ -68,7 +72,7 @@ class ContratController extends Controller
         Auth::user()->access('AJOUT CONTRAT');
 
         $validator = $request->validate([
-            'client_id' => 'required|string|exists:clients,id', 
+            'user_id' => 'required|string|exists:users,id', 
             'product_id' => 'required|string|exists:products,id',
             'agence_id' => 'required|string|exists:agences,id',
             'quantite' => 'required|integer',
@@ -81,19 +85,16 @@ class ContratController extends Controller
 
         $data = $request->all();
 
-        $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
         $data['numero_contrat'] = 'BC-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
         $data['status'] = 0;
 
         // Vérifie si le type de contrat est "normal"
         if ($data['type_contrat'] === 'Normal') {
 
-            $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
             $data['numero_contrat'] = 'BC-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $data['status'] = 0; 
 
         } else {
-            $data['user_id'] = Auth::user()->id; // Ajoute l'ID de l'utilisateur connecté
             $data['numero_contrat'] = 'BCP-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
             $data['status'] = 0;
             $data['premier_pay'] = 200000;
@@ -132,8 +133,18 @@ class ContratController extends Controller
         $endPaymentDate->modify("+{$durationInMonths} months");
         $data['date_end_payment'] = $endPaymentDate->format('Y-m-d');
   
-        
-        Contrat::create($data);
+        $contrat = Contrat::create($data);
+
+        // Appeler la fonction d'ajout des disponibilités (versements)
+        $dispoResult = $this->add_disponibilite($contrat->id);
+
+        // S'il y a une erreur lors de l'ajout des disponibilités, renvoyer une réponse d'erreur
+        if (isset($dispoResult['error'])) {
+            return response()->json([
+                'message' => $dispoResult['error'],
+                'status'  => 'error'
+            ]);
+        }
 
         return response()->json(['message' => 'Contrat enregistré avec succès', 'status' => 'success']);
     }
@@ -216,7 +227,7 @@ class ContratController extends Controller
             
         $contrat = Contrat::find($id);
         $product = Product::all();
-        $client = Client::all();
+        $user = User::all();
         $agence = Agence::all();
 
     
@@ -281,35 +292,35 @@ class ContratController extends Controller
         
     
         //client
-        $templateProcessor->setValue('first_name', $contrat->client->customer->first_name);
-        $templateProcessor->setValue('last_name', $contrat->client->customer->last_name);
-        $templateProcessor->setValue('genre', $contrat->client->customer->genre);
-        $templateProcessor->setValue('date_of_birth', Carbon::parse($contrat->client->customer->date_of_birth)->format('d/m/Y'));
-        $templateProcessor->setValue('place_of_birth', $contrat->client->customer->place_of_birth);
-        $templateProcessor->setValue('neighborhood', $contrat->client->customer->neighborhood);
-        $templateProcessor->setValue('common', $contrat->client->customer->common);
-        $templateProcessor->setValue('numero_cni', $contrat->client->customer->numero_cni);
-        $templateProcessor->setValue('date_start_cni', Carbon::parse($contrat->client->customer->date_start_cni)->format('d/m/Y'));
-        $templateProcessor->setValue('date_end_cni', Carbon::parse($contrat->client->customer->date_end_cni)->format('d/m/Y'));
-        $templateProcessor->setValue('etat_matrimonial', $contrat->client->customer->etat_matrimonial);
-        $templateProcessor->setValue('work', $contrat->client->customer->work);
-        $templateProcessor->setValue('email', $contrat->client->customer->email);
-        $templateProcessor->setValue('phone', $contrat->client->customer->phone);
-        $templateProcessor->setValue('name_doc_client', $contrat->client->customer->name_doc_client);
+        $templateProcessor->setValue('first_name', $contrat->user->first_name);
+        $templateProcessor->setValue('last_name', $contrat->user->last_name);
+        $templateProcessor->setValue('genre', $contrat->user->genre);
+        $templateProcessor->setValue('date_of_birth', Carbon::parse($contrat->user->date_of_birth)->format('d/m/Y'));
+        $templateProcessor->setValue('place_of_birth', $contrat->user->place_of_birth);
+        $templateProcessor->setValue('neighborhood', $contrat->user->neighborhood);
+        $templateProcessor->setValue('common', $contrat->user->common);
+        $templateProcessor->setValue('numero_cni', $contrat->user->numero_cni);
+        $templateProcessor->setValue('date_start_cni', Carbon::parse($contrat->user->date_start_cni)->format('d/m/Y'));
+        $templateProcessor->setValue('date_end_cni', Carbon::parse($contrat->user->date_end_cni)->format('d/m/Y'));
+        $templateProcessor->setValue('etat_matrimonial', $contrat->user->etat_matrimonial);
+        $templateProcessor->setValue('work', $contrat->user->fonction);
+        $templateProcessor->setValue('email', $contrat->user->email);
+        $templateProcessor->setValue('phone', $contrat->user->phone);
+        $templateProcessor->setValue('name_doc_client', $contrat->user->name_doc_client);
         
     
         //ayant droit
-        $templateProcessor->setValue('first_name_death', $contrat->client->customer->first_name_death);
-        $templateProcessor->setValue('last_name_death', $contrat->client->customer->last_name_death);
-        $templateProcessor->setValue('numero_piece_death', $contrat->client->customer->numero_piece_death);
-        $templateProcessor->setValue('name_doc', $contrat->client->customer->name_doc);
-        $templateProcessor->setValue('date_start_doc_death', Carbon::parse($contrat->client->customer->date_start_doc_death)->format('d/m/Y'));
-        $templateProcessor->setValue('date_end_doc_death', Carbon::parse($contrat->client->customer->date_end_doc_death)->format('d/m/Y'));
-        $templateProcessor->setValue('date_of_birth_death', Carbon::parse($contrat->client->customer->date_of_birth_death)->format('d/m/Y'));
-        $templateProcessor->setValue('place_of_birth_death', $contrat->client->customer->place_of_birth_death);
-        $templateProcessor->setValue('place_death', $contrat->client->customer->place_death);
-        $templateProcessor->setValue('phone_number_death', $contrat->client->customer->phone_number_death);
-        $templateProcessor->setValue('genre_death', $contrat->client->customer->genre_death);
+        $templateProcessor->setValue('first_name_death', $contrat->user->first_name_death);
+        $templateProcessor->setValue('last_name_death', $contrat->user->last_name_death);
+        $templateProcessor->setValue('numero_piece_death', $contrat->user->numero_piece_death);
+        $templateProcessor->setValue('name_doc', $contrat->user->name_doc);
+        $templateProcessor->setValue('date_start_doc_death', Carbon::parse($contrat->user->date_start_doc_death)->format('d/m/Y'));
+        $templateProcessor->setValue('date_end_doc_death', Carbon::parse($contrat->user->date_end_doc_death)->format('d/m/Y'));
+        $templateProcessor->setValue('date_of_birth_death', Carbon::parse($contrat->user->date_of_birth_death)->format('d/m/Y'));
+        $templateProcessor->setValue('place_of_birth_death', $contrat->user->place_of_birth_death);
+        $templateProcessor->setValue('place_death', $contrat->user->place_death);
+        $templateProcessor->setValue('phone_number_death', $contrat->user->phone_number_death);
+        $templateProcessor->setValue('genre_death', $contrat->user->genre_death);
 
 
     
@@ -357,7 +368,7 @@ class ContratController extends Controller
         
 
         // Définir le nom du fichier et le chemin
-        $fileName = 'C'.$contrat->client->customer->numero_cni.'_'.rand(1000,9999).'.docx';
+        $fileName = 'C'.$contrat->user->numero_cni.'_'.rand(1000,9999).'.docx';
         $path_file = 'contrats/' . $fileName;
 
         // verification
@@ -394,7 +405,7 @@ class ContratController extends Controller
         }
 
         // Chemin du fichier
-        $fileName = 'C'.$contrat->client->customer->numero_cni.'_'.rand(1000,9999).'.docx';
+        $fileName = 'C'.$contrat->user->numero_cni.'_'.rand(1000,9999).'.docx';
         $filePath = storage_path('app/public/' . $contrat->chemin_file);
 
         if (file_exists($filePath)) {
@@ -420,9 +431,8 @@ class ContratController extends Controller
         // Créer une nouvelle facture à partir des données du contrat
         $facture = new Facture();
         $facture->contrat_id = $contrat->id; 
-        $facture->user_id = Auth::user()->id;
+        $facture->user_id = $contrat->user_id; 
         $facture->agence_id = $contrat->agence_id;
-        $facture->client_id = $contrat->client->customer_id; 
         $facture->product_id = $contrat->product_id; 
         $facture->date_day = date('Y-m-d'); // date d'aujourd'hui (date de début) 
         $facture->numero_facture = 'FA-' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -461,9 +471,9 @@ class ContratController extends Controller
         
         $templateProcessor->setValue('date_aujourdhui', $date_aujourdhui);
         $templateProcessor->setValue('numero_facture', $facture->numero_facture);
-        $templateProcessor->setValue('first_name', $contrat->client->customer->first_name);
-        $templateProcessor->setValue('last_name', $contrat->client->customer->last_name);
-        $templateProcessor->setValue('phone', $contrat->client->customer->phone);
+        $templateProcessor->setValue('first_name', $contrat->user->first_name);
+        $templateProcessor->setValue('last_name', $contrat->user->last_name);
+        $templateProcessor->setValue('phone', $contrat->user->phone);
         $templateProcessor->setValue('libelle', $contrat->product->libelle);
         $templateProcessor->setValue('localisation', $contrat->agence->localisation);
         $templateProcessor->setValue('duration_contrat', $contrat->product->duration_contrat);
@@ -507,7 +517,7 @@ class ContratController extends Controller
             
         $contrat = Contrat::find($id);
         $product = Product::all();
-        $client = Client::all();
+        $user = User::all();
         $agence = Agence::all();
         $customer = Customer::all();
 
@@ -574,35 +584,35 @@ class ContratController extends Controller
         
     
         //client
-        $templateProcessor->setValue('first_name', $contrat->client->customer->first_name);
-        $templateProcessor->setValue('last_name', $contrat->client->customer->last_name);
-        $templateProcessor->setValue('genre', $contrat->client->customer->genre);
-        $templateProcessor->setValue('date_of_birth', Carbon::parse($contrat->client->customer->date_of_birth)->format('d/m/Y'));
-        $templateProcessor->setValue('place_of_birth', $contrat->client->customer->place_of_birth);
-        $templateProcessor->setValue('neighborhood', $contrat->client->customer->neighborhood);
-        $templateProcessor->setValue('common', $contrat->client->customer->common);
-        $templateProcessor->setValue('numero_cni', $contrat->client->customer->numero_cni);
-        $templateProcessor->setValue('date_start_cni', Carbon::parse($contrat->client->customer->date_start_cni)->format('d/m/Y'));
-        $templateProcessor->setValue('date_end_cni', Carbon::parse($contrat->client->customer->date_end_cni)->format('d/m/Y'));
-        $templateProcessor->setValue('etat_matrimonial', $contrat->client->customer->etat_matrimonial);
-        $templateProcessor->setValue('work', $contrat->client->customer->work);
-        $templateProcessor->setValue('email', $contrat->client->customer->email);
-        $templateProcessor->setValue('phone', $contrat->client->customer->phone);
-        $templateProcessor->setValue('name_doc_client', $contrat->client->customer->name_doc_client);
+        $templateProcessor->setValue('first_name', $contrat->user->first_name);
+        $templateProcessor->setValue('last_name', $contrat->user->last_name);
+        $templateProcessor->setValue('genre', $contrat->user->genre);
+        $templateProcessor->setValue('date_of_birth', Carbon::parse($contrat->user->date_of_birth)->format('d/m/Y'));
+        $templateProcessor->setValue('place_of_birth', $contrat->user->place_of_birth);
+        $templateProcessor->setValue('neighborhood', $contrat->user->neighborhood);
+        $templateProcessor->setValue('common', $contrat->user->common);
+        $templateProcessor->setValue('numero_cni', $contrat->user->numero_cni);
+        $templateProcessor->setValue('date_start_cni', Carbon::parse($contrat->user->date_start_cni)->format('d/m/Y'));
+        $templateProcessor->setValue('date_end_cni', Carbon::parse($contrat->user->date_end_cni)->format('d/m/Y'));
+        $templateProcessor->setValue('etat_matrimonial', $contrat->user->etat_matrimonial);
+        $templateProcessor->setValue('work', $contrat->user->fonction);
+        $templateProcessor->setValue('email', $contrat->user->email);
+        $templateProcessor->setValue('phone', $contrat->user->phone);
+        $templateProcessor->setValue('name_doc_client', $contrat->user->name_doc_client);
         
     
         //ayant droit
-        $templateProcessor->setValue('first_name_death', $contrat->client->customer->first_name_death);
-        $templateProcessor->setValue('last_name_death', $contrat->client->customer->last_name_death);
-        $templateProcessor->setValue('numero_piece_death', $contrat->client->customer->numero_piece_death);
-        $templateProcessor->setValue('name_doc', $contrat->client->customer->name_doc);
-        $templateProcessor->setValue('date_start_doc_death', Carbon::parse($contrat->client->customer->date_start_doc_death)->format('d/m/Y'));
-        $templateProcessor->setValue('date_end_doc_death', Carbon::parse($contrat->client->customer->date_end_doc_death)->format('d/m/Y'));
-        $templateProcessor->setValue('date_of_birth_death', Carbon::parse($contrat->client->customer->date_of_birth_death)->format('d/m/Y'));
-        $templateProcessor->setValue('place_of_birth_death', $contrat->client->customer->place_of_birth_death);
-        $templateProcessor->setValue('place_death', $contrat->client->customer->place_death);
-        $templateProcessor->setValue('phone_number_death', $contrat->client->customer->phone_number_death);
-        $templateProcessor->setValue('genre_death', $contrat->client->customer->genre_death);
+        $templateProcessor->setValue('first_name_death', $contrat->user->first_name_death);
+        $templateProcessor->setValue('last_name_death', $contrat->user->last_name_death);
+        $templateProcessor->setValue('numero_piece_death', $contrat->user->numero_piece_death);
+        $templateProcessor->setValue('name_doc', $contrat->user->name_doc);
+        $templateProcessor->setValue('date_start_doc_death', Carbon::parse($contrat->user->date_start_doc_death)->format('d/m/Y'));
+        $templateProcessor->setValue('date_end_doc_death', Carbon::parse($contrat->user->date_end_doc_death)->format('d/m/Y'));
+        $templateProcessor->setValue('date_of_birth_death', Carbon::parse($contrat->user->date_of_birth_death)->format('d/m/Y'));
+        $templateProcessor->setValue('place_of_birth_death', $contrat->user->place_of_birth_death);
+        $templateProcessor->setValue('place_death', $contrat->user->place_death);
+        $templateProcessor->setValue('phone_number_death', $contrat->user->phone_number_death);
+        $templateProcessor->setValue('genre_death', $contrat->user->genre_death);
 
 
     
@@ -655,7 +665,7 @@ class ContratController extends Controller
         
 
         // Définir le nom du fichier et le chemin
-        $fileName = 'CP'.$contrat->client->customer->numero_cni.'_'.rand(1000,9999).'.docx';
+        $fileName = 'CP'.$contrat->user->numero_cni.'_'.rand(1000,9999).'.docx';
         $path_file = 'contrats/' . $fileName;
 
         // verification
@@ -691,7 +701,7 @@ class ContratController extends Controller
         }
 
         // Chemin du fichier
-        $fileName = 'C'.$contrat->client->customer->numero_cni.'_'.rand(1000,9999).'.docx';
+        $fileName = 'C'.$contrat->user->numero_cni.'_'.rand(1000,9999).'.docx';
         $filePath = storage_path('app/public/' . $contrat->chemin_file_promo);
 
         if (file_exists($filePath)) {
@@ -740,8 +750,7 @@ class ContratController extends Controller
         for ($i = 1; $i <= $duration; $i++) {
             $disponibilites[] = [
                 'id' => (string) Str::uuid(),
-                'user_id' => Auth::user()->id,
-                'client_id' => $contrat->client_id,
+                'user_id' => $contrat->user_id,
                 'product_id' => $contrat->product->id,
                 'contrat_id' => $contrat->id,
                 'date_day' =>  $date_aujourdhui,
@@ -754,7 +763,7 @@ class ContratController extends Controller
         // Insérer en une seule requête pour optimiser
         Disponibilite::insert($disponibilites);
 
-        return redirect()->route('contrat.index')->with('success', 'Versement ajoutée avec succès.');
+        return ['success' => 'Versements ajoutés avec succès.'];
 
     }
 }

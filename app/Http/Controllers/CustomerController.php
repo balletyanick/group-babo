@@ -11,15 +11,20 @@
     use App\Models\Client;
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Storage; 
+    use Illuminate\Support\Facades\DB;
 
     class CustomerController extends Controller
     {
         public function index()
         {
             // Filtrer les clients selon les permissions de l'utilisateur
-            $customers = Customer::accessibleBy(Auth::user())->paginate(100);
-
-            return view('customer.index', compact('customers'));
+            $users = DB::table('users')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->where('roles.name', 'PARTENAIRE')
+            ->select('users.*')
+            ->paginate(100);
+            
+            return view('customer.index', compact('users'));
         }
 
  
@@ -122,59 +127,68 @@
         public function edit($id)
         { 
             Auth::user()->access('EDITION CLIENT');
-            $customer = Customer::find($id);
+            $user = User::find($id);
             $title = "Modifier un client";
     
-            return view('customer.edit', compact('title', 'customer'));
+            return view('customer.edit', compact('title', 'user'));
         }
     
     
-        public function save_edit(Request $request)
+    public function save_edit(Request $request)
         {   
-    
             Auth::user()->access('EDITION CLIENT');
-        
+
             $validator = $request->validate([
-                    'user_id' => 'required|string|exists:users,id',
-                    'first_name' => 'required|string',
-                    'last_name' => 'required|string',
-                    'genre' => 'required|string',
-                    'date_of_birth' => 'required|date',
-                    'place_of_birth' => 'required|string',
-                    'neighborhood' => 'required|string',
-                    'common' => 'required|string',
-                    'numero_cni' => 'required|string',
-                    'date_start_cni' => 'nullable|date',
-                    'date_end_cni' => 'nullable|date',
-                    'etat_matrimonial' => 'required|string',
-                    'work' => 'required|string',
-                    'name_doc_client' => 'required|string',
-                    'email' => 'required|email',
-                    'phone' => 'required|string',
-                    'note_second' => 'nullable|string',
-                    'note_first' => 'nullable|string',
-                    'first_name_death' => 'required|string',
-                    'last_name_death' => 'required|string',
-                    'numero_piece_death' => 'required|string',
-                    'name_doc' => 'required|string',
-                    'date_start_doc_death' => 'nullable|date',
-                    'date_end_doc_death' => 'nullable|date',
-                    'date_of_birth_death' => 'required|date',
-                    'place_of_birth_death' => 'required|string',
-                    'place_death' => 'required|string',
-                    'phone_number_death' => 'nullable|string',
-                    'genre_death' => 'required|string',
+                'first_name' => 'required|string',
+                'last_name' => 'required|string',
+                'phone' => 'required|string',
+                'email' => 'required|email',
+                'password' => 'nullable|string|min:6|confirmed',
+                'genre' => 'nullable|string',
+                'date_of_birth' => 'nullable|date',
+                'place_of_birth' => 'nullable|string',
+                'neighborhood' => 'nullable|string',
+                'common' => 'nullable|string',
+                'numero_cni' => 'nullable|string',
+                'date_start_cni' => 'nullable|date',
+                'date_end_cni' => 'nullable|date',
+                'etat_matrimonial' => 'nullable|string',
+                'name_doc_client' => 'nullable|string',
+                'note_second' => 'nullable|string',
+                'note_first' => 'nullable|string',
+                'first_name_death' => 'nullable|string',
+                'last_name_death' => 'nullable|string',
+                'numero_piece_death' => 'nullable|string',
+                'name_doc' => 'nullable|string',
+                'date_start_doc_death' => 'nullable|date',
+                'date_end_doc_death' => 'nullable|date',
+                'date_of_birth_death' => 'nullable|date',
+                'place_of_birth_death' => 'nullable|string',
+                'place_death' => 'nullable|string',
+                'phone_number_death' => 'nullable|string',
+                'genre_death' => 'nullable|string',
             ]);
-        
-            $customer = Customer::findOrFail($request->id);
-        
-            $data = $request->only(['first_name','last_name','genre', 'date_of_birth', 'place_of_birth', 'neighborhood', 'common', 'numero_cni',
-            'date_start_cni', 'date_end_cni', 'etat_matrimonial', 'work', 'name_doc_client', 'email', 'phone', 'note_second',
-            'note_first', 'first_name_death', 'last_name_death', 'numero_piece_death', 'name_doc', 'date_start_doc_death', 'date_end_doc_death', 'date_of_birth_death',
-            'place_of_birth_death', 'place_death', 'phone_number_death', 'genre_death',]);
-            
-            $customer->update($data);
-        
+
+            // Vérifier si l'utilisateur existe
+            $user = User::find($request->id);
+            if (!$user) {
+                return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+            }
+
+            // Récupérer les données
+            $data = $request->all();
+
+            // Vérifier si un nouveau mot de passe est fourni
+            if (!$request->filled('password')) {
+                $data['password'] = $user->password;
+            } else {
+                $data['password'] = bcrypt($request->password);
+            }
+
+            // Mettre à jour l'utilisateur
+            $user->update($data);
+
             return response()->json(['message' => 'Informations modifiées avec succès', 'status' => 'success']);
         }
+
     }

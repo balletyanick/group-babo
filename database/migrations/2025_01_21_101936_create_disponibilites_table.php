@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('disponibilites', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->char('user_id', 36);
-            $table->char('client_id', 36);
             $table->char('product_id', 36);
             $table->char('contrat_id', 36);
             $table->date('date_day');
@@ -26,7 +25,6 @@ return new class extends Migration
         });
 
         Schema::table('disponibilites', function (Blueprint $table) {
-            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('contrat_id')->references('id')->on('contrats')->onDelete('cascade');

@@ -46,12 +46,6 @@ class Customer extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function clients()
-    {
-        return $this->hasMany(Client::class, 'client_id'); 
-    }
-
-
     
 }
  

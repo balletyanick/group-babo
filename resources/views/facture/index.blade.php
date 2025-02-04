@@ -60,7 +60,7 @@
                                                     </span>
                                                 </td>
                                                 <td> {{$facture->contrat->numero_contrat}} </td>
-                                                <td> {{$facture->contrat->client->customer->first_name}} {{$facture->contrat->client->customer->last_name}}</td>
+                                                <td> {{$facture->user->first_name}} {{$facture->user->last_name}}</td>
                                                 <td> {{$facture->product->libelle}} - {{$facture->product->duration_contrat}} Mois </td>
                                                 <td> {{$facture->product->amout_global}} FCFA </td>
                                                 <td>{{date('d/m/Y',strtotime($facture->contrat->date_day))}}</td>

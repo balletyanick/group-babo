@@ -28,9 +28,7 @@ class PaiementController extends Controller
         Auth::user()->access("LISTE CONTRAT PARTENAIRE");
         $user = Auth::user();
 
-        $contrats = Contrat::whereHas('client', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
+        $contrats = Contrat::where('user_id', $user->id)
         ->with('product') // Charge les produits liés
         ->paginate(100);
 
@@ -62,10 +60,11 @@ class PaiementController extends Controller
         $user = Auth::user();
 
         // Récupérer les paiements liés à l'utilisateur connecté
-        $paiements = Paiement::whereHas('contrat.client', function ($query) use ($user) {
+        $paiements = Paiement::whereHas('contrat.user', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })
         ->paginate(100);
+    
 
         return view('paiement.historique', compact('paiements'));
     }
@@ -80,11 +79,10 @@ class PaiementController extends Controller
         Auth::user()->access('DEMANDER PAIEMENT'); 
         $user = Auth::user();
         
-        $contrat = Contrat::whereHas('client', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
+        $contrat = Contrat::where('user_id', $user->id)
         ->with('product') // Charge les produits liés
         ->paginate(100);
+
         
         $contrat->each(function ($contrat) {
             // Récupérer la somme des paiements dans disponibilités
@@ -112,14 +110,14 @@ class PaiementController extends Controller
     {
         
         $validator = $request->validate([
-            'client_id' => 'required|string|exists:clients,id',
+            'user_id' => 'required|string|exists:users,id',
             'contrat_id' => 'required|string|exists:contrats,id',
             'amount' => 'required|integer',
             'date_demande' => 'required|date',
             'mode_paiement' => 'required|string',
         ]);
 
-        $user = Auth::user(); 
+        $user = $request->input('user_id');
         $contratId = $request->input('contrat_id');
         $montantDemande = $request->input('amount');
         $premierPay = Contrat::where('id', $contratId)->value('premier_pay');
@@ -155,7 +153,7 @@ class PaiementController extends Controller
         // Vérifier si l'amount est inférieur ou égal à la somme de dispo_retrait
         if ($montantDemande <= $dispo_retrait) {
             $data = $request->only(['amount', 'date_demande', 'mode_paiement']);
-            $data['client_id'] = $request->input('client_id');
+            $data['user_id'] = $request->input('user_id');
             $data['contrat_id'] = $request->input('contrat_id');
             $data['status'] = 0;
 

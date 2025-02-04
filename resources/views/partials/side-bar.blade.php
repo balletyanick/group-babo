@@ -26,7 +26,7 @@
             <li>
               <a href="{{route("dashboard.cocody")}}"> Cocody </a>
             </li>
-            @endif
+            @endif 
 
             @if(Auth::user()->permission("STATISTIQUE EMPLOYE"))
             <li>
@@ -101,28 +101,7 @@
           </li>
         @endif
 
-        @if(Auth::user()->permission("LISTE PARTENAIRE") || Auth::user()->permission("AJOUT PARTENAIRE"))
-        <li>
-          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-            <i class="flaticon-381-user"></i>
-            <span class="nav-text"> Partenaire </span> 
-          </a>
-
-          <ul aria-expanded="false">
-            @if(Auth::user()->permission("AJOUT PARTENAIRE"))
-              <li>
-                <a href="{{route("client.add",['ajouter'])}}"> Ajouter un partenaire </a>
-              </li>
-            @endif
-
-            @if(Auth::user()->permission("LISTE PARTENAIRE")) 
-              <li>
-                <a href="{{route("client.index")}}"> Liste des partenaires </a>
-              </li>
-            @endif
-          </ul>
-        </li>
-      @endif
+        
 
 
         @if(Auth::user()->permission("LISTE CONTRAT") || Auth::user()->permission("AJOUT CONTRAT") || Auth::user()->permission("LISTE CONTRAT PERSONNELLE"))

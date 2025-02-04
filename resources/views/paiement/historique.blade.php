@@ -39,14 +39,14 @@
                                             <th> Date de la demande</th>
                                             <th> Montant </th>
                                             <th> Mode de paiement  </th>
-                                            <th> Status </th>
+                                            <th> Status </th> 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($paiements as $paiement)
                                             <tr>
                                                 <td> {{$paiement->contrat->numero_contrat}}</td>
-                                                <td> {{$paiement->client->customer->first_name}} {{$paiement->client->customer->last_name}}</td>
+                                                <td> {{$paiement->user->first_name}} {{$paiement->user->last_name}}</td>
                                                 <td> {{$paiement->client->customer->phone}}</td>
                                                 <td>{{date('d/m/Y',strtotime($paiement->date_demande))}}</td>
                                                 <td> 
