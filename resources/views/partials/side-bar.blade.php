@@ -28,12 +28,6 @@
             </li>
             @endif 
 
-            @if(Auth::user()->permission("STATISTIQUE EMPLOYE"))
-            <li>
-              <a href="{{route("dashboard.employe")}}" > Mes Statistiques  </a>
-            </li>
-            @endif
-
             @if(Auth::user()->permission("MON COMPTE"))
             <li>
               <a href="{{route("compte.index")}}" > Mon compte  </a>
@@ -174,7 +168,7 @@
 
 
         @if(Auth::user()->permission("LISTE EMPLOYE") || Auth::user()->permission("AJOUT EMPLOYE"))
-          <li>
+          <li class="mb-4">
             <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
               <i class="flaticon-381-user-1"></i>
               <span class="nav-text"> Employes </span>
@@ -208,28 +202,6 @@
           </li>
         @endif
 
-        @if(Auth::user()->permission("ENVOYER SMS AUX CLIENTS") || Auth::user()->permission("ENVOYER SMS AUX EMPLOYES"))
-        <li class="mb-4">
-          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-            <i class="flaticon-381-notepad-1"></i>
-            <span class="nav-text"> Envoyer SMS </span>
-          </a>
-
-          <ul aria-expanded="false">
-            @if(Auth::user()->permission("ENVOYER SMS AUX CLIENTS"))
-              <li>
-                <a href="{{route("sms.client")}}"> Clients </a>
-              </li> 
-            @endif
-
-            @if(Auth::user()->permission("ENVOYER SMS AUX EMPLOYES"))
-              <li>
-                <a href="{{route("sms.employe")}}"> Employés </a>
-              </li>
-            @endif
-          </ul>
-        </li>
-      @endif
 
 
 
@@ -316,21 +288,9 @@
               </li>
             @endif
 
-            @if(Auth::user()->permission('AJOUTER UTILISATEUR PARTENAIRE'))
-              <li>
-                <a href="{{route("user.add_user",['ajouter'])}}"> Ajouter</a>
-              </li>
-            @endif
-
             @if(Auth::user()->permission('LISTE UTILISATEUR'))
               <li>
                 <a href="{{route("user.index")}}"> Liste </a>
-              </li>
-            @endif
-
-            @if(Auth::user()->permission('LISTE UTILISATEUR PARTENAIRE'))
-              <li>
-                <a href="{{route("user.liste")}}"> Liste </a>
               </li>
             @endif
 

@@ -237,14 +237,6 @@
                                                                     <i class="fa fa-eye"></i>
                                                                 </a>
                                                             @endif 
-
-                                                            @if(Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))
-                                                                <a href="{{route('sms.send',[$contrat->id])}}" title="Envoyer un SMS" data-bs-toggle="tooltip" 
-                                                                    data-bs-placement="top"  class="btn btn-secondary shadow btn-xs sharp me-1 mr-2">
-                                                                    <i class="fa fa-comment"></i>
-                                                                </a>
-                                                            @endif 
-                                                            
                                                         </div>
                                                     @endif
                                                 </td>

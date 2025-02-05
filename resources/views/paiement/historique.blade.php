@@ -47,7 +47,7 @@
                                             <tr>
                                                 <td> {{$paiement->contrat->numero_contrat}}</td>
                                                 <td> {{$paiement->user->first_name}} {{$paiement->user->last_name}}</td>
-                                                <td> {{$paiement->client->customer->phone}}</td>
+                                                <td> {{$paiement->user->phone}}</td>
                                                 <td>{{date('d/m/Y',strtotime($paiement->date_demande))}}</td>
                                                 <td> 
                                                     <span class="badge light badge-success">

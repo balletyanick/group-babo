@@ -60,7 +60,7 @@ class PaiementController extends Controller
         $user = Auth::user();
 
         // Récupérer les paiements liés à l'utilisateur connecté
-        $paiements = Paiement::whereHas('contrat.user', function ($query) use ($user) {
+        $paiements = Paiement::whereHas('contrat', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })
         ->paginate(100);

@@ -26,12 +26,11 @@
                 return redirect()->route('compte.index');
             }
 
-            if (Auth::user()->role->name === 'AGENT') {
-                return redirect()->route('dashboard.employe');
-            }
+            $nbUsers = DB::table('users')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->where('roles.name', 'PARTENAIRE')
+            ->count();
 
-
-            $nbUsers = User::count();
             $nbProduct = Product::count();
             $nbCustomer = Customer::count();
             $nbContrat = Contrat::count();

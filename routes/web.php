@@ -45,7 +45,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard_yop', [DashboardController::class, 'yop'])->name('dashboard.yop');
     Route::get('/dashboard_cocody', [DashboardController::class, 'cocody'])->name('dashboard.cocody');
-    Route::get('/dashboard_employe', [DashboardController::class, 'employe'])->name('dashboard.employe');
 
 
     #compte
@@ -54,12 +53,9 @@ Route::middleware(['auth'])->group(function () {
     
     #utilisateur
     Route::get('/liste-des-utilisateurs', [UserController::class, 'index'])->name('user.index');
-    Route::get('/liste-des-utilisateur', [UserController::class, 'liste'])->name('user.liste');
-
     Route::get('/utilisateur/{id}', [UserController::class, 'add'])->name('user.add');
     Route::get('/utilisateurs/{id}', [UserController::class, 'add_user'])->name('user.add_user');
     Route::post('/save-user', [UserController::class, 'save'])->name('user.save');
-    Route::post('/saves-user', [UserController::class, 'saves'])->name('user.saves');
     Route::get('/delete-user', [UserController::class, 'delete'])->name('user.delete'); 
 
 
@@ -86,11 +82,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-edit-client', [CustomerController::class, 'save_edit'])->name('customer.save_edit');
 
     
-    #client-user
-    Route::get('/liste-client-affecter', [ClientController::class, 'index'])->name('client.index');
-    Route::get('/client-affecter/{id}', [ClientController::class, 'add'])->name('client.add');
-    Route::post('/save-client-affecter', [ClientController::class, 'save'])->name('client.save');
-    Route::get('/delete-client-affecter', [ClientController::class, 'delete'])->name('client.delete');
+    
 
 
     #employe

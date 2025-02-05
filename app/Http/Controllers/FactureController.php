@@ -20,7 +20,7 @@ class FactureController extends Controller
     public function index()
     {
         Auth::user()->access("LISTE FACTURE");
-        $factures = Facture::with('client','product','user','agence','contrat')
+        $factures = Facture::with('product','user','agence','contrat')
         ->paginate(100);
 
         return view('facture.index',compact('factures'));
