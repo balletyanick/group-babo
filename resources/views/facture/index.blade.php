@@ -47,7 +47,6 @@
                                             <th> Montant  </th>
                                             <th> Date de création  </th>
                                             <th> Note </th>
-                                            <th> Créer par </th>
                                             <th> Action</th>
                                         </tr>
                                     </thead>
@@ -65,7 +64,6 @@
                                                 <td> {{$facture->product->amout_global}} FCFA </td>
                                                 <td>{{date('d/m/Y',strtotime($facture->contrat->date_day))}}</td>
                                                 <td> {{$facture->note}}</td>
-                                                <td> {{$facture->user->first_name}} {{$facture->user->last_name}}</td>
                                                 <td>
                                                     @if(Auth::user()->permission('SUPPRESSION FACTURE') || Auth::user()->permission('TELECHARGER FACTURE') )
                                                         <div class="d-flex">

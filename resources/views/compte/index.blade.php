@@ -130,8 +130,7 @@
             <div class="card-body" id="box_yan" style=" background: linear-gradient(to top, #AC0111 0%, #AC0111 100%) !important;">	
               <div class="media align-items-center">
                 <div class="media-body mr-2">
-                  <h2 class="text-white font-w600"> Prêt 00 FCFA   </h2>
-                  <span  class="text-white"> Remboursé (00 FCFA/Mois) sur 00 Mois </span>
+                  <h2 class="text-white font-w600"> Prêt: {{ number_format($Total_pret, 0, '', '.') }} FCFA   </h2>
                 </div>
                 <div class="d-inline-block position-relative donut-chart-sale">
                   <span style="color: white" class="donut1" data-peity='{ "fill": ["rgb(255, 255, 255)", "rgba(255, 255, 255, 0)"],   "innerRadius": 41, "radius": 10}'>7/8</span>

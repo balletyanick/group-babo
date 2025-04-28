@@ -15,6 +15,7 @@ use App\Models\AgenceUser;
 use App\Models\ContratsEmployes;
 use App\Models\Client;
 use App\Models\Paiement;
+use App\Models\Pret;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -71,7 +72,12 @@ class CompteController extends Controller
 
         $total_vehicules = Contrat::where('user_id', $user->id)->sum('quantite');
 
-        return view('compte.index', compact('solde_total','nombre_contrats','total_vehicules','paiement_valide','montantRestant')); 
+        $Total_pret = Pret::whereHas('contrat', function ($query) {
+            $query->where('user_id', Auth::id()); // Filtrer les contrats liés à l'utilisateur connecté
+        })
+        ->sum('amount');
+
+        return view('compte.index', compact('solde_total','nombre_contrats','total_vehicules','paiement_valide','montantRestant','Total_pret')); 
 
     } 
 }

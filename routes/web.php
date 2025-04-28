@@ -20,7 +20,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\Gesion_payController;
 use App\Http\Controllers\DisponibiliteController;
-
+use App\Http\Controllers\PretController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,9 +82,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-edit-client', [CustomerController::class, 'save_edit'])->name('customer.save_edit');
 
     
-    
-
-
     #employe
     Route::get('/liste-employes', [EmployesController::class, 'index'])->name('employe.index');
     Route::get('/employe/{id}', [EmployesController::class, 'add'])->name('employe.add');
@@ -124,8 +121,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contrat/telecharger/{id}', [ContratController::class, 'downloadFile'])->name('contrat.download');
     Route::get('/generate-facture/{id}', [ContratController::class, 'generate_facture'])->name('contrat.generate_facture');
     Route::get('/contrat/telecharger-promo/{id}', [ContratController::class, 'downloadFilePromo'])->name('contrat.download_promo');
-  
     Route::get('/ajouter-disponibilité/{id}', [ContratController::class, 'add_disponibilite'])->name('contrat.add_disponibilite');
+    Route::get('/ajouter-disponibilités/{id}', [ContratController::class, 'auto_add_disponibilite'])->name('contrat.auto_add_disponibilite');
+
+
+    #pret
+    Route::get('/liste-pret', [PretController::class, 'index'])->name('pret.index');
+    Route::get('/liste-pret-valide', [PretController::class, 'liste'])->name('liste.index');
+    Route::get('/pret/{id}', [PretController::class, 'add'])->name('pret.add');
+    Route::post('/save-pret', [PretController::class, 'save'])->name('pret.save');
+    Route::get('/delete-pret', [PretController::class, 'delete'])->name('pret.delete');
+    Route::get('/edit-pret/{id}', [PretController::class, 'edit'])->name('pret.edit');
+    Route::post('/save-edit-pret', [PretController::class, 'save_edit'])->name('pret.save_edit');
+    Route::get('/pret-refuser/{id}', [PretController::class, 'refuser_pret'])->name('pret.refuser');
+    Route::get('/pret-valider/{id}', [PretController::class, 'valider_pret'])->name('pret.valider');
+
+    #pret-client
+    Route::get('/Mes-prets', [PretController::class, 'mes_prets'])->name('pret.mes_prets');
+
+
+    #mensualité
+    Route::get('/mensualité/{id}', [PretController::class, 'mensualite'])->name('pret.mensualite');
 
 
     #facture

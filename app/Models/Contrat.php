@@ -70,5 +70,10 @@ class Contrat extends Model
         return $this->hasMany(Disponibilite::class, 'disponibilite_id'); 
     }
 
+    public function prets()
+    {
+        return $this->hasMany(pret::class, 'pret_id'); 
+    }
+
 }
  

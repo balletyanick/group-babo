@@ -13,11 +13,14 @@ use App\Models\Facture;
 use App\Models\Client;
 use App\Models\Disponibilite;
 use App\Models\Paiement;
+use App\Models\Pret;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+
 
 class ContratController extends Controller
 {
@@ -136,7 +139,7 @@ class ContratController extends Controller
         $contrat = Contrat::create($data);
 
         // Appeler la fonction d'ajout des disponibilités (versements)
-        $dispoResult = $this->add_disponibilite($contrat->id);
+        $dispoResult = $this->auto_add_disponibilite($contrat->id);
 
         // S'il y a une erreur lors de l'ajout des disponibilités, renvoyer une réponse d'erreur
         if (isset($dispoResult['error'])) {
@@ -145,6 +148,23 @@ class ContratController extends Controller
                 'status'  => 'error'
             ]);
         }
+
+        // Message à envoyer
+        $smsMessage = "Bienvenue chez Babo Corporate ! Votre contrat a été créé avec succès. Nous sommes ravis de vous accompagner.";
+    
+        // Envoyer le SMS via l'API SMS
+        $response = Http::post('https://sms.acim-ci.net:8443/api/addFullSms', [
+            'Username' => 'phenixApi',
+            'Token' => '$2a$10$ecyCD2d.Igj2n6ZpPcka5uMQmRW53dGOFnSm/OzSiubtYWm9q86kK',
+            'Sender' => 'PHENIX TRAN',
+            'Flash' => '0',
+            'Sms' => $smsMessage,
+            'Title' => 'Bienvenue',
+            'Contact' => [
+                ['Dest' => $request->phone]
+            ],
+        ]);
+        
 
         return response()->json(['message' => 'Contrat enregistré avec succès', 'status' => 'success']);
     }
@@ -155,10 +175,19 @@ class ContratController extends Controller
         $contrat = Contrat::find($request->id);
 
         $hasFactures = Facture::where('contrat_id', $contrat->id)->exists();
+        $hasPrets = Pret::where('contrat_id', $contrat->id)->exists();
+
 
         if ($hasFactures) {
             return response()->json([
                 'message' => 'Impossible de supprimer cet élément : il est lié à une ou plusieurs factures.',
+                'status' => 'error'
+            ]);
+        }
+
+        if ($hasPrets) {
+            return response()->json([
+                'message' => 'Impossible de supprimer cet élément : il est lié à une ou plusieurs prets.',
                 'status' => 'error'
             ]);
         }
@@ -711,59 +740,124 @@ class ContratController extends Controller
         }
     }
 
-
-    public function add_disponibilite($id) 
+    public function add_disponibilite($id)
     {
         Auth::user()->access('AJOUT VERSEMENT');
-
+    
         $contrat = Contrat::with('product')->findOrFail($id);
-
+    
         // Vérifier que le produit est disponible
         if (!$contrat->product) {
             return redirect()->route('contrat.index')->with('error', 'Produit associé introuvable.');
         }
-
-        // Vérifier si l'identifiant de contrat existe déjà dans la table disponibilite
-        $existingDisponibilites = Disponibilite::where('contrat_id', $contrat->id)->count();
-
-        if ($existingDisponibilites > 0) {
-            return redirect()->route('contrat.index')->with('error', 'Cet contrat est déja lié à un ou plusieurs versement.');
+    
+        // Vérifier si des versements existent déjà pour ce contrat
+        if (Disponibilite::where('contrat_id', $contrat->id)->exists()) {
+            return redirect()->route('contrat.index')->with('error', 'Ce contrat est déjà lié à un ou plusieurs versements.');
         }
-
-        $date_aujourdhui = today();
+    
+        // Récupérer les paramètres du contrat
         $duree = $contrat->product->duration_contrat; 
-        $amount_mensuel = $contrat->product->pay_mensuel; // paiement mensuel
-        $quantite = $contrat->quantite; // Quantite contrat
-        $amount_mensuel_total = $amount_mensuel * $quantite; // Montant mensuel total
-        $startDate = Carbon::parse($contrat->date_firt_payment);
-
+        $amount_mensuel = $contrat->product->pay_mensuel; 
+        $quantite = $contrat->quantite; 
+        $amount_mensuel_total = $amount_mensuel * $quantite; 
+    
+        // Date du premier paiement
+        $firstPayment = Carbon::parse($contrat->date_firt_payment);
+    
+        // Pour un contrat Normal, le premier versement est à la date du premier paiement
+        // Pour l'autre type, on commence à partir du mois suivant.
         if ($contrat->type_contrat === 'Normal') {
-            $duration = $duree; 
-
+            $duration = $duree;     // Nombre total de versements
+            $startIndex = 0;        // i = 0 correspond à la date du premier paiement
         } else {
-            $duration = $duree - 1; 
+            $duration = $duree - 1;  // Par exemple, si le contrat comporte 12 mois, on génère 11 versements.
+            $startIndex = 1;        // Le premier versement se fait 1 mois après le premier paiement.
         }
-
-
-        // Générer les enregistrements pour chaque période de la durée du contrat
+    
         $disponibilites = [];
-        for ($i = 1; $i <= $duration; $i++) {
+        for ($i = $startIndex; $i < $startIndex + $duration; $i++) {
+            // On calcule la date de paiement en ajoutant $i mois à la date du premier paiement.
+            // La méthode addMonthNoOverflow() permet de conserver le jour (exemple : 30) si celui-ci existe,
+            // ou bien de renvoyer le dernier jour du mois sinon.
+            $datePayment = $firstPayment->copy()->addMonthNoOverflow($i);
+    
             $disponibilites[] = [
-                'id' => (string) Str::uuid(),
-                'user_id' => $contrat->user_id,
-                'product_id' => $contrat->product->id,
-                'contrat_id' => $contrat->id,
-                'date_day' =>  $date_aujourdhui,
-                'date_payment' =>$startDate->copy()->addMonths($i), // Paiement après 15 jours
-                'amount' => $amount_mensuel_total, 
-                'compter' => $i,
+                'id'           => (string) Str::uuid(),
+                'user_id'      => $contrat->user_id,
+                'product_id'   => $contrat->product->id,
+                'contrat_id'   => $contrat->id,
+                'date_day'     => today(),
+                'date_payment' => $datePayment,
+                'amount'       => $amount_mensuel_total,
+                'compter'      => $i - $startIndex + 1, // Numérotation à partir de 1
             ];
         }
-
-        // Insérer en une seule requête pour optimiser
+    
+        // Insertion groupée pour optimiser
         Disponibilite::insert($disponibilites);
-
-        return ['success' => 'Versements ajoutés avec succès.'];
-
+    
+        return redirect()->route('contrat.index')->with('success', 'Création de versements réussie.');
     }
+
+    public function auto_add_disponibilite($id)
+{
+    Auth::user()->access('AJOUT VERSEMENT');
+
+    $contrat = Contrat::with('product')->findOrFail($id);
+
+    // Vérifier que le produit est disponible
+    if (!$contrat->product) {
+        return redirect()->route('contrat.index')->with('error', 'Produit associé introuvable.');
+    }
+
+    // Vérifier si des versements existent déjà pour ce contrat
+    if (Disponibilite::where('contrat_id', $contrat->id)->exists()) {
+        return redirect()->route('contrat.index')->with('error', 'Ce contrat est déjà lié à un ou plusieurs versements.');
+    }
+
+    // Récupérer les paramètres du contrat
+    $duree = $contrat->product->duration_contrat; 
+    $amount_mensuel = $contrat->product->pay_mensuel; 
+    $quantite = $contrat->quantite; 
+    $amount_mensuel_total = $amount_mensuel * $quantite; 
+
+    // Date du premier paiement
+    $firstPayment = Carbon::parse($contrat->date_firt_payment);
+
+    // Pour un contrat Normal, le premier versement est à la date du premier paiement
+    // Pour l'autre type, on commence à partir du mois suivant.
+    if ($contrat->type_contrat === 'Normal') {
+        $duration = $duree;     // Nombre total de versements
+        $startIndex = 0;        // i = 0 correspond à la date du premier paiement
+    } else {
+        $duration = $duree - 1;  // Par exemple, si le contrat comporte 12 mois, on génère 11 versements.
+        $startIndex = 1;        // Le premier versement se fait 1 mois après le premier paiement.
+    }
+
+    $disponibilites = [];
+    for ($i = $startIndex; $i < $startIndex + $duration; $i++) {
+        // On calcule la date de paiement en ajoutant $i mois à la date du premier paiement.
+        // La méthode addMonthNoOverflow() permet de conserver le jour (exemple : 30) si celui-ci existe,
+        // ou bien de renvoyer le dernier jour du mois sinon.
+        $datePayment = $firstPayment->copy()->addMonthNoOverflow($i);
+
+        $disponibilites[] = [
+            'id'           => (string) Str::uuid(),
+            'user_id'      => $contrat->user_id,
+            'product_id'   => $contrat->product->id,
+            'contrat_id'   => $contrat->id,
+            'date_day'     => today(),
+            'date_payment' => $datePayment,
+            'amount'       => $amount_mensuel_total,
+            'compter'      => $i - $startIndex + 1, // Numérotation à partir de 1
+        ];
+    }
+
+    // Insertion groupée pour optimiser
+    Disponibilite::insert($disponibilites);
+
+    return ['success' => 'Versements ajoutés avec succès.'];
+}
+
 }

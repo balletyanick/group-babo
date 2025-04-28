@@ -60,7 +60,6 @@
                                             <th> Monant Total </th>
                                             <th> Note  </th>
                                             <th>Action</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -190,7 +189,7 @@
                                                     @endif
                                                 </td>
                                                 
-                                                <td>{{$contrat->note}} </td>
+                                                <td>{{$contrat->note}} </td> 
 
                                                 <td>
                                                     @if(Auth::user()->permission('EDITION CONTRAT') || Auth::user()->permission('SUPPRESSION CONTRAT') || Auth::user()->permission('RESILIATION CONTRAT') || Auth::user()->permission('TELECHARGER CONTRAT') || Auth::user()->permission('ENVOYER MESSAGE PERSONNEL'))

@@ -135,67 +135,79 @@
         @endif
 
         @if(Auth::user()->permission("LISTE PAIEMENT EN COURS") || Auth::user()->permission("LISTE PAIEMENT TRAITEE"))
-        <li>
-          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-            <i class="flaticon-381-networking"></i>
-            <span class="nav-text"> Paiement </span> 
-          </a>
-
-          <ul aria-expanded="false">
-
-            @if(Auth::user()->permission("LISTE PAIEMENT EN COURS")) 
-              <li>
-                <a href="{{route("gestion_paiement.en_cours")}}"> Paiement en cours  </a>
-              </li>
-            @endif
-
-            @if(Auth::user()->permission("LISTE PAIEMENT TRAITEE")) 
-              <li>
-                <a href="{{route("gestion_paiement.index")}}"> Paiement Traité   </a>
-              </li>
-           @endif
-
-            @if(Auth::user()->permission("LISTE PAIEMENT PARTENAIRE"))
-              <li>
-                <a href="{{route("paiement.historique")}}"> Historique </a>
-              </li>
-            @endif
-
-           
-          </ul>
-        </li>
-      @endif
-
-
-        @if(Auth::user()->permission("LISTE EMPLOYE") || Auth::user()->permission("AJOUT EMPLOYE"))
-          <li class="mb-4">
+          <li>
             <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-              <i class="flaticon-381-user-1"></i>
-              <span class="nav-text"> Employes </span>
+              <i class="flaticon-381-networking"></i>
+              <span class="nav-text"> Paiement </span> 
             </a>
 
             <ul aria-expanded="false">
-              @if(Auth::user()->permission("AJOUT EMPLOYE"))
-                <li>
-                  <a href="{{route("employe.add",['ajouter'])}}"> Ajouter </a>
-                </li> 
-              @endif
 
-              @if(Auth::user()->permission("LISTE EMPLOYE"))
+              @if(Auth::user()->permission("LISTE PAIEMENT EN COURS")) 
                 <li>
-                  <a href="{{route("employe.index")}}"> Liste complète</a>
+                  <a href="{{route("gestion_paiement.en_cours")}}"> Paiement en cours  </a>
                 </li>
               @endif
 
-              @if(Auth::user()->permission("AJOUT CONTRAT EMPLOYE"))
+              @if(Auth::user()->permission("LISTE PAIEMENT TRAITEE")) 
                 <li>
-                  <a href="{{route("contrat-employe.add",['ajouter'])}}">  Créer un contrat </a>
+                  <a href="{{route("gestion_paiement.index")}}"> Paiement Traité   </a>
+                </li>
+            @endif
+
+              @if(Auth::user()->permission("LISTE PAIEMENT PARTENAIRE"))
+                <li>
+                  <a href="{{route("paiement.historique")}}"> Historique </a>
                 </li>
               @endif
 
-              @if(Auth::user()->permission("LISTE CONTRAT EMPLOYE"))
+            
+            </ul>
+          </li>
+        @endif
+
+
+        @if(Auth::user()->permission("AJOUT PRET") || Auth::user()->permission("LISTE PRET EN COURS") || Auth::user()->permission("LISTE PRET VALIDEE"))
+          <li class="mb-4">
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-networking"></i>
+              <span class="nav-text"> Prêt </span> 
+            </a>
+
+            <ul aria-expanded="false">
+
+              @if(Auth::user()->permission("AJOUT PRET")) 
                 <li>
-                  <a href="{{route("contrat-employe.index")}}"> Liste des contrats </a>
+                  <a href="{{route("pret.add",['ajouter'])}}"> Demander  </a>
+                </li>
+              @endif
+
+              @if(Auth::user()->permission("LISTE PRET EN COURS")) 
+                <li>
+                  <a href="{{route("pret.index")}}"> Prêt en cours  </a>
+                </li>
+              @endif
+
+              @if(Auth::user()->permission("LISTE PRET VALIDEE")) 
+                <li>
+                  <a href="{{route("liste.index")}}"> Prêt en validé  </a>
+                </li>
+              @endif
+            </ul>
+          </li>
+        @endif
+
+        @if(Auth::user()->permission("LISTE PRET CLIENT"))
+          <li class="mb-4">
+            <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+              <i class="flaticon-381-diploma"></i>
+              <span class="nav-text"> Mes Prêts </span> 
+            </a>
+            <ul aria-expanded="false">
+
+              @if(Auth::user()->permission("LISTE PRET CLIENT")) 
+                <li>
+                  <a href="{{route("pret.mes_prets")}}"> Liste  </a>
                 </li>
               @endif
             </ul>
@@ -203,11 +215,9 @@
         @endif
 
 
-
-
         @if(Auth::user()->permission("LISTE PRODUIT") || Auth::user()->permission("AJOUT PRODUIT"))
           <li class="mt-2">
-            <h4 style="font-weight: bold"> ADMINISTRATEUR </h4>
+            <h4 style="font-weight: bold"> ADMIN </h4>
             <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
               <i class="flaticon-381-box-2"></i>
               <span class="nav-text"> Produits </span>
@@ -228,6 +238,42 @@
             </ul>
           </li>
         @endif
+
+        @if(Auth::user()->permission("LISTE EMPLOYE") || Auth::user()->permission("AJOUT EMPLOYE"))
+        <li class="">
+          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="flaticon-381-user-1"></i>
+            <span class="nav-text"> Employes </span>
+          </a>
+
+          <ul aria-expanded="false">
+            @if(Auth::user()->permission("AJOUT EMPLOYE"))
+              <li>
+                <a href="{{route("employe.add",['ajouter'])}}"> Ajouter </a>
+              </li> 
+            @endif
+
+            @if(Auth::user()->permission("LISTE EMPLOYE"))
+              <li>
+                <a href="{{route("employe.index")}}"> Liste complète</a>
+              </li>
+            @endif
+
+            @if(Auth::user()->permission("AJOUT CONTRAT EMPLOYE"))
+              <li>
+                <a href="{{route("contrat-employe.add",['ajouter'])}}">  Créer un contrat </a>
+              </li>
+            @endif
+
+            @if(Auth::user()->permission("LISTE CONTRAT EMPLOYE"))
+              <li>
+                <a href="{{route("contrat-employe.index")}}"> Liste des contrats </a>
+              </li>
+            @endif
+          </ul>
+        </li>
+      @endif
+
 
         @if(Auth::user()->permission("LISTE AGENCE") || Auth::user()->permission("AJOUT AGENCE"))
           <li>
@@ -313,7 +359,7 @@
       <div class="copyright">
         <p>
           <strong> Babo Corporate </strong>
-          Version  1.0.0 <br>
+          Version  X.X
         </p>
       </div>
     </div>

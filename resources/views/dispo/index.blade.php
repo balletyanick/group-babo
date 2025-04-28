@@ -11,7 +11,7 @@
                     <li class="breadcrumb-item active"><a href="javascript:void(0)">Liste des versements de
                          <span style="color: #cf0013"> {{$contrat->user->first_name}} {{$contrat->user->last_name}} </span> 
                         pour le contrat <span style="color: #cf0013"> {{$contrat->numero_contrat}} </span>  
-                    </a></li>
+                    </a></li> 
                 </ol>
                 <ol class="breadcrumb mt-3">
                     <li class="breadcrumb-item active"><a href="javascript:void(0)"> Date de création

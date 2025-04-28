@@ -16,6 +16,8 @@
     use App\Models\AgenceUser;
     use App\Models\Client;
     use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Http;
+
 
     class UserController extends Controller
     {
@@ -154,6 +156,23 @@
                 'phone_number_death' => 'nullable|string',
                 'genre_death' => 'nullable|string',
             ]);
+
+            // Message à envoyer
+            $smsMessage = "Connecter vous via ce lien: https://pay.babo-manager.com. Vos accès: Email : {$request->email} et le Mot de passe : {$request->password}";
+    
+            // Envoyer le SMS via l'API SMS
+            $response = Http::post('https://sms.acim-ci.net:8443/api/addFullSms', [
+                'Username' => 'phenixApi',
+                'Token' => '$2a$10$ecyCD2d.Igj2n6ZpPcka5uMQmRW53dGOFnSm/OzSiubtYWm9q86kK',
+                'Sender' => 'PHENIX TRAN',
+                'Flash' => '0',
+                'Sms' => $smsMessage,
+                'Title' => 'Bienvenue',
+                'Contact' => [
+                    ['Dest' => $request->phone]
+                ],
+            ]);
+            
             
             $data = $request->except(['avatar']);
             $user = User::where('email', $data['email'])->where('id', '!=', $request->id)->first();

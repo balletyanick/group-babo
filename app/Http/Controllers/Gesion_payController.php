@@ -17,6 +17,8 @@ use App\Models\Disponibilite;
 use App\Models\Client;
 use App\Models\Paiement;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+
 
 class Gesion_payController extends Controller
 {
@@ -102,21 +104,25 @@ class Gesion_payController extends Controller
             $paiement->status = 1;
             $paiement->save(); 
 
+            if (!$paiement->user) {
+                return response()->json(['status' => 'error', 'message' => 'Utilisateur introuvable pour ce paiement.']);
+            }
+
             // Message à envoyer
-             // $smsMessage = "Vous avez recu un paiement de la part de Babo Corporate d'un montant de: {$paiement->amount} sur votre {$paiement->customer->user->phone} via {$paiement->mode_paiement}";
+            $smsMessage = "Vous avez recu un paiement de la part de Babo Corporate d'un montant de: {$paiement->amount} sur votre {$paiement->user->phone} via {$paiement->mode_paiement}";
     
              // Envoyer le SMS via l'API SMS
-            // $response = Http::post('https://sms.acim-ci.net:8443/api/addFullSms', [
-               //   'Username' => 'phenixApi',
-                 // 'Token' => '$2a$10$ecyCD2d.Igj2n6ZpPcka5uMQmRW53dGOFnSm/OzSiubtYWm9q86kK',
-                 // 'Sender' => 'PHENIX TRAN',
-                 // 'Flash' => '0',
-                 // 'Sms' => $smsMessage,
-                 // 'Title' => 'Bienvenue',
-                 // 'Contact' => [
-                  //    ['Dest' => $paiement->customer->user->phone]
-                 // ],
-             // ]);
+            $response = Http::post('https://sms.acim-ci.net:8443/api/addFullSms', [
+                  'Username' => 'phenixApi',
+                  'Token' => '$2a$10$ecyCD2d.Igj2n6ZpPcka5uMQmRW53dGOFnSm/OzSiubtYWm9q86kK',
+                  'Sender' => 'PHENIX TRAN',
+                  'Flash' => '0',
+                  'Sms' => $smsMessage,
+                  'Title' => 'Bienvenue',
+                  'Contact' => [
+                      ['Dest' => $paiement->user->phone]
+                  ],
+             ]);
 
             return response()->json([
                 'status' => 'success',
